@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "components": "ng g c components/dashboard",
+    "services": "ng g s services/dashboard"
+
   },
   "private": true,
   "dependencies": {
