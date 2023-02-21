@@ -1,4 +1,7 @@
 export interface Entries {
-    id: number
-    
+    status?: number;
+    task?: string;
+    start_time?: Date;
+    end_time?: Date;
+    date?: Date
 }
