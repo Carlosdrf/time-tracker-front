@@ -14,6 +14,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CustomDatePipe } from "./services/custom-date.pipe";
 import { DashboardService } from "./services/dashboard.service";
 import { LoginComponent } from './components/login/login.component';
+import { ReportsComponent } from './components/reports/reports.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { LoginComponent } from './components/login/login.component';
     DashboardComponent,
     CustomDatePipe,
     LoginComponent,
+    ReportsComponent,
   ],
   exports:[
     CustomDatePipe

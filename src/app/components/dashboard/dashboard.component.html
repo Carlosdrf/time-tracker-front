@@ -19,7 +19,7 @@
     <div class="card mb-3 rounded shadow">
         <div class="card-header rounded-top bg-primary">
             <div class="row">
-                <p class="fw-bold col-md-8 mb-0">
+                <p class="fw-bold text-white col-md-8 mb-0">
                     <ng-template [ngIf]="isToday(entry.date)" [ngIfElse]="elseBlock">
                         {{isToday(entry.date)}}
                     </ng-template>
@@ -27,7 +27,7 @@
                         {{entry.date | date: 'EEEE'}}, {{entry.date | customDate: 'DD-MM-YYYY'}}
                     </ng-template>
                 </p>
-                <p class="col-md-4 text-light text-end">Total: {{getTotalHours(entry.start_time, entry.end_time)}}</p>
+                <p class="col-md-4 mb-0 text-light text-end">Total: {{getTotalHours(entry.start_time, entry.end_time)}}</p>
             </div>
         </div>
         <div class="card-body d-flex">
@@ -48,7 +48,7 @@
                 <!-- <div class="btn bg-transparent primary-text border primary-border border-2 rounded ms-2">
                     <span>Edit</span>
                 </div> -->
-                <div (click)="deleteEntry(entry.id)" class="btn btn-danger rounded border border-2 border-danger ms-2">
+                <div (click)="deleteEntry(entry.id)" class="btn btn-danger rounded ms-2">
                     <i class="far fa-trash-alt"></i>
                 </div>
             </div>
