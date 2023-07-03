@@ -7,12 +7,14 @@
                 <!-- Email input -->
                 <div class="form-outline mb-4">
                     <input type="email" name="email" [(ngModel)]="login.email" class="form-control" placeholder="Email addess" autofocus/>
+                    <p *ngIf="emailerror" class="text-start text-danger">{{message}}</p>
                     <!-- <label class="form-label" for="form2Example1">Email address</label> -->
                 </div>
             
                 <!-- Password input -->
                 <div class="form-outline mb-4">
                     <input type="password" name="password" [(ngModel)]="login.password" class="form-control" placeholder="Password"/>
+                    <p *ngIf="passerror" class="text-start text-danger">{{message}}</p>
                     <!-- <label class="form-label" for="form2Example2">Password</label> -->
                 </div>
             
@@ -100,7 +102,7 @@
             
                 <!-- Register buttons -->
                 <div class="text-center">
-                    <p>Have an account? <a routerLink="/login" (click)="signIntoUp()">Sign In!</a></p>
+                    <p>Have an account? <a routerLink="login" (click)="signIntoUp()">Sign In!</a></p>
                     <!-- <p>or sign up with:</p> -->
                     <!-- <button type="button" class="btn btn-link btn-floating mx-1">
                         <i class="fab fa-facebook-f"></i>

@@ -2,25 +2,45 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Entries } from "../models/Entries";
 import { Observable } from 'rxjs';
+import { environment } from "src/environments/environment";
 import { JwtInterceptor } from './jwt.interceptor';
 
 @Injectable({
   providedIn: 'root',
-  
+
 })
 
 export class DashboardService {
-  API_URI = 'http://localhost:3000/api';
+  API_URI = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
   getEntries(){
-    return this.http.get(`${this.API_URI}/entries`)
+    return this.http.get<any>(`${this.API_URI}/entries`)
+  }
+  getAllEntries(data: any){
+    const headers = new HttpHeaders({'content-type': 'application/json'})
+    return this.http.post<any>(`${this.API_URI}/entries/all`, data, {headers})
+  }
+  updateEntryTask(id: string, data: any){
+    return this.http.put<any>(`${this.API_URI}/entries/task/${id}`, data)
+  }
+  getUsers(body: any){
+    const headers = new HttpHeaders({'content-type': 'application/json'})
+
+    return this.http.post<any>(`${this.API_URI}/users`, body, {headers})
+  }
+  getUsersEntries(user_id: any){
+    return this.http.post<any>(`${this.API_URI}/entries/user`, user_id)
   }
 
   getEntryCheck(){
     return this.http.get(`${this.API_URI}/entries/started`)
   }
-  createEntry(entry: Entries){
+
+  getUserEntryStatus(data: any){
+    return this.http.post(`${this.API_URI}/entries/users/status`, data)
+  }
+  createEntry(entry: any){
     const jwt = localStorage.getItem('jwt')
     const headers = new HttpHeaders({'content-type': 'application/json'})
     return this.http.post(`${this.API_URI}/entries`, entry)
@@ -37,5 +57,8 @@ export class DashboardService {
     // console.log(updatedEntry)
     return this.http.put<Entries>(`${this.API_URI}/entries/${id}`, updatedEntry, {headers});
   }
+  // getCurrentEntry(data: any){
+  //   return this.http.post(`${this.API_URI}/entries/currentEntry`, data)
+  // }
 
 }

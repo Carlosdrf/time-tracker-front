@@ -1,0 +1,13 @@
+@import '../../../../styles.scss';
+@import '../../pages.component.scss';
+
+.bg-color-pr{
+    background-color: $secondary-color;
+}
+
+
+.card-hover:hover{
+    background-color: $secondary-color;
+    transition: all 0.1s ease-in;
+    transition: all 0.3s ease-out;
+}

@@ -3,6 +3,9 @@
 .bg-primary, .btn-primary{
     background-color: #92b46c !important;
 }
+.bg-secondary{
+    background-color: #92b46c6e;
+}
 .primary-text{
     color: #92b46c !important
 }
@@ -11,3 +14,6 @@
 }
 
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

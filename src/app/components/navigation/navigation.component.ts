@@ -1,30 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from "../../services/auth.service";
+import { ReportsService } from "../../services/reports.service";
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.css']
+  styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent {
   authenticated: boolean = false
-
-  constructor(private authService: AuthService, private router: Router){
+  isAdmin: boolean = false
+  isActive: boolean = false
+  constructor(private reports: ReportsService ,private authService: AuthService, private router: Router, private element: ElementRef){
     this.authService.isLoggedIn().subscribe(isLogged =>{
       this.authenticated = isLogged;
-      // console.log(isLogged)
+    })
+    this.authService.verifyAdmin().subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
     })
     
   }
-  ngOninit(){
-    console.log(this.authenticated)
+
+  ngOnInit(){
+    document.addEventListener('click', this.hideNav.bind(this))
   }
   
   closeSession(){
-    // this.router.navigateByUrl('/')
     this.authService.logout()
-    // this.authenticated = this.authService.isLogged
   }
-
+  toggleMenu(){
+    this.isActive = !this.isActive
+  }
+  hideNav(event: any){
+    if(!this.element.nativeElement.contains(event.target)){
+      this.isActive = false
+    }
+  }
+  resetUserReport(){
+    this.reports.resetUser()
+  }
 }

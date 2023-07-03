@@ -3,5 +3,6 @@ export interface Entries {
     task?: string;
     start_time?: Date;
     end_time?: Date;
-    date?: Date
+    date?: Date;
+    description?: string;
 }

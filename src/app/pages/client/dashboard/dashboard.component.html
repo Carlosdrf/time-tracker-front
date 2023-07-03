@@ -1,0 +1,33 @@
+<div class="section">
+  <h2 class="p-2">Welcome, {{ name }}</h2>
+  <div class="d-flex flex-wrap ">
+    <div class="col-12 col-md-6 p-2 min-height">
+      <app-bills></app-bills>
+    </div>
+    <div class="col-12 col-md-6 p-2 min-height">
+      <app-employees></app-employees>
+    </div>
+    <div class="col-12 col-md-6 p-2 min-height">
+      <div class="card rounded shadow h-100">
+        <div class="card-body">
+          <h3>Performance Section:</h3>
+          <p>Performance Summarize</p>
+        </div>
+        <div class="card-header rounded-bottom bg-primary text-center">
+          <a class="text-white text-decoration-none" routerLink="payments">See Performance</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 p-2 min-height">
+      <div class="card rounded shadow h-100">
+        <div class="card-body">
+          <h3>Blog Section:</h3>
+          <p>Get our last News</p>
+        </div>
+        <div class="card-header rounded-bottom bg-primary text-center">
+          <a class="text-white text-decoration-none" href="/blog">See News</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

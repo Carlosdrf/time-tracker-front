@@ -1,0 +1,27 @@
+@import '../../styles.scss';
+
+.spinner ::ng-deep .mat-mdc-progress-spinner mdc-circle, .mat-spinner circle{
+    stroke: $primary-color !important;
+}
+
+.mat-mdc-progress-spinner {
+    --mdc-circular-progress-active-indicator-color: #92b46c;
+}
+.links:hover{
+    color: $primary-color;
+    transition: all 0.2s ease-in-out;
+}
+
+#alert{
+    display: none;
+    opacity: 0;
+    position: fixed;
+    right: 10px;
+    bottom: 0;
+}
+.alert-active{
+    transition: all 0.5s ease-in-out;
+}
+.alert-success{
+    background-color: $accent;
+}

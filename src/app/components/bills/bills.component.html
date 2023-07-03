@@ -1,0 +1,23 @@
+<div class="card rounded shadow h-100">
+  <div class="card-body">
+    <h3>Resumen de Pagos</h3>
+    <div
+      class="d-flex flex-wrap justify-content-between align-items-center p-3 border border-1 rounded"
+    >
+      <div class="section">
+        <p class="mb-0">Por pagar:</p>
+        <p class="mb-0">
+          <span>{{ currency }} {{ cantidad }}</span>
+        </p>
+      </div>
+      <div class="section">
+        <a href="">realizar pago</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-header text-center bg-primary rounded-bottom">
+    <a class="text-white text-decoration-none" routerLink="payments"
+      >ver pagos</a
+    >
+  </div>
+</div>

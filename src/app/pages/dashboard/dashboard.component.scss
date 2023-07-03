@@ -1,0 +1,16 @@
+@import '../pages.component.scss';
+
+#menu-off-hours:not(.off-hours){
+    transform: scaleY(0);
+    transition: all 0.2s ease-in-out;
+    opacity: 0;
+}
+
+#menu-off-hours{
+    transition: all 0.3s ease-in-out;
+    transform-origin: top;
+    overflow: hidden;
+    right: 0;
+    opacity: 1;
+    display: block;
+}

@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from "src/environments/environment";
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private isLogged = new BehaviorSubject<boolean>(false)
-  constructor(private http:HttpClient) { }
-  API_URI = 'http://localhost:3000/api/auth';
+  private isAdmin = new BehaviorSubject<boolean>(false)
+  constructor(private http:HttpClient, private jwtHelper: JwtHelperService, private routes: Router) { }
+  API_URI = environment.apiUrl+'/auth';
+
 
   login(email: string, password: string): Observable<any>{
     const headers = new HttpHeaders({ 'content-type': 'application/json'});
@@ -27,12 +32,50 @@ export class AuthService {
 
   isLoggedIn(){
     const jwt = localStorage.getItem('jwt')
-    if(jwt !== null){
-      this.isLogged.next(true)
-      return this.isLogged.asObservable()
-    }else{
+    try {
+      if(jwt !== null && !this.jwtHelper.isTokenExpired(jwt)){
+        this.isLogged.next(true)
+        return this.isLogged.asObservable()
+      }else{
+        this.isLogged.next(false)
+        // console.log(this.jwtHelper.isTokenExpired(jwt))
+        return this.isLogged.asObservable()
+      }
+    } catch (error) {
       this.isLogged.next(false)
       return this.isLogged.asObservable()
     }
+
+  }
+  verifyAdmin(){
+    const role = localStorage.getItem('role')
+    if(role !== null && role === '1'){
+      this.isAdmin.next(true)
+      return this.isAdmin.asObservable()
+    }else{
+      this.isAdmin.next(false)
+      return this.isAdmin.asObservable()
+    }
+  }
+  userTypeRouting(rol: string){
+    if(rol == '1'){
+      this.routes.navigate(['admin/dashboard'])
+      return
+    }else if(rol == '2'){
+      this.routes.navigate(['dashboard'])
+      return
+    }else{
+      this.routes.navigate(['client/dashboard'])
+      return
+    }
+  }
+  geTokenAccess(){
+
+  }
+  refreshToken(){
+
+  }
+  setAccessToken(){
+
   }
 }

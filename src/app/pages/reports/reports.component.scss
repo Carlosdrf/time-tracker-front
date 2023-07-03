@@ -1,0 +1,9 @@
+.calendar{
+    position: absolute;
+    z-index: 2;
+    right: 0;
+}
+.chart{
+    height: 300px !important;
+}
+@import '../pages.component.scss'
