@@ -15,7 +15,7 @@ export const router: Routes = [
         CommonModule,
         RouterModule.forChild(router),
         SharedModule,
-        
+
     ],
     declarations: [
         ReportsComponent,

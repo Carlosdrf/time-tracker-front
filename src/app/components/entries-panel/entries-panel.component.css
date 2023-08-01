@@ -1,0 +1,55 @@
+.mat-primary {
+  color: white !important;
+}
+
+.form-group .mat-mdc-raised-button {
+  height: 40px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.spinner ::ng-deep .mat-mdc-progress-spinner mdc-circle, .mat-spinner circle {
+  stroke: #92b46c !important;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #92b46c;
+}
+
+.links:hover {
+  color: #92b46c;
+  transition: all 0.2s ease-in-out;
+}
+
+#alert {
+  display: none;
+  opacity: 0;
+  position: fixed;
+  right: 10px;
+  bottom: 0;
+}
+
+.alert-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.alert-success {
+  background-color: #777;
+}
+
+#menu-off-hours:not(.off-hours) {
+  transform: scaleY(0);
+  transition: all 0.2s ease-in-out;
+  opacity: 0;
+}
+
+#menu-off-hours {
+  transition: all 0.3s ease-in-out;
+  transform-origin: top;
+  overflow: hidden;
+  right: 0;
+  opacity: 1;
+  display: block;
+}/*# sourceMappingURL=entries-panel.component.css.map */

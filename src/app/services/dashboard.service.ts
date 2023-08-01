@@ -57,6 +57,12 @@ export class DashboardService {
     // console.log(updatedEntry)
     return this.http.put<Entries>(`${this.API_URI}/entries/${id}`, updatedEntry, {headers});
   }
+  getRoles(){
+    return this.http.get(`${this.API_URI}/roles`)
+  }
+  createUser(userData: any){
+    return this.http.post(`${this.API_URI}/users/create`, userData)
+  }
   // getCurrentEntry(data: any){
   //   return this.http.post(`${this.API_URI}/entries/currentEntry`, data)
   // }

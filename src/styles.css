@@ -1,19 +1,23 @@
-@import './assets/styles/bootswatch.min.css';/*# sourceMappingURL=styles.css.map */
+.mat-primary {
+  color: white !important;
+}
+
+.form-group .mat-mdc-raised-button {
+  height: 40px;
+}
+
+ul {
+  list-style-type: none;
+}
+@import './assets/styles/bootswatch.min.css';
 
 .bg-primary, .btn-primary{
     background-color: #92b46c !important;
 }
-.bg-secondary{
-    background-color: #92b46c6e;
-}
 .primary-text{
     color: #92b46c !important
 }
-.pe-auto{
-    cursor: pointer;
-}
 
 
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

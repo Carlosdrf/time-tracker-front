@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from 'rxjs';
 import { AuthService } from "../auth.service";
+import { local } from 'd3';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +20,15 @@ export class notAuthGuard implements CanActivate{
         this.isAdmin = isAdmin
       })
       // console.log(this.isAdmin)
-      // console.log(this.loggedIn)
-      if(this.loggedIn == true && this.isAdmin == false){
+      // console.log(localStorage.getItem('role'))
+      if(localStorage.getItem('role') !== null && this.loggedIn == true && localStorage.getItem('role') === '2'){
         this.router.navigate(['dashboard'])
         return false;
-      }else if(this.loggedIn == true && this.isAdmin == true){
+      }else if(localStorage.getItem('role') !== null && this.loggedIn == true && localStorage.getItem('role') === '1'){
         this.router.navigate(['admin/dashboard'])
+        return false
+      }else if(localStorage.getItem('role') !== null && this.loggedIn == true && localStorage.getItem('role') === '3'){
+        this.router.navigate(['client'])
         return false
       }else{
         return true

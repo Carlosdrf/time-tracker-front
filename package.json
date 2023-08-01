@@ -1,14 +1,18 @@
 {
   "name": "time_tracker",
+  "author": {
+    "name": "Carlos Rivas",
+    "email": "devcrivas@gmail.com"
+  },
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --open",
     "build": "ng build --base-href /app-timer/ --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "component": "ng g c pages/client/payments",
-    "shared": "ng g c components/employees",
+    "component": "ng g c pages/client/user",
+    "shared": "ng g c components/loader",
     "service": "ng g s services/guards/userTypeGuard",
     "material": "ng add @angular/material"
   },

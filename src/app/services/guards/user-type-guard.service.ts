@@ -21,8 +21,8 @@ export class UserTypeGuardService {
       }
     )
     if(!this.isLogged) return this.router.parseUrl('/login')
-    console.log(route.data['allowedUserTypes'])
-    console.log(localStorage.getItem('role'))
+    // console.log(route.data['allowedUserTypes'])
+    // console.log(localStorage.getItem('role'))
     const userType = localStorage.getItem('role')
     if(this.checkUserType(route.data['allowedUserTypes'], userType!)){
       return true;

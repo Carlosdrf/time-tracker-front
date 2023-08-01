@@ -1,0 +1,19 @@
+<div class="position-absolute end-0" *ngIf="loader.started">
+  <mat-spinner *ngIf="loader.loading" [diameter]="44"
+    >check_circle_outline</mat-spinner
+  >
+  <mat-icon
+    *ngIf="loader.loading == false && loader.complete == true"
+    color="primary"
+    [ngClass]="{ 'fade-out': loader.complete }"
+    class="status-icon"
+    >check_circle_outline</mat-icon
+  >
+  <mat-icon
+    *ngIf="loader.loading == false && loader.complete == false"
+    color="warn"
+    [ngClass]="{ 'fade-out': !loader.complete }"
+    class="status-icon"
+    >cancel</mat-icon
+  >
+</div>

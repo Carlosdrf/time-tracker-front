@@ -21,6 +21,7 @@ import { EntriesPanelComponent } from './entries-panel/entries-panel.component';
 import { BillsComponent } from './bills/bills.component';
 import { StripeComponent } from './stripe/stripe.component';
 import { EmployeesComponent } from './employees/employees.component';
+import { LoaderComponent } from './loader/loader.component';
 
 // import { calendarFormat } from "moment";
 
@@ -48,6 +49,7 @@ import { EmployeesComponent } from './employees/employees.component';
     BillsComponent,
     StripeComponent,
     EmployeesComponent,
+    LoaderComponent,
   ],
   exports: [
     EntriesComponent,
@@ -64,6 +66,7 @@ import { EmployeesComponent } from './employees/employees.component';
     EmployeesComponent,
     MatCardModule,
     BillsComponent,
+    LoaderComponent
   ],
   providers: [CustomDatePipe, CalendarComponent],
 })

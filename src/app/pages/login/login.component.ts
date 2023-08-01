@@ -52,6 +52,7 @@ export class LoginComponent {
           const name = v.username;
           const role = v.role_id
           const email = v.email
+          console.log(role)
           this.socketService.socket.emit('client:joinRoom', email)
           localStorage.setItem('role', role)
           localStorage.setItem('name', name)

@@ -1,0 +1,20 @@
+.status-icon {
+  height: 44px !important;
+  font-size: 44px;
+  width: 44px;
+}
+.fade-out{
+  animation: statusIcon 3s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+@keyframes statusIcon {
+  0%,
+  60% {
+    opacity: 1;
+    visibility: visible;
+  }
+  80% {
+    opacity: 0;
+  }
+}

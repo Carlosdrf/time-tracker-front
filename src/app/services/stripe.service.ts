@@ -17,4 +17,8 @@ export class StripeService {
     const headers = new HttpHeaders({'content_type':'application/json'})
     return this.http.post<any>(environment.apiUrl+'/stripe/checkout', body, {headers})
   }
+  webhook(data: any){
+    const headers = new HttpHeaders({'content_type':'application/json'})
+    return this.http.post<any>(environment.apiUrl + '/stripe/webhook', data, {headers})
+  }
 }

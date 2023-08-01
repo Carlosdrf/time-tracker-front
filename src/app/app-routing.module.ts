@@ -8,6 +8,7 @@ import { NotAdmin } from "./services/guards/not-admin.service";
 import { EntriesComponent } from './pages/admin/entries/entries.component';
 import { EntriesModule } from './pages/admin/entries/entries.module';
 import { UserTypeGuardService } from './services/guards/user-type-guard.service';
+import { path } from 'd3';
 
 let ADMIN_TYPE_ROLE = '1'
 let USER_TYPE_ROLE = '2'
@@ -22,9 +23,13 @@ export const routes: Routes = [
       { path: 'login', canActivate: [ notAuthGuard ], loadChildren: () => import('./pages/login/login.module').then(m=> m.LoginModule)},
       { path: 'logout', redirectTo: 'login', pathMatch: 'full' },
       { path: 'signup', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule), canActivate: [ notAuthGuard ]},
-      { path: 'admin', loadChildren: () => import('./pages/admin/dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [ UserTypeGuardService ], data: {allowedUserTypes: [ADMIN_TYPE_ROLE]}},
+
+      { path: 'admin', children: [
+        { path: '',loadChildren: () => import('./pages/admin/dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [ UserTypeGuardService ], data: {allowedUserTypes: [ADMIN_TYPE_ROLE]}},
+        {path: '', loadChildren: ()=> import('./pages/admin/user/user.module').then(m=>m.UserModule)}
+      ]},
       { path: 'user', loadChildren: () => import('./pages/admin/entries/entries.module').then(m => EntriesModule), canActivate: [ UserTypeGuardService ], data: {allowedUserTypes: [ADMIN_TYPE_ROLE]}},
-      { path: 'client', loadChildren: ()=> import('./pages/client/client.module').then(m => m.ClientModule), canActivate: [UserTypeGuardService], data: {allowedUserTypes: [ADMIN_TYPE_ROLE, CLIENT_TYPE_ROLE]}}
+      { path: 'client', loadChildren: ()=> import('./pages/client/client.module').then(m => m.ClientModule), canActivate: [UserTypeGuardService], data: {allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE]}}
       // {
       //   path: 'login',
       //   component: LoginComponent,

@@ -11,6 +11,7 @@ import { ReportsService } from "../../services/reports.service";
 export class NavigationComponent {
   authenticated: boolean = false
   isAdmin: boolean = false
+  userType!: string
   isActive: boolean = false
   constructor(private reports: ReportsService ,private authService: AuthService, private router: Router, private element: ElementRef){
     this.authService.isLoggedIn().subscribe(isLogged =>{
@@ -19,13 +20,15 @@ export class NavigationComponent {
     this.authService.verifyAdmin().subscribe(isAdmin => {
       this.isAdmin = isAdmin;
     })
-    
+    this.authService.getUserType().subscribe(role =>{
+      this.userType = role
+    })
   }
 
   ngOnInit(){
     document.addEventListener('click', this.hideNav.bind(this))
   }
-  
+
   closeSession(){
     this.authService.logout()
   }
