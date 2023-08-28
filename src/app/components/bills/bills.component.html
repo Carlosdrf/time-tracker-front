@@ -1,17 +1,20 @@
 <div class="card rounded shadow h-100">
   <div class="card-body">
     <h3>Resumen de Pagos</h3>
+    <div id="payment-message" class="hidden"></div>
+
     <div
-      class="d-flex flex-wrap justify-content-between align-items-center p-3 border border-1 rounded"
+      class="d-flex flex-wrap justify-content-between align-items-center p-2 border border-1 rounded mb-2"
+      *ngFor="let bill of billsList"
     >
       <div class="section">
         <p class="mb-0">Por pagar:</p>
         <p class="mb-0">
-          <span>{{ currency }} {{ cantidad }}</span>
+          <span>{{ bill.currency_name }} {{ bill.amount }}</span>
         </p>
       </div>
       <div class="section">
-        <a href="">realizar pago</a>
+        <a (click)="setPaymentParams(bill)" routerLink="payments">realizar pago</a>
       </div>
     </div>
   </div>

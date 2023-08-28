@@ -4,7 +4,7 @@
     <form
       action=""
       class="p-2"
-      [formGroup]="formFields"
+      [formGroup]="userForm"
       (ngSubmit)="submitUserForm()"
     >
       <div class="form-group row justify-content-between mb-3">
@@ -33,6 +33,20 @@
           placeholder="Email Address"
         />
       </div>
+      <div class="form-group mb-3">
+        <input
+          type="password"
+          class="form-control mb-3"
+          formControlName="password"
+          placeholder="Password"
+        />
+        <input
+          type="password"
+          class="form-control mb-3"
+          formControlName="cpassword"
+          placeholder="Confirm Password"
+        />
+      </div>
       <div class="form-group mb-4">
         <select
           class="form-select"
@@ -46,18 +60,44 @@
           </option>
         </select>
       </div>
-      <div class="d-flex position-relative justify-content-center align-items-center">
-        <button class="btn btn-primary btn-block rounded">Save</button>
-        <app-loader [loader]="loader"></app-loader>
-        <mat-icon
-
-    [ngClass]="{ 'fade-out': loader.complete }"
-    class="status-icon"
-    >check_circle_outline</mat-icon
-  >
+      <div class="form-group mb-4">
+        <select
+          name="company"
+          formControlName="company"
+          id=""
+          class="form-select"
+          *ngIf="userForm.value.role === EMPLOYEE_ROLE"
+        >
+          <option Selected disabled value="Select a company">
+            Select a company
+          </option>
+          <option value="{{ company.id }}" *ngFor="let company of companies">
+            {{ company.name }}
+          </option>
+        </select>
+        <input
+          name="company"
+          formControlName="company"
+          id=""
+          class="form-control"
+          placeholder="Type the company name..."
+          *ngIf="userForm.value.role === EMPLOYER_ROLE"
+        />
       </div>
-
-
+      <div
+        class="d-flex position-relative justify-content-center align-items-center"
+      >
+        <button
+          color="primary"
+          mat-raised-button
+          class="btn btn-primary btn-block rounded"
+        >
+          Save
+        </button>
+        <div class="position-absolute end-0 top-0">
+          <app-loader [loader]="loader" [message]="message"></app-loader>
+        </div>
+      </div>
     </form>
   </div>
 </main>

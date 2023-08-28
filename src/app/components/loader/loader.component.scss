@@ -1,9 +1,13 @@
+@import '../../../styles.scss';
 .status-icon {
   height: 44px !important;
   font-size: 44px;
   width: 44px;
 }
-.fade-out{
+.check-icon {
+  color: $primary-color;
+}
+.fade-out {
   animation: statusIcon 3s ease;
   opacity: 0;
   visibility: hidden;

@@ -9,7 +9,8 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" [ngClass]="{'show': isActive}" id="navbarNavAltMarkup">
                 <div class="navbar-nav align-items-center">
-                    <a class="nav-link" aria-current="page" routerLinkActive="active" href="https://i-nimble.com">Home</a>
+                    <!-- <a class="nav-link" aria-current="page" routerLinkActive="active" href="https://i-nimble.com">Home</a> -->
+                    <a routerLink="admin/users" class="nav-link" *ngIf="authenticated == true && isAdmin === true && userType == '1'" (click)="isActive = false">Users</a>
                     <a class="nav-link" routerLink="admin/dashboard" *ngIf="authenticated == true && isAdmin == true  && userType == '1'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
                     <a class="nav-link" routerLink="dashboard" *ngIf="authenticated == true && isAdmin == false && userType == '2'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
                     <a class="nav-link" routerLink="client" *ngIf="authenticated == true && isAdmin == false && userType == '3'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>

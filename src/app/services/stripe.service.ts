@@ -9,11 +9,7 @@ export class StripeService {
 
   constructor(private http: HttpClient) { }
 
-  charge(amount: number, tokenId: any){
-    const body = {
-      stripeToken: tokenId,
-      cantidad: amount
-    }
+  charge(body: any){
     const headers = new HttpHeaders({'content_type':'application/json'})
     return this.http.post<any>(environment.apiUrl+'/stripe/checkout', body, {headers})
   }

@@ -13,7 +13,7 @@
     "test": "ng test",
     "component": "ng g c pages/client/user",
     "shared": "ng g c components/loader",
-    "service": "ng g s services/guards/userTypeGuard",
+    "service": "ng g s services/companies",
     "material": "ng add @angular/material"
   },
   "private": true,

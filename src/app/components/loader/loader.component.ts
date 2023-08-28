@@ -9,6 +9,7 @@ import { Loader } from 'src/app/app.models';
 export class LoaderComponent implements OnInit, OnChanges {
   constructor() {}
   @Input() loader: Loader = new Loader(false, false, false);
+  @Input() message: string|null = null
   // loader: Loader = new Loader(false, false, false)
 
   ngOnInit(): void {

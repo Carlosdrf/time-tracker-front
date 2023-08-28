@@ -1,4 +1,3 @@
-
 <!-- <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -8,23 +7,25 @@
     <link rel="stylesheet" href="checkout.css" />
     <script src="https://js.stripe.com/v3/"></script>
     <script src="checkout.js" defer></script> -->
-  <!-- </head> -->
-  <!-- <body> -->
-    <!-- Display a payment form -->
-    <form id="payment-form">
-      <div id="link-authentication-element">
-        <!--Stripe.js injects the Link Authentication Element-->
-      </div>
-      <!-- <input type="text" placeholder="email address"> -->
-      <div id="payment-element" #cardInfo>
-        <!--Stripe.js injects the Payment Element-->
-      </div>
-      <button id="submit">
-        <div class="spinner hidden" id="spinner"></div>
-        <span id="button-text" (click)="handleSubmit($event)">Pay now</span>
-      </button>
-      <div id="payment-message" class="hidden"></div>
-    </form>
+<!-- </head> -->
+<!-- <body> -->
+<!-- Display a payment form -->
+<div class="d-flex justify-content-center">
+  <form id="payment-form">
+    <div id="link-authentication-element" class="mb-2">
+      <!--Stripe.js injects the Link Authentication Element-->
+    </div>
+    <!-- <input type="text" placeholder="email address"> -->
+    <div id="payment-element" #cardInfo>
+      <!--Stripe.js injects the Payment Element-->
+    </div>
+    <button id="submit" class="bg-primary">
+      <div class="spinner hidden" id="spinner"></div>
+      <span id="button-text" (click)="handleSubmit($event)">Pay now</span>
+    </button>
+    <div id="payment-message" class="hidden"></div>
+  </form>
+</div>
 <!--
     <div>
       <div>
@@ -36,5 +37,5 @@
         <span id="button-text" (click)="onClick()">Pay now</span>
       </button>
     </div> -->
-  <!-- </body> -->
+<!-- </body> -->
 <!-- </html> -->
