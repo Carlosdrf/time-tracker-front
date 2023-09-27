@@ -29,22 +29,24 @@ export class UserComponent implements OnInit {
       role: ['Select a role', [Validators.required]],
       password: [null, Validators.required],
       cpassword: [null, Validators.required],
-      company: null,
+      company: this.fb.group({}),
     });
 
     this.userForm.get('role')!.valueChanges.subscribe((role) => {
-      console.log(role);
-      this.userForm.removeControl('company');
+      const companyGroup = this.userForm.get('company') as FormGroup;
+      console.log(companyGroup)
+      // companyGroup.controls.map()
+      for (let controlName in companyGroup.controls){
+        companyGroup.removeControl(controlName)
+      }
       if (role === this.EMPLOYEE_ROLE) {
-        this.userForm.addControl(
-          'company',
+        companyGroup.addControl(
+          'name',
           this.fb.control('Select a company', Validators.required)
         );
       } else if (role === this.EMPLOYER_ROLE) {
-        this.userForm.addControl(
-          'company',
-          this.fb.control(null, Validators.required)
-        );
+        companyGroup.addControl('name', this.fb.control(null))
+        companyGroup.addControl('description', this.fb.control(null))
       }
     });
   }
@@ -80,20 +82,27 @@ export class UserComponent implements OnInit {
   }
   public submitUserForm() {
     this.loader = new Loader(true, true, false);
-    if (this.userForm.valid && this.userForm.value.role !== 'Select a role' && this.userForm.value.company !== 'Select a company') {
+    if (
+      this.userForm.valid &&
+      this.userForm.value.role !== 'Select a role' &&
+      this.userForm.value.company !== 'Select a company'
+    ) {
       if (this.userForm.value.password === this.userForm.value.cpassword) {
-        this.message = ''
+        this.message = '';
         let name = this.userForm.value.name;
         let last_name = this.userForm.value.last_name;
         let email = this.userForm.value.email;
         let role = this.userForm.value.role;
-        let password = this.userForm.value.password
+        let password = this.userForm.value.password;
         let newUser = {
           name,
           last_name,
           email,
           role,
         };
+        if (this.userForm.value.company != null) {
+          console.log('xdxd');
+        }
         this.userService.createUser(newUser).subscribe({
           next: (res) => {
             console.log(res);

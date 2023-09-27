@@ -1,24 +1,28 @@
 <nav class="navbar navbar-expand-lg p-3 border shadow bg-light fixed-top bg-body-tertiary">
     <!-- <div class="container"> -->
-        <div class="container-fluid px-3">
-            <a class="navbar-brand" routerLink="/">
-                <img src="assets/images/inimble.png" width="180" alt="">
-            </a>
-            <button class="navbar-toggler rounded" type="button" data-bs-toggle="collapse"  (click)="toggleMenu()" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" [ngClass]="{'show': isActive}" id="navbarNavAltMarkup">
-                <div class="navbar-nav align-items-center">
-                    <!-- <a class="nav-link" aria-current="page" routerLinkActive="active" href="https://i-nimble.com">Home</a> -->
-                    <a routerLink="admin/users" class="nav-link" *ngIf="authenticated == true && isAdmin === true && userType == '1'" (click)="isActive = false">Users</a>
-                    <a class="nav-link" routerLink="admin/dashboard" *ngIf="authenticated == true && isAdmin == true  && userType == '1'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
-                    <a class="nav-link" routerLink="dashboard" *ngIf="authenticated == true && isAdmin == false && userType == '2'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
-                    <a class="nav-link" routerLink="client" *ngIf="authenticated == true && isAdmin == false && userType == '3'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
-                    <a class="nav-link" routerLink="reports" *ngIf="authenticated" (click)="resetUserReport()" (click)="isActive = false" routerLinkActive="active">Reports</a>
-                    <a class="nav-link" routerLink="login" *ngIf="!authenticated" routerLinkActive="active" (click)="isActive = false">Login</a>
-                    <a class="nav-link" routerLink="logout" *ngIf="authenticated" (click)="closeSession()" (click)="isActive = false" routerLinkActive="active">Log Out</a>
-                </div>
+    <div class="container-fluid px-3">
+        <a class="navbar-brand" routerLink="/">
+            <img src="assets/images/inimble.png" width="180" alt="">
+        </a>
+        <button class="navbar-toggler rounded" type="button" data-bs-toggle="collapse"  (click)="toggleMenu()" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" [ngClass]="{'show': isActive}" id="navbarNavAltMarkup">
+            <div class="navbar-nav align-items-center">
+                <!-- <a class="nav-link" aria-current="page" routerLinkActive="active" href="https://i-nimble.com">Home</a> -->
+
+                <a routerLink="admin/users" class="nav-link" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false">Users</a>
+                <!-- admin dashboard -->
+                <a class="nav-link" routerLink="admin/dashboard" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
+                <!-- user dashboard -->
+                <a class="nav-link" routerLink="dashboard" *ngIf="authenticated == true && userType == '2'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
+                <!-- client dashboard -->
+                <a class="nav-link" routerLink="client" *ngIf="authenticated == true && userType == '3'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
+                <a class="nav-link" routerLink="reports" *ngIf="authenticated" (click)="resetUserReport()" (click)="isActive = false" routerLinkActive="active">Reports</a>
+                <a class="nav-link" routerLink="login" *ngIf="!authenticated" routerLinkActive="active" (click)="isActive = false">Login</a>
+                <a class="nav-link" routerLink="logout" *ngIf="authenticated" (click)="closeSession()" (click)="isActive = false" routerLinkActive="active">Log Out</a>
             </div>
         </div>
+    </div>
     <!-- </div> -->
 </nav>

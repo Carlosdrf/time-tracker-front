@@ -60,10 +60,10 @@
           </option>
         </select>
       </div>
-      <div class="form-group mb-4">
+      <div class="form-group mb-4" formGroupName="company">
         <select
           name="company"
-          formControlName="company"
+          formControlName="name"
           id=""
           class="form-select"
           *ngIf="userForm.value.role === EMPLOYEE_ROLE"
@@ -76,11 +76,19 @@
           </option>
         </select>
         <input
-          name="company"
-          formControlName="company"
+          name="company_name"
+          formControlName="name"
           id=""
-          class="form-control"
+          class="form-control mb-4"
           placeholder="Type the company name..."
+          *ngIf="userForm.value.role === EMPLOYER_ROLE"
+        />
+        <input
+          type="text"
+          name="company_description"
+          formControlName="description"
+          class="form-control mb-4"
+          placeholder="Company description..."
           *ngIf="userForm.value.role === EMPLOYER_ROLE"
         />
       </div>

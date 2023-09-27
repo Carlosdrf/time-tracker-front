@@ -52,12 +52,13 @@ export class LoginComponent {
           const name = v.username;
           const role = v.role_id
           const email = v.email
-          console.log(role)
           this.socketService.socket.emit('client:joinRoom', email)
           localStorage.setItem('role', role)
           localStorage.setItem('name', name)
           localStorage.setItem('jwt', jwt);
           localStorage.setItem('email', email);
+          console.log('role login: ', role)
+          this.authService.setUserType(role)
           this.authService.userTypeRouting(role)
         },
         error: (err)=>{

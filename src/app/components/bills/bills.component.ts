@@ -58,7 +58,7 @@ export class BillsComponent implements OnInit {
     this.billService.getPendingBills().subscribe({
       next:(v: any) =>{
         console.log(v)
-        this.billsList = v.filter((item: any)=>item.status_id === 1)
+        this.billsList = v.filter((item: any)=>item.status_id === 2)
       },
     })
   }

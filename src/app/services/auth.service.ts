@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 export class AuthService {
   private isLogged = new BehaviorSubject<boolean>(false);
   private isAdmin = new BehaviorSubject<boolean>(false);
-  private role = new BehaviorSubject<string>('2')
+  private role = new BehaviorSubject<string>(localStorage.getItem('role') || 'default');
+  userType$ = this.role.asObservable();
   constructor(
     private http: HttpClient,
     private jwtHelper: JwtHelperService,
@@ -26,7 +27,6 @@ export class AuthService {
   }
   signup(newUser: any): Observable<any> {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    // const body = JSON.stringify({email, password});
     return this.http.post<any>(`${this.API_URI}/signup`, newUser, { headers });
   }
   logout() {
@@ -42,7 +42,6 @@ export class AuthService {
         return this.isLogged.asObservable();
       } else {
         this.isLogged.next(false);
-        // console.log(this.jwtHelper.isTokenExpired(jwt))
         return this.isLogged.asObservable();
       }
     } catch (error) {
@@ -50,12 +49,17 @@ export class AuthService {
       return this.isLogged.asObservable();
     }
   }
+  setUserType(newUserType: string){
+    localStorage.setItem('role', newUserType)
+    this.role.next(newUserType)
+  }
   getUserType() {
-    if (localStorage.getItem('role') !== null) {
+    const role = localStorage.getItem('role')
+    if (role !== null) {
       this.role.next(localStorage.getItem('role')!.toString())
       return this.role.asObservable();
     }else{
-      this.role.next('2')
+      this.role.next('default')
       return this.role.asObservable();
     }
   }
@@ -70,7 +74,6 @@ export class AuthService {
     }
   }
   userTypeRouting(rol: string) {
-    console.log(rol);
     if (rol == '1') {
       this.routes.navigate(['admin/dashboard']);
       return;

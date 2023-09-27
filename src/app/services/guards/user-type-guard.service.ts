@@ -27,12 +27,11 @@ export class UserTypeGuardService {
     if(this.checkUserType(route.data['allowedUserTypes'], userType!)){
       return true;
     }
-
-
     return this.router.parseUrl('/');
   }
 
   private checkUserType(allowedUserTypes: string[], userType: string): boolean{
     return allowedUserTypes.includes(userType)
   }
+  
 }

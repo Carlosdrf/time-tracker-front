@@ -8,27 +8,26 @@ import { ReportsService } from "../../services/reports.service";
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss']
 })
-export class NavigationComponent {
+export class NavigationComponent implements OnInit {
   authenticated: boolean = false
   isAdmin: boolean = false
-  userType!: string
+  userType: any
   isActive: boolean = false
   constructor(private reports: ReportsService ,private authService: AuthService, private router: Router, private element: ElementRef){
     this.authService.isLoggedIn().subscribe(isLogged =>{
       this.authenticated = isLogged;
-    })
-    this.authService.verifyAdmin().subscribe(isAdmin => {
-      this.isAdmin = isAdmin;
-    })
-    this.authService.getUserType().subscribe(role =>{
-      this.userType = role
-    })
+    })    
   }
 
   ngOnInit(){
     document.addEventListener('click', this.hideNav.bind(this))
+    this.authService.getUserType().subscribe(role =>{
+      this.userType = role
+    })
   }
-
+  public get currentType(){
+    return this.authService.userType$
+  }
   closeSession(){
     this.authService.logout()
   }
