@@ -11,7 +11,7 @@
     "build": "ng build --base-href /app-timer/ --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "component": "ng g c pages/client/user",
+    "component": "ng g c pages/admin/admin.payments",
     "shared": "ng g c components/loader",
     "service": "ng g s services/navigation",
     "material": "ng add @angular/material"

@@ -7,8 +7,8 @@
       [formGroup]="userForm"
       (ngSubmit)="submitUserForm()"
     >
-      <div class="form-group row justify-content-between mb-3">
-        <div class="col-12 col-md-6">
+      <div class="form-group row justify-content-between">
+        <div class="col-12 col-md-6 mb-3">
           <input
             type="text"
             formControlName="name"
@@ -16,7 +16,7 @@
             placeholder="Name"
           />
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mb-3">
           <input
             type="text"
             formControlName="last_name"
@@ -63,7 +63,7 @@
       <div class="form-group mb-4" formGroupName="company">
         <select
           name="company"
-          formControlName="name"
+          formControlName="id"
           id=""
           class="form-select"
           *ngIf="userForm.value.role === EMPLOYEE_ROLE"

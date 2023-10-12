@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
 import { timeThursday } from 'd3';
+import { User } from 'src/app/models/User.model';
 
 @Component({
   selector: 'app-user',
@@ -17,6 +18,14 @@ import { timeThursday } from 'd3';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
+  newUser: User = {
+    name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    role: 0,
+    company: {},
+  };
   constructor(
     private userService: DashboardService,
     private fb: FormBuilder,
@@ -33,20 +42,20 @@ export class UserComponent implements OnInit {
     });
 
     this.userForm.get('role')!.valueChanges.subscribe((role) => {
+      console.log('role ha cambiado: '+role)
       const companyGroup = this.userForm.get('company') as FormGroup;
-      console.log(companyGroup)
-      // companyGroup.controls.map()
-      for (let controlName in companyGroup.controls){
-        companyGroup.removeControl(controlName)
+      for (let controlName in companyGroup.controls) {
+        console.log('se ha removido: '+controlName)
+        companyGroup.removeControl(controlName);
       }
       if (role === this.EMPLOYEE_ROLE) {
         companyGroup.addControl(
-          'name',
+          'id',
           this.fb.control('Select a company', Validators.required)
         );
       } else if (role === this.EMPLOYER_ROLE) {
-        companyGroup.addControl('name', this.fb.control(null))
-        companyGroup.addControl('description', this.fb.control(null))
+        companyGroup.addControl('name', this.fb.control(null));
+        companyGroup.addControl('description', this.fb.control(null));
       }
     });
   }
@@ -61,9 +70,7 @@ export class UserComponent implements OnInit {
   EMPLOYER_ROLE = '3';
 
   ngOnInit(): void {
-    // console.log(this.loader.started)
     this.getRoles();
-
     this.getCompanies();
   }
   public getRoles() {
@@ -85,28 +92,35 @@ export class UserComponent implements OnInit {
     if (
       this.userForm.valid &&
       this.userForm.value.role !== 'Select a role' &&
-      this.userForm.value.company !== 'Select a company'
+      this.userForm.value.company.id !== 'Select a company'
     ) {
       if (this.userForm.value.password === this.userForm.value.cpassword) {
         this.message = '';
-        let name = this.userForm.value.name;
-        let last_name = this.userForm.value.last_name;
-        let email = this.userForm.value.email;
-        let role = this.userForm.value.role;
-        let password = this.userForm.value.password;
-        let newUser = {
-          name,
-          last_name,
-          email,
-          role,
-        };
-        if (this.userForm.value.company != null) {
-          console.log('xdxd');
+        this.newUser.name = this.userForm.value.name;
+        this.newUser.last_name = this.userForm.value.last_name;
+        this.newUser.email = this.userForm.value.email;
+        this.newUser.role = this.userForm.value.role;
+        this.newUser.password = this.userForm.value.password;
+
+        if (this.userForm.value.role != this.ADMIN_ROLE) {
+          if (this.userForm.value.company.id != null) {
+            this.newUser.company.id = this.userForm.value.company.id
+          } else {
+            this.newUser.company.name = this.userForm.value.company.name;
+            if (this.userForm.value.company.description != null) {
+              this.newUser.company.description = this.userForm.value.company.description;
+            }
+          }
         }
-        this.userService.createUser(newUser).subscribe({
-          next: (res) => {
-            console.log(res);
+        console.log(this.newUser);
+        this.userService.createUser(this.newUser).subscribe({
+          next: () => {
             this.loader = new Loader(false, true, true);
+            this.resetLoader();
+          },
+          error: (err) => {
+            this.loader = new Loader(false, true, false);
+            this.message = err.error.message;
             this.resetLoader();
           },
         });
@@ -124,6 +138,7 @@ export class UserComponent implements OnInit {
   public resetLoader() {
     setTimeout(() => {
       this.loader = new Loader(false, false, false);
+      this.message = '';
     }, 3000);
   }
 }
