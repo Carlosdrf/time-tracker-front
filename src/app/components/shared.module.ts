@@ -22,6 +22,8 @@ import { BillsComponent } from './bills/bills.component';
 import { StripeComponent } from './stripe/stripe.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { LoaderComponent } from './loader/loader.component';
+import { PaymentHistoryComponent } from './payment-history/payment-history.component';
+import { BalanceComponent } from './balance/balance.component';
 
 // import { calendarFormat } from "moment";
 
@@ -50,6 +52,8 @@ import { LoaderComponent } from './loader/loader.component';
     StripeComponent,
     EmployeesComponent,
     LoaderComponent,
+    PaymentHistoryComponent,
+    BalanceComponent,
   ],
   exports: [
     EntriesComponent,
@@ -66,7 +70,9 @@ import { LoaderComponent } from './loader/loader.component';
     EmployeesComponent,
     MatCardModule,
     BillsComponent,
-    LoaderComponent
+    PaymentHistoryComponent,
+    LoaderComponent,
+    BalanceComponent,
   ],
   providers: [CustomDatePipe, CalendarComponent],
 })

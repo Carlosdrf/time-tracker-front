@@ -1,0 +1,27 @@
+<main class="container">
+  <section class="d-flex align-items-center mb-2">
+    <!-- payment balance -->
+    <div class="container">
+        <app-balance></app-balance>
+        
+    </div>
+    <div class="container">
+        <div class="card rounded shadow">
+            <div class="card-header">
+                <h4 class="mb-0">Estado de pagos:</h4>
+            </div>
+            <div class="card-body">
+                <div *ngFor="let payment of payments">
+                    <h4>${{payment.currency.name}} {{payment.amount}}</h4>
+                    <span>status: {{payment.status.name}} </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- current payment section  -->
+  </section>
+  <section>
+    <app-payment-history [payments]="payments"></app-payment-history>
+  </section>
+  <!-- payment histoy section -->
+</main>

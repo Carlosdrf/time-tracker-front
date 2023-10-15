@@ -1,0 +1,15 @@
+<main class="container">
+    <section class="card rounded">
+        <div class="card-header">
+            <h4 class="mb-0">
+                Historial de pagos:
+            </h4>
+        </div>
+        <div class="card-body">
+            <div class="card-body" *ngFor="let payment of payments">
+                <h5>${{payment.currency.name}} {{payment.amount}}</h5>
+                <p>{{payment.updated_at | date:'EEEE, dd/MM/YYYY'}}</p>
+            </div>
+        </div>
+    </section>
+</main>
