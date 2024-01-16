@@ -1,0 +1,11 @@
+@import '/src/styles.scss';
+.full-height {
+  height: calc(100vh - 150px);
+}
+.customer-section-btn {
+    height: 60px;    
+    border: 2px solid $primary-color;
+}
+.customer-section-img {
+  width: 100%;
+}

@@ -118,6 +118,7 @@ export class ReportsComponent implements OnInit{
     // const range = {
     //   firstSelect:
     // }
+    console.log(this.datesRange)
     if(this.user.id){
       this.reportsService.getRange(this.datesRange, this.user.id).subscribe(
         v => {
@@ -130,6 +131,7 @@ export class ReportsComponent implements OnInit{
         (v) => {
           // console.log(v)
           this.entries = v;
+          console.log(v)
           this.arrange()
         }
       )

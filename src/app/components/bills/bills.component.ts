@@ -8,9 +8,7 @@ import { Router, NavigationExtras } from "@angular/router";
   styleUrls: ['./bills.component.scss']
 })
 export class BillsComponent implements OnInit {
-  cantidad: number = 749.99
-  currency: string = 'USD'
-  billsList: any
+  billsList!: Array<any>
 
   constructor(private billService: PaymentsService, private router: Router){}
   ngOnInit(): void {
@@ -58,7 +56,8 @@ export class BillsComponent implements OnInit {
     this.billService.getPendingBills().subscribe({
       next:(v: any) =>{
         console.log(v)
-        this.billsList = v.filter((item: any)=>item.status_id === 2)
+        v = v as Array<any>[]
+        this.billsList = v.filter((item: any)=>item.status.name === 'Pending')
       },
     })
   }

@@ -68,6 +68,7 @@ export class EntriesPanelComponent implements OnChanges{
     }
   }
   public startTimer(start_time: any){
+    console.log(start_time)
     this.currentTime = setInterval(()=>{
       this.timer = this.customDate.getTotalHours(start_time)
     }, 1000)

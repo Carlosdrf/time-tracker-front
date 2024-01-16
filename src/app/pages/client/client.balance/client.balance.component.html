@@ -1,27 +1,49 @@
-<main class="container">
-  <section class="d-flex align-items-center mb-2">
-    <!-- payment balance -->
-    <div class="container">
-        <app-balance></app-balance>
-        
+<main class="container position-relative">
+  <section class="position-fixed top-0 start-0 end-0 bottom-0">
+    <div class="col-12 p-4 h-100 d-flex align-items-center justify-content-end">
+      <div class="p-4 col-6 d-sm-none d-md-block h-100">
+        <div
+          class="bg-mask col-10"
+        ></div>
+      </div>
     </div>
-    <div class="container">
+  </section>
+  <section class="row align-items-stretch mb-2">
+    <div class="col-12 col-md-6 col-lg-5">
+      <!-- payment balance -->
+      <div class="container mb-2">
+        <app-balance [payments]="pending"></app-balance>
+      </div>
+      <!-- current payment section  -->
+      <div class="container mb-2">
         <div class="card rounded shadow">
-            <div class="card-header">
-                <h4 class="mb-0">Estado de pagos:</h4>
-            </div>
-            <div class="card-body">
-                <div *ngFor="let payment of payments">
-                    <h4>${{payment.currency.name}} {{payment.amount}}</h4>
-                    <span>status: {{payment.status.name}} </span>
+          <div class="card-header">
+            <h4 class="mb-0">Estado de pagos pendientes:</h4>
+          </div>
+          <div class="card-body">
+            <div *ngIf="pending.length > 0">
+              <div *ngFor="let payment of pending" class="card p-2 mb-2">
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <h4>${{ payment.currency.name }} {{ payment.amount }}</h4>
+                    <span>status: {{ payment.status.name }} </span>
+                  </div>
+                  <div class="col-4">
+                    <a (click)="setPaymentParams(payment)" routerLink="payments"
+                      >realizar pago</a
+                    >
+                  </div>
                 </div>
+              </div>
             </div>
+            <p *ngIf="pending.length == 0">No current pending payments...</p>
+          </div>
         </div>
+      </div>
+      <!-- payment history section -->
+      <section>
+        <app-payment-history [payments]="payments"></app-payment-history>
+      </section>
     </div>
-    <!-- current payment section  -->
   </section>
-  <section>
-    <app-payment-history [payments]="payments"></app-payment-history>
-  </section>
-  <!-- payment histoy section -->
 </main>
