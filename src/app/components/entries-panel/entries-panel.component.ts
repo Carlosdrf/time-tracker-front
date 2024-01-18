@@ -40,10 +40,11 @@ export class EntriesPanelComponent implements OnChanges{
     }
   }
   addEntry(){
+    console.log(new Date().toUTCString())
     const data = {
       task: this.entry.task,
       status: this.entry.status,
-      start_time: moment().format('YYYY-MM-DD'),
+      start_time: new Date().toUTCString(),
     }
     this.start_entry.emit(data)
     this.entry.task = ''
@@ -68,7 +69,6 @@ export class EntriesPanelComponent implements OnChanges{
     }
   }
   public startTimer(start_time: any){
-    console.log(start_time)
     this.currentTime = setInterval(()=>{
       this.timer = this.customDate.getTotalHours(start_time)
     }, 1000)

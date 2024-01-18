@@ -1,61 +1,76 @@
-
 <div class="container">
-    <div class="col-md-12">
-        <div class="card rounded mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="title mb-0 p-2" *ngIf="user.name !== null && (role === '1' || role === '3')">Report: {{user.name}}</h5>
-                    <h5 class="title mb-0 p-2" *ngIf="user.name == null && (role === '1' || role === '3')">I-nimble Reports: Everyone</h5>
-                    <h5 class="title mb-0 p-2" *ngIf="user.name == null && role === '2'">Your Reports:</h5>
-                    <a routerLink="/user/entries" *ngIf="user.name !== null && role === '1'" class="mb-0 links"><span>See Entries</span></a>
-                </div>
-            </div>
-            <div class="p-2 card-body">
-                <div class="d-flex justify-content-end">
-                    <div>
-                        <button mat-raised-button class="m-1" color="primary" id='content' (click)="toggleCalendar()">Calendar</button>
-                        <div class="calendar" id='content' *ngIf="isActive">
-                            <app-calendar (rangeSelection)="dashboard($event)"></app-calendar>
-                        </div>
-                        <a mat-raised-button color="primary" type="submit" class="m-1 rounded text-decoration-none" (click)="buttonReport()"><span><mat-icon>download</mat-icon></span></a>
-                    </div>
-                </div>
-            </div>
+  <div class="col-md-12">
+    <div class="card rounded mb-4">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5
+            class="title mb-0 p-2"
+            *ngIf="user.name !== null && (role === '1' || role === '3')"
+          >
+            Report: {{ user.name }}
+          </h5>
+          <h5
+            class="title mb-0 p-2"
+            *ngIf="user.name == null && (role === '1' || role === '3')"
+          >
+            I-nimble Reports: Everyone
+          </h5>
+          <h5 class="title mb-0 p-2" *ngIf="user.name == null && role === '2'">
+            Your Reports:
+          </h5>
+          <a
+            routerLink="/user/entries"
+            *ngIf="user.name !== null && role === '1'"
+            class="mb-0 links"
+            ><span>See Entries</span></a
+          >
         </div>
-
-        <div class="card rounded shadow">
-            <div class="card-header">
-                <div class="row">
-                    <p class="mb-0">{{calendarHead}}</p>
-                </div>
+      </div>
+      <div class="p-2 card-body">
+        <div class="d-flex justify-content-end">
+          <div>
+            <button
+              mat-raised-button
+              class="m-1"
+              color="primary"
+              id="content"
+              (click)="toggleCalendar()"
+            >
+              Calendar
+            </button>
+            <div class="calendar" id="content" *ngIf="isActive">
+              <app-calendar
+                (rangeSelection)="dashboard($event)"
+                (getEntries)="getEntries()"
+                [datesRange]="datesRange"
+                [calendar]="calendarHead"
+              ></app-calendar>
             </div>
-            <!-- <div class="card-body d-flex">
-                <div class="content mx-auto" *ngFor="let entry of entries">
-                    <p>{{entry.start_time | customDate: 'ddd'}}, {{entry.start_time | customDate: 'MMM DD'}}</p>
-                </div>
-            </div> -->
-            <!-- <div class="card-body d-flex">
-                <div class="content mx-auto" *ngFor="let entry of datesSelection">
-                    <p>{{entry | customDate: 'MMM DD'}}</p>
-                    <p>{{entries[entry]}}</p>
-                </div>
-            </div> -->
-            <div class="card-body">
-                <!-- <div class="content mx-auto" *ngFor="let entry of totalEntries"> -->
-                    <!-- <div>
-                        <p *ngIf="entry.result">{{entry.result}}</p>
-                        <p *ngIf="entry.result">{{entry.value}}</p>
-                        <p *ngIf="!entry.result">none</p>
-                    </div> -->
-                    <!-- <div>
-                        <p>{{entry.date | customDate: 'ddd'}}, {{entry.date | customDate: 'MMM DD'}}</p>
-                    </div> -->
-                <!-- </div> -->
-                <div class="chart">
-                    <canvas id="myChart"></canvas>
-                </div>
-            </div>
-
+            <a
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="m-1 rounded text-decoration-none"
+              (click)="buttonReport()"
+              ><span><mat-icon>download</mat-icon></span></a
+            >
+          </div>
         </div>
+      </div>
     </div>
+
+    <div class="card rounded shadow">
+      <div class="card-header">
+        <div class="row">
+          <p class="mb-0">{{ calendarHead }}</p>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="chart">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
