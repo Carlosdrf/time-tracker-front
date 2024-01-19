@@ -1,14 +1,10 @@
-import { Component, ElementRef, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { ReportsService } from '../../services/reports.service';
 import * as Chart from 'chart.js';
-// import { CalendarComponent } from "../../components/calendar/calendar.component";
 import * as filesaver from 'file-saver';
 import * as moment from 'moment';
-// import { BrowserModule } from '@angular/platform-browser';
-// import { getLocaleFirstDayOfWeek } from '@angular/common';
-// import { groupBy, last } from 'rxjs';
 
 @Component({
   selector: 'app-reports',
@@ -22,11 +18,10 @@ export class ReportsComponent implements OnInit {
   // lastDay: any = moment().isoWeekday(7).toLocaleString()
   isActive: boolean = false;
   datesSelection: any;
-  datesRange: any = [];
+  datesRange: any = {};
   calendarHead: any;
   totalEntries: any = [];
   role = localStorage.getItem('role');
-  //
   params!: string;
   user: any;
   // chart init
@@ -45,9 +40,6 @@ export class ReportsComponent implements OnInit {
     private elementRef: ElementRef
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('change')
-  }
   ngOnInit(): void {
     this.defaultWeek();
     this.user = {
@@ -58,22 +50,41 @@ export class ReportsComponent implements OnInit {
     document.addEventListener('click', this.onClick.bind(this));
     this.canvas = document.getElementById('myChart') as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d');
+    let delayed;
     if (this.ctx) {
       this.chart = new Chart(this.ctx, {
         type: 'bar',
         data: {
-          // labels: ['tuestay'],
           datasets: [
             {
-              label: 'Hours',
+              label: 'Total Hours',
               // data: [10],
               borderColor: 'blue',
               fill: false,
               backgroundColor: '#92b46c',
             },
+            // {
+            //   label: 'just in case',
+            // },
           ],
         },
         options: {
+          // animation: {
+          //   onComplete: () => {
+          //     delayed = true;
+          //   },
+          //   delay: (context) => {
+          //     let delay = 0;
+          //     if (
+          //       context.type === 'data' &&
+          //       context.mode === 'default' &&
+          //       !delayed
+          //     ) {
+          //       delay = context.dataIndex * 300 + context.datasetIndex * 100;
+          //     }
+          //     return delay;
+          //   },
+          // },
           responsive: true,
           tooltips: {
             callbacks: {
@@ -93,16 +104,12 @@ export class ReportsComponent implements OnInit {
             },
           },
           scales: {
+            y:{
+
+            },
             xAxes: [
               {
-                // type: 'time',
-                // time: {
-                //   parser: 'YYYY-MM-DDTHH:mm:ssZ',
-                //   tooltipFormat: 'HH:mm:ss',
-                //   displayFormats: {
-                //     hour: 'HH:mm:ss'
-                //   }
-                // },
+                stacked: true,
               },
             ],
             yAxes: [
@@ -112,6 +119,7 @@ export class ReportsComponent implements OnInit {
                 },
               },
             ],
+            
           },
           maintainAspectRatio: false,
         },
@@ -130,22 +138,17 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    // const starting = this.datesRange.firstSelect
-    // console.log(new Date())
-    console.log(this.datesRange);
-    // console.log(new Date(starting).toUTCString())
-    // console.log(new Date(starting))
     if (this.user.id) {
       this.reportsService
         .getRange(this.datesRange, this.user.id)
         .subscribe((v) => {
           this.entries = v;
-          this.arrange();
+          this.arrangeEntries();
         });
     } else {
       this.reportsService.getRange(this.datesRange).subscribe((v) => {
         this.entries = v;
-        this.arrange();
+        this.arrangeEntries();
       });
     }
   }
@@ -180,9 +183,7 @@ export class ReportsComponent implements OnInit {
 
   defaultWeek() {
     const today = moment().format('DD/MM/YYYY');
-    // const week = moment().isoWeek()
     const firstday = moment().isoWeekday(1).format('DD/MM/YYYY');
-    // console.log(today, firstday)
     if (firstday == today) {
       this.getLastWeek();
     } else {
@@ -193,7 +194,6 @@ export class ReportsComponent implements OnInit {
         lastSelect: moment(new Date(lastday)).format('YYYY/MM/DD'),
         // lastSelect: new Date(lastday).toISOString()
       };
-      // console.log(this.datesRange)
       this.calendarHead = 'This Week';
     }
 
@@ -213,12 +213,9 @@ export class ReportsComponent implements OnInit {
       now.getDate() - 1
     );
     this.datesRange = {
-      // firstSelect: new Date(firstday).toISOString(),
-      // lastSelect: new Date(lastday).toISOString()
       firstSelect: moment(firstday).format('YYYY/MM/DD'),
       lastSelect: moment(lastday).format('YYYY/MM/DD'),
     };
-    // console.log(this.datesRange)
     this.calendarHead = 'Last Week';
   }
 
@@ -230,17 +227,14 @@ export class ReportsComponent implements OnInit {
     for (let day = startDate; day <= endDate; day.setDate(day.getDate() + 1)) {
       dates.push(new Date(day));
     }
-    console.log(this.datesRange);
     this.datesSelection = dates;
   }
-  arrange() {
-    // console.log(this.entries)
+
+  arrangeEntries() {
     const entries = this.entries;
     const totalentries = [];
-    // console.log(this.datesSelection)
     const totalhoursperday = entries.reduce((acc: any, curr: any) => {
       const date = moment(curr.start_time).format('YYYY-MM-DD');
-      // console.log(date)
       const start_time = new Date(curr.start_time).getTime();
       const end_time = new Date(curr.end_time).getTime();
       const duration = (end_time - start_time) / (1000 * 60 * 60);
@@ -249,10 +243,8 @@ export class ReportsComponent implements OnInit {
       } else {
         acc[date] = duration;
       }
-      // console.log(duration)
       return acc;
     }, {});
-    // console.log(totalhoursperday)
     for (const [date, totalhours] of Object.entries(totalhoursperday)) {
       const hours = Math.floor(totalhours as number);
       const minutes = Math.floor(((totalhours as number) - hours) * 60);
@@ -265,10 +257,8 @@ export class ReportsComponent implements OnInit {
         this.padZero(minutes) +
         ':' +
         this.padZero(seconds);
-      // const value = hours + this.padZero(minutes)
       totalentries.push({ date, total, totalhours });
     }
-    // console.log(totalentries)
     let displayData = this.datesSelection.map((date: any) => {
       return {
         date: moment(date).format('YYYY-MM-DD'),
@@ -276,30 +266,21 @@ export class ReportsComponent implements OnInit {
         value: null,
       };
     });
-    // console.log(displayData)
 
     totalentries.forEach((result: any) => {
-      // let index = displayData.findIndex((obj: any) => console.log(new Date(obj.date).getTime(), new Date(result.date).getTime()))
       let index = displayData.findIndex(
         (obj: any) =>
           new Date(obj.date).getTime() === new Date(result.date).getTime()
       );
-      // console.log(index)
       if (index !== -1) {
         displayData[index].result = result.total;
         displayData[index].value = result.totalhours;
-        // console.log('entrada')
       }
     });
     let i = 0;
-    // console.log(displayData)
-
-    // dias
-    // numeros
     let single: any;
     this.labels = [];
     this.data = [];
-    // console.log(single)
     displayData.forEach((element: any) => {
       single = moment(element.date).format('ddd, MMM DD');
       this.labels.push(single);
@@ -316,7 +297,7 @@ export class ReportsComponent implements OnInit {
     this.chart.data.labels = this.labels;
     this.chart.update();
 
-    this.totalEntries = displayData;
+    // this.totalEntries = displayData;
   }
   testHours(start: any, end: any) {
     let total = new Date(end).getTime() - new Date(start).getTime();

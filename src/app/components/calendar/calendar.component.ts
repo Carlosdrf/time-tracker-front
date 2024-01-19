@@ -29,7 +29,6 @@ export class CalendarComponent {
   monthSelect: any = [];
   dateSelect: any;
   firstSelect: boolean = false;
-  lastSelect: any = '';
 
   constructor() {}
 
@@ -37,13 +36,13 @@ export class CalendarComponent {
     this.getDaysfromDate(parseInt(this.month), this.year);
   }
   changeMonth(n: number) {
-    if (n > 0) {
-      const nextMonth = this.dateSelect.clone().add(1, 'month');
-      this.getDaysfromDate(nextMonth.format('MM'), nextMonth.format('YYYY'));
-    } else {
-      const nextMonth = this.dateSelect.clone().subtract(1, 'month');
-      this.getDaysfromDate(nextMonth.format('MM'), nextMonth.format('YYYY'));
-    }
+    // if (n > 0) {
+    const nextMonth = this.dateSelect.clone().add(n, 'month');
+    this.getDaysfromDate(nextMonth.format('MM'), nextMonth.format('YYYY'));
+    // } else {
+    // const nextMonth = this.dateSelect.clone().subtract(1, 'month');
+    // this.getDaysfromDate(nextMonth.format('MM'), nextMonth.format('YYYY'));
+    // }
   }
   getDaysfromDate(month: number, year: number) {
     const startDay = moment.utc(`${year}/${month}/01`, 'YYYYMMHH');
@@ -52,7 +51,6 @@ export class CalendarComponent {
 
     const diffdays = endDay.diff(startDay, 'days', true);
     const numberDays = Math.round(diffdays);
-
     const arrayDays = Object.keys([...Array(numberDays)]).map((a: any) => {
       a = parseInt(a) + 1;
 
@@ -64,16 +62,87 @@ export class CalendarComponent {
         indexWeek: dayObject.isoWeekday(),
       };
     });
-    this.monthSelect = arrayDays;
+
+    const remainingDaysBefore = startDay.isoWeekday() - 1;
+    const remainingDaysAfter = 7 - endDay.isoWeekday();
+    const previousMonthDates = this.getLastDaysOfPreviousMonth(
+      remainingDaysBefore,
+      month,
+      year,
+      endDay
+    );
+    const afterMonthDates = this.getFirstDaysOfNextMonth(
+      remainingDaysAfter,
+      month,
+      year,
+      startDay
+    );
+    this.monthSelect = [
+      ...previousMonthDates,
+      ...arrayDays,
+      ...afterMonthDates,
+    ];
   }
+  getMonthReference(i: number, reference: moment.Moment) {
+    return moment(reference).clone().add(i, 'month').format('MM');
+  }
+  getFirstDaysOfNextMonth(
+    firstDays: number,
+    month: number,
+    year: number,
+    dayReference: moment.Moment
+  ) {
+    const nextMonth = this.getMonthReference(1, dayReference);
+    const remainDays = Object.keys([...Array(firstDays)]).map((a: any) => {
+      a++;
+      const dayObject = moment(`${year}/${nextMonth}/${a}`, 'YYYY/MM/DD');
+      return this.formatDateResponse(dayObject);
+    });
+    return remainDays;
+  }
+  private getLastDaysOfPreviousMonth(
+    lastDays: number,
+    month: number,
+    year: number,
+    dayReference: moment.Moment
+  ) {
+    const previousMonth = this.getMonthReference(-1, dayReference);
+    const dayIndex =
+      parseInt(
+        moment(dayReference)
+          .clone()
+          .subtract(1, 'month')
+          .endOf('month')
+          .format('DD')
+      ) - lastDays;
+
+    const remainDays = Object.keys([...Array(lastDays)]).map((a: any) => {
+      a++;
+      const dayObject = moment(
+        `${year}/${previousMonth}/${dayIndex + parseInt(a)}`,
+        'YYYY/MM/DD'
+      );
+      return this.formatDateResponse(dayObject);
+    });
+    return remainDays;
+  }
+
+  private formatDateResponse(data: moment.Moment, a?: string) {
+    return {
+      name: data.format('dddd'),
+      value: data.format('D'),
+      fullDate: data.format('YYYY/MM/DD'),
+      indexWeek: data.isoWeekday(),
+      className: 'opacity-50',
+    };
+  }
+
   selectRange(select: any) {
     if (!this.firstSelect) {
       this.datesRange.firstSelect = select;
       this.datesRange.lastSelect = select;
       this.firstSelect = true;
       return;
-      // this.reports.datesRange.firstSelect = select
-      // this.reports.datesRange.lastSelect = select
     }
     if (this.firstSelect) {
       this.datesRange.lastSelect = select;
@@ -85,7 +154,6 @@ export class CalendarComponent {
         return;
       }
     }
-    // if (this.lastSelect !== '' && this.firstSelect !== '') {
     let selection = {
       firstSelect: new Date(this.datesRange.firstSelect).toUTCString(),
       lastSelect: this.datesRange.lastSelect,
@@ -95,11 +163,7 @@ export class CalendarComponent {
     //   moment(new Date(this.datesRange.firstSelect)).format('MMM, DD') +
     //   ' - ' +
     //   moment(new Date(this.datesRange.lastSelect)).format('MMM, DD');
-
     this.getEntries.emit();
-    // this.lastSelect = '';
-    // this.firstSelect = '';
-    // }
   }
   getTime(date: any, selection: any) {
     const firtsDate = new Date(date).getTime();
