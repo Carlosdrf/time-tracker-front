@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from "../auth.service";
-import { CanActivate, UrlTree, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChildFn, Router } from "@angular/router";
+import { UrlTree, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChildFn, Router } from "@angular/router";
 import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class NotAdmin implements CanActivate{
+export class NotAdmin {
   private isAdmin!: boolean
   constructor(public authService: AuthService, public router: Router) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
