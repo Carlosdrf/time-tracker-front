@@ -1,8 +1,10 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
+import Chart from 'chart.js/auto';
+
 import { DashboardService } from '../../services/dashboard.service';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { ReportsService } from '../../services/reports.service';
-import * as Chart from 'chart.js';
+// import * as Chart from 'chart.js';
 import * as filesaver from 'file-saver';
 import * as moment from 'moment';
 
@@ -12,10 +14,7 @@ import * as moment from 'moment';
   styleUrls: ['./reports.component.scss'],
 })
 export class ReportsComponent implements OnInit {
-  //
   entries: any = [];
-  // firstday: any = moment().isoWeekday(1).toLocaleString()
-  // lastDay: any = moment().isoWeekday(7).toLocaleString()
   isActive: boolean = false;
   datesSelection: any;
   datesRange: any = {};
@@ -50,7 +49,7 @@ export class ReportsComponent implements OnInit {
     document.addEventListener('click', this.onClick.bind(this));
     this.canvas = document.getElementById('myChart') as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d');
-    let delayed;
+    let delayed: boolean;
     if (this.ctx) {
       this.chart = new Chart(this.ctx, {
         type: 'bar',
@@ -58,9 +57,8 @@ export class ReportsComponent implements OnInit {
           datasets: [
             {
               label: 'Total Hours',
-              // data: [10],
-              borderColor: 'blue',
-              fill: false,
+              // borderColor: 'blue',
+              data: this.data,
               backgroundColor: '#92b46c',
             },
             // {
@@ -69,57 +67,53 @@ export class ReportsComponent implements OnInit {
           ],
         },
         options: {
-          // animation: {
-          //   onComplete: () => {
-          //     delayed = true;
-          //   },
-          //   delay: (context) => {
-          //     let delay = 0;
-          //     if (
-          //       context.type === 'data' &&
-          //       context.mode === 'default' &&
-          //       !delayed
-          //     ) {
-          //       delay = context.dataIndex * 300 + context.datasetIndex * 100;
-          //     }
-          //     return delay;
-          //   },
-          // },
+          animation: {
+            onComplete: () => {
+              delayed = true;
+            },
+            delay: (context) => {
+              let delay = 0;
+              if (
+                context.type === 'data' &&
+                context.mode === 'default' &&
+                !delayed
+              ) {
+                delay = context.dataIndex * 300 + context.datasetIndex * 100;
+              }
+              return delay;
+            },
+          },
           responsive: true,
-          tooltips: {
-            callbacks: {
-              label: function (tooltipItem, data) {
-                const hours = Math.floor(tooltipItem.yLabel as number);
-                const minutes = Math.floor(
-                  ((tooltipItem.yLabel as number) - hours) * 60
-                );
-                const seconds = Math.floor(
-                  (((tooltipItem.yLabel as number) - hours) * 60 - minutes) * 60
-                );
-                const total = `${hours.toString().padStart(2, '0')}:${minutes
-                  .toString()
-                  .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                return total;
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (tooltipItem: any) {
+                  const hours = Math.floor(tooltipItem.formattedValue as number);
+                  const minutes = Math.floor(
+                    ((tooltipItem.formattedValue as number) - hours) * 60
+                  );
+                  const seconds = Math.floor(
+                    (((tooltipItem.formattedValue as number) - hours) * 60 - minutes) *
+                      60
+                  );
+                  const total = `${hours.toString().padStart(2, '0')}:${minutes
+                    .toString()
+                    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                  return total;
+                },
               },
             },
           },
           scales: {
-            y:{
-
+            x: {
+              stacked: true,
             },
-            xAxes: [
-              {
-                stacked: true,
-              },
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true,
-                },
-              },
-            ],
-            
+            y: {
+              // ticks: {
+              beginAtZero: true,
+              // },
+              stacked: true,
+            },
           },
           maintainAspectRatio: false,
         },
@@ -196,8 +190,7 @@ export class ReportsComponent implements OnInit {
       };
       this.calendarHead = 'This Week';
     }
-
-    this.dashboard(this.datesRange);
+    this.setDatesGroup(this.datesRange);
   }
 
   getLastWeek() {
@@ -219,10 +212,10 @@ export class ReportsComponent implements OnInit {
     this.calendarHead = 'Last Week';
   }
 
-  dashboard(date: any) {
+  setDatesGroup(dateRange: any) {
     this.toggleCalendar();
-    const startDate = new Date(date.firstSelect);
-    const endDate = new Date(date.lastSelect);
+    const startDate = new Date(dateRange.firstSelect);
+    const endDate = new Date(dateRange.lastSelect);
     const dates = [];
     for (let day = startDate; day <= endDate; day.setDate(day.getDate() + 1)) {
       dates.push(new Date(day));
@@ -245,6 +238,7 @@ export class ReportsComponent implements OnInit {
       }
       return acc;
     }, {});
+    console.log(totalhoursperday)
     for (const [date, totalhours] of Object.entries(totalhoursperday)) {
       const hours = Math.floor(totalhours as number);
       const minutes = Math.floor(((totalhours as number) - hours) * 60);

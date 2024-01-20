@@ -52,6 +52,7 @@ export class DashboardComponent implements OnInit {
       // this.entryCheck = true
     });
     this.socketService.socket.on('server:getEntries', (data) => {
+      console.log('entrada')
       this.entries = data;
     });
     // this.getName();

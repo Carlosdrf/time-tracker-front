@@ -40,7 +40,7 @@
             </button>
             <div class="calendar" id="content" *ngIf="isActive">
               <app-calendar
-                (rangeSelection)="dashboard($event)"
+                (rangeSelection)="setDatesGroup($event)"
                 (getEntries)="getEntries()"
                 [datesRange]="datesRange"
                 [calendar]="calendarHead"

@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import * as moment from 'moment';
-import { ReportsComponent } from '../../pages/reports/reports.component';
 
 @Component({
   selector: 'app-calendar',
@@ -11,7 +10,7 @@ export class CalendarComponent {
   @Output() rangeSelection: EventEmitter<any> = new EventEmitter<any>();
   @Output() getEntries: EventEmitter<any> = new EventEmitter<any>();
   @Input() datesRange = { firstSelect: '', lastSelect: '' };
-  week: any = [
+  week: string[] = [
     'Monday',
     'Tuesday',
     'Wednesday',
@@ -21,11 +20,8 @@ export class CalendarComponent {
     'Sunday',
   ];
   @Input() calendar!: string;
-  firstDay: any = moment().isoWeekday(1).format('DD/MM/YYYY');
-  lastDay: any = moment().isoWeekday(7).format('DD/MM/YYYY');
-  today: any = moment().format('DD/MM/YYYY');
-  month: string = moment().format('MM');
-  year: number = new Date().getFullYear();
+  // month: string = moment().format('MM');
+  // year: number = new Date().getFullYear();
   monthSelect: any = [];
   dateSelect: any;
   firstSelect: boolean = false;
@@ -33,8 +29,12 @@ export class CalendarComponent {
   constructor() {}
 
   ngOnInit() {
-    this.getDaysfromDate(parseInt(this.month), this.year);
+    this.getDaysfromDate(
+      parseInt(moment().format('MM')),
+      new Date().getFullYear()
+    );
   }
+
   changeMonth(n: number) {
     // if (n > 0) {
     const nextMonth = this.dateSelect.clone().add(n, 'month');
@@ -65,15 +65,14 @@ export class CalendarComponent {
 
     const remainingDaysBefore = startDay.isoWeekday() - 1;
     const remainingDaysAfter = 7 - endDay.isoWeekday();
+
     const previousMonthDates = this.getLastDaysOfPreviousMonth(
       remainingDaysBefore,
-      month,
       year,
       endDay
     );
     const afterMonthDates = this.getFirstDaysOfNextMonth(
       remainingDaysAfter,
-      month,
       year,
       startDay
     );
@@ -83,12 +82,11 @@ export class CalendarComponent {
       ...afterMonthDates,
     ];
   }
-  getMonthReference(i: number, reference: moment.Moment) {
+  private getMonthReference(i: number, reference: moment.Moment) {
     return moment(reference).clone().add(i, 'month').format('MM');
   }
-  getFirstDaysOfNextMonth(
+  private getFirstDaysOfNextMonth(
     firstDays: number,
-    month: number,
     year: number,
     dayReference: moment.Moment
   ) {
@@ -102,7 +100,6 @@ export class CalendarComponent {
   }
   private getLastDaysOfPreviousMonth(
     lastDays: number,
-    month: number,
     year: number,
     dayReference: moment.Moment
   ) {
