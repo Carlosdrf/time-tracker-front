@@ -22,14 +22,15 @@ export class StripeComponent implements AfterViewInit {
   email: any;
   data: any;
 
-  constructor(private stripeService: StripeService, private router: ActivatedRoute) {}
+  constructor(
+    private stripeService: StripeService,
+    private router: ActivatedRoute
+  ) {}
   ngAfterViewInit(): void {
-    this.router.queryParams.subscribe(params=>{
-      this.data = params
-      console.log(params)
-    })
+    this.router.queryParams.subscribe((params) => {
+      this.data = params;
+    });
     this.loadStripe();
-
   }
   onChange({ error }: any) {
     if (error) {
@@ -41,7 +42,6 @@ export class StripeComponent implements AfterViewInit {
   async loadStripe() {
     this.stripeService.charge(this.data).subscribe((next) => {
       const { clientSecret } = next;
-      // console.log(clientSecret)
       const appearance = {
         theme: 'night',
       };
@@ -74,9 +74,7 @@ export class StripeComponent implements AfterViewInit {
     // }
   }
   change($event: any) {
-    console.log($event.value.email);
     const field = document.getElementById('Field-emailInput');
-    console.log(field);
   }
   ngOnInit(): void {
     //     // This is a public sample test API key.
@@ -100,12 +98,10 @@ export class StripeComponent implements AfterViewInit {
     }
   }
   async handleSubmit(e: Event) {
-    this.stripeService.webhook(this.data).subscribe()
     e.preventDefault();
     this.setLoading(true);
-    console.log(this.data);
 
-    const {error} = await stripe.confirmPayment({
+    const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
@@ -113,7 +109,6 @@ export class StripeComponent implements AfterViewInit {
         receipt_email: 'crivas@i-nimble.com',
       },
     });
-
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`. For some payment methods like iDEAL, your customer will
@@ -124,7 +119,7 @@ export class StripeComponent implements AfterViewInit {
     } else {
       this.showMessage('An unexpected error occurred.');
     }
-
+    
     this.setLoading(false);
   }
   // // Fetches the payment intent status after payment submission

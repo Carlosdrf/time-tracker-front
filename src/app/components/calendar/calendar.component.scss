@@ -1,4 +1,7 @@
 @import '../../../styles.scss';
+.calendar-container{
+    min-width: 370px;
+}
 .grid{
     display: grid;
     justify-items: center;

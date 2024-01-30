@@ -1,14 +1,38 @@
 <div class="card rounded shadow h-100">
-  <div class="card-body">
-    <h3>Resumen Empleados</h3>
-    <div *ngFor="let employee of employees" class="d-flex flex-wrap justify-content-between p-3 rounded border-1 border mb-2 align-items-center">
-      <h5 class="mb-0">{{employee.User.name}} {{employee.User.last_name}}</h5>
-      <p class="mb-0"><a href="">ver empleado</a></p>
+  <div class="card-body position-relative">
+    <div class="position-absolute start-0 end-0 bottom-0 top-0 z-0">
+      <div class="d-flex h-100 justify-content-center align-items-end">
+        <div class="p-2">
+          <div
+            class="p-5 bg-container"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="position-relative z-1">
+      <h3>Your Employees</h3>
+      <div
+        *ngFor="let employee of employees"
+        class="d-flex flex-wrap justify-content-between p-3 rounded border-1 border mb-2 align-items-center"
+      >
+        <h5 class="mb-0">
+          {{ employee.user.name }} {{ employee.user.last_name }}
+        </h5>
+        <p class="mb-0">
+          <a (click)="onSelectUser(employee.user)" routerLink="/reports"
+            >ver empleado</a
+          >
+        </p>
+        <p *ngIf="employees == null">No team members associated yet...</p>
+      </div>
     </div>
   </div>
   <div class="card-header text-center bg-primary rounded-bottom">
-    <a class="text-white text-decoration-none" routerLink="payments"
-      >ver empleados</a
+    <a
+      class="text-white text-decoration-none"
+      routerLink="/reports"
+      (click)="resetUserReport()"
+      >Ver empleados</a
     >
   </div>
 </div>

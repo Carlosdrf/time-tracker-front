@@ -23,11 +23,10 @@ export const routes: Routes = [
         SharedModule
     ],
     // exports: [
-    //     CustomDatePipe
+    //     DashboardComponent
     // ]
     // providers: [
     //     CustomDatePipe
     // ]
 })
-
 export class DashboardModule {}

@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from 'rxjs';
 import { AuthService } from "../auth.service";
-import { local } from 'd3';
 
 @Injectable({
   providedIn: 'root'
 })
-export class notAuthGuard implements CanActivate{
+export class notAuthGuard {
   loggedIn: boolean= true
   isAdmin!: boolean
 

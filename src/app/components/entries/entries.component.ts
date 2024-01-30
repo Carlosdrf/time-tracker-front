@@ -82,7 +82,6 @@ export class EntriesComponent implements OnInit{
         this.message = 'Task updated successfully!'
         this.page.setAlert(this.message)
         this.getEntries.emit()
-
       }
     )
   }

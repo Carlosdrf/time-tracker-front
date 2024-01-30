@@ -31,6 +31,7 @@ export class EntriesPanelComponent implements OnChanges{
     this.getName();
     document.addEventListener('click', this.toggleMenu.bind(this))
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if(this.entryCheck){
       this.startTimer(this.start_time);
@@ -43,7 +44,7 @@ export class EntriesPanelComponent implements OnChanges{
     const data = {
       task: this.entry.task,
       status: this.entry.status,
-      start_time: moment().format('YYYY-MM-DD'),
+      start_time: new Date().toUTCString(),
     }
     this.start_entry.emit(data)
     this.entry.task = ''

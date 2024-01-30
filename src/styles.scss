@@ -1,18 +1,5 @@
-$principal: #d21496;
-$secondary-color: rgb(146 180 108 / 30%) !important;
-$accent: #818181;
-
-$primary-color: #92b46c;
-$text-color: #9A9A9A;
-.mat-primary{
-    color: white !important;
-}
-.form-group .mat-mdc-raised-button{
-    height: 40px;
-}
-ul{
-    list-style-type: none;
-}
-// @import './custom-theme.scss'
+@import './theme/custom.scss';
+@import './theme/variables.scss';
+@import "app/pages/pages.component.scss"
 // @import './assets/styles/bootswatch.min.css';
 

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EmployeesService } from 'src/app/services/employees.service';
+import { ReportsService } from 'src/app/services/reports.service';
 
 @Component({
   selector: 'app-employees',
@@ -8,7 +9,7 @@ import { EmployeesService } from 'src/app/services/employees.service';
 })
 export class EmployeesComponent implements OnInit{
   employees: any
-  constructor(private employeesService: EmployeesService){}
+  constructor(private employeesService: EmployeesService, private reports: ReportsService){}
 
   ngOnInit(): void {
     this.getEmployees()
@@ -19,5 +20,11 @@ export class EmployeesComponent implements OnInit{
         this.employees = employees
       }
     })
+  }
+  onSelectUser(data:any){
+    this.reports.setUserInformation(data)
+  }
+  resetUserReport(){
+    this.reports.resetUser()
   }
 }
