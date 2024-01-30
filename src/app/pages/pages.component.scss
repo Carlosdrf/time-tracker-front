@@ -1,4 +1,4 @@
-@import '../../styles.scss';
+@import "/src/theme/variables.scss";
 
 .spinner ::ng-deep .mat-mdc-progress-spinner mdc-circle, .mat-spinner circle{
     stroke: $primary-color !important;
@@ -25,3 +25,42 @@
 .alert-success{
     background-color: $accent;
 }
+.mat-primary{
+    color: white !important;
+}
+.form-group .mat-mdc-raised-button{
+    height: 40px;
+}
+ul{
+    list-style-type: none;
+}
+.bg-container{
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.bg-mask{
+    // min-height: 200px;
+    height: -webkit-fill-available;
+}
+.bg-color-pr{
+    background-color: $secondary-color;
+}
+
+.card-hover:hover{
+    background-color: $secondary-color;
+    transition: all 0.1s ease-in;
+    transition: all 0.3s ease-out;
+}
+
+.full-height {
+    height: calc(100vh - 150px);
+  }
+  .customer-section-btn {
+      height: 60px;    
+      border: 2px solid $primary-color;
+  }
+  .customer-section-img {
+    width: 100%;
+  }
+  

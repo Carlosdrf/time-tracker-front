@@ -1,0 +1,18 @@
+<div class="card mb-4 rounded shadow">
+    <div fxLayout="row" class="card-header rounded-top">
+      <div class="col-md-12 d-flex justify-content-between">
+        <h4 class="mb-0 title">Hi {{ getName() }}!</h4>
+        <p class="mb-0">Today</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <form class="col-md-12 form-group" [formGroup]="searchForm">
+        <input
+          type="text"
+          class="form-control"
+          formControlName="searchField"
+          placeholder="Search by name"
+        />
+      </form>
+    </div>
+  </div>

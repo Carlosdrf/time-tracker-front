@@ -1,13 +1,13 @@
 import { ErrorHandler, NgModule } from '@angular/core';
 
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { FormsModule } from "@angular/forms";
-import { JwtInterceptor } from "./services/jwt.interceptor";
-import { JwtHelperService, JwtModule, JWT_OPTIONS } from "@auth0/angular-jwt";
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { JwtInterceptor } from './services/jwt.interceptor';
+import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 // import { AuthGuard } from "./services/auth-guard.service";
 // import { notAuthGuard } from "./services/notAuth-guard.service";
-import { ReportsService } from "./services/reports.service";
+import { ReportsService } from './services/reports.service';
 // import { MatDatepicker } from "@angular/material/datepicker";
 
 import { AppRoutingModule } from './app-routing.module';
@@ -22,13 +22,11 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { CalendarComponent } from './components/calendar/calendar.component';
 import { PagesComponent } from './pages/pages.component';
-import { WebSocketService } from "./services/socket/web-socket.service";
-import { SocketIoModule } from "ngx-socket-io";
+import { WebSocketService } from './services/socket/web-socket.service';
+import { SocketIoModule } from 'ngx-socket-io';
 
-
-
-import { SharedModule } from "./components/shared.module";
-import { UserComponent } from './pages/admin/user/user.component';
+import { SharedModule } from './components/shared.module';
+import { UserComponent } from './pages/admin/admin.users/user/user.component';
 import { Loader } from './app.models';
 // import { DashboardComponent } from './pages/client/dashboard/dashboard.component';
 // import { AdminDashboardComponent } from './pages/admin/dashboard/dashboard.component';
@@ -54,7 +52,7 @@ const jwtOptions = {
     // DashboardComponent,
     // ReportsComponent,
   ],
-  exports:[
+  exports: [
     // CustomDatePipe,
   ],
   imports: [
@@ -80,6 +78,6 @@ const jwtOptions = {
     { provide: JWT_OPTIONS, useValue: jwtOptions },
     // AuthGuard
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
 import { DashboardService } from 'src/app/services/dashboard.service';
-import { CompaniesService } from '../../../services/companies.service';
+import { CompaniesService } from '../../../../services/companies.service';
 import {
   FormGroup,
   FormControl,
@@ -42,10 +42,10 @@ export class UserComponent implements OnInit {
     });
 
     this.userForm.get('role')!.valueChanges.subscribe((role) => {
-      console.log('role ha cambiado: '+role)
+      console.log('role ha cambiado: ' + role);
       const companyGroup = this.userForm.get('company') as FormGroup;
       for (let controlName in companyGroup.controls) {
-        console.log('se ha removido: '+controlName)
+        console.log('se ha removido: ' + controlName);
         companyGroup.removeControl(controlName);
       }
       if (role === this.EMPLOYEE_ROLE) {
@@ -104,11 +104,12 @@ export class UserComponent implements OnInit {
 
         if (this.userForm.value.role != this.ADMIN_ROLE) {
           if (this.userForm.value.company.id != null) {
-            this.newUser.company.id = this.userForm.value.company.id
+            this.newUser.company.id = this.userForm.value.company.id;
           } else {
             this.newUser.company.name = this.userForm.value.company.name;
             if (this.userForm.value.company.description != null) {
-              this.newUser.company.description = this.userForm.value.company.description;
+              this.newUser.company.description =
+                this.userForm.value.company.description;
             }
           }
         }

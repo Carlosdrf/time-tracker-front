@@ -6,13 +6,13 @@
   },
   "version": "1.0.0",
   "scripts": {
-    "ng": "ng",
+    "ng": "ng version",
     "start": "ng serve --open",
     "build": "ng build --base-href /app-timer/ --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "component": "ng g c pages/client/client.customer-service",
-    "shared": "ng g c components/balance",
+    "component": "ng g c pages/admin/admin.users",
+    "shared": "ng g c components/timer",
     "service": "ng g s services/navigation",
     "material": "ng add @angular/material"
   },

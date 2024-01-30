@@ -42,13 +42,15 @@ export class ReportsService {
     if(user_id == ''){
       info = ({
         firstSelect: data.firstSelect,
-        lastSelect: data.lastSelect
+        lastSelect: data.lastSelect,
+        timezone: new Date().getTimezoneOffset()
       })
     }else{
       info = ({
         firstSelect: data.firstSelect,
         lastSelect: data.lastSelect,
-        user_id: user_id
+        user_id: user_id,
+        timezone: new Date().getTimezoneOffset()
       })
     }
     return info;

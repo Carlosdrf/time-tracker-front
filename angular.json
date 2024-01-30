@@ -44,7 +44,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/custom-theme.scss", "src/styles.scss", "src/styles.css"],
+            "styles": ["src/theme/custom.scss", "src/styles.scss", "src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -82,6 +82,11 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "ssl": true,
+            "sslCert": "./certificate.crt",
+            "sslKey": "./certificate.key"
+          },
           "configurations": {
             "production": {
               "buildTarget": "client:build:production"

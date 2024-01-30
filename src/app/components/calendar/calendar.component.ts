@@ -20,8 +20,6 @@ export class CalendarComponent {
     'Sunday',
   ];
   @Input() calendar!: string;
-  // month: string = moment().format('MM');
-  // year: number = new Date().getFullYear();
   monthSelect: any = [];
   dateSelect: any;
   firstSelect: boolean = false;
@@ -156,10 +154,7 @@ export class CalendarComponent {
       lastSelect: this.datesRange.lastSelect,
     };
     this.rangeSelection.emit(selection);
-    // this.calendar =
-    //   moment(new Date(this.datesRange.firstSelect)).format('MMM, DD') +
-    //   ' - ' +
-    //   moment(new Date(this.datesRange.lastSelect)).format('MMM, DD');
+    
     this.getEntries.emit();
   }
   getTime(date: any, selection: any) {

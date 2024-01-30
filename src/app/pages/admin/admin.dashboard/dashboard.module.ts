@@ -10,7 +10,7 @@ export const routes: Routes = [
 
 @NgModule({
     declarations: [
-        AdminDashboardComponent
+        // AdminDashboardComponent
     ],
     imports:[
         SharedModule,

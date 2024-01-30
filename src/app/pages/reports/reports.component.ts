@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, SimpleChanges } from '@angular/core';
 import Chart from 'chart.js/auto';
 
 import { DashboardService } from '../../services/dashboard.service';
@@ -39,6 +39,9 @@ export class ReportsComponent implements OnInit {
     private elementRef: ElementRef
   ) {}
 
+  ngOnChanges(change: SimpleChanges){
+    console.log(this.calendarHead)
+  }
   ngOnInit(): void {
     this.defaultWeek();
     this.user = {
@@ -88,12 +91,15 @@ export class ReportsComponent implements OnInit {
             tooltip: {
               callbacks: {
                 label: function (tooltipItem: any) {
-                  const hours = Math.floor(tooltipItem.formattedValue as number);
+                  const hours = Math.floor(
+                    tooltipItem.raw as number
+                  );
                   const minutes = Math.floor(
-                    ((tooltipItem.formattedValue as number) - hours) * 60
+                    ((tooltipItem.raw as number) - hours) * 60
                   );
                   const seconds = Math.floor(
-                    (((tooltipItem.formattedValue as number) - hours) * 60 - minutes) *
+                    (((tooltipItem.raw as number) - hours) * 60 -
+                      minutes) *
                       60
                   );
                   const total = `${hours.toString().padStart(2, '0')}:${minutes
@@ -132,6 +138,7 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
+    console.log(this.datesRange)
     if (this.user.id) {
       this.reportsService
         .getRange(this.datesRange, this.user.id)
@@ -147,7 +154,7 @@ export class ReportsComponent implements OnInit {
     }
   }
 
-  buttonReport() {
+  downloadReport() {
     if (this.user.id) {
       this.reportsService
         .getReport(this.datesRange, this.user.id)
@@ -220,6 +227,10 @@ export class ReportsComponent implements OnInit {
     for (let day = startDate; day <= endDate; day.setDate(day.getDate() + 1)) {
       dates.push(new Date(day));
     }
+    this.calendarHead =
+      moment(new Date(this.datesRange.firstSelect)).format('MMM, DD') +
+      ' - ' +
+      moment(new Date(this.datesRange.lastSelect)).format('MMM, DD');
     this.datesSelection = dates;
   }
 
@@ -238,7 +249,7 @@ export class ReportsComponent implements OnInit {
       }
       return acc;
     }, {});
-    console.log(totalhoursperday)
+
     for (const [date, totalhours] of Object.entries(totalhoursperday)) {
       const hours = Math.floor(totalhours as number);
       const minutes = Math.floor(((totalhours as number) - hours) * 60);

@@ -40,9 +40,7 @@ export class DashboardComponent implements OnInit {
     // const email = localStorage.getItem('email')
     this.getEntries();
     this.socketService.socket?.on('server:timer', (data) => {
-      // console.log(data);
       if (data.length !== 0) {
-        console.log(data);
         this.currentEntryId = data[0].id;
         this.start_time = data[0].start_time;
         this.entryCheck = true;
@@ -52,7 +50,6 @@ export class DashboardComponent implements OnInit {
       // this.entryCheck = true
     });
     this.socketService.socket.on('server:getEntries', (data) => {
-      console.log('entrada')
       this.entries = data;
     });
     // this.getName();
@@ -102,7 +99,6 @@ export class DashboardComponent implements OnInit {
   }
   endCurrentEntry(currentEntryId: any) {
     this.currentEntryId = currentEntryId;
-    console.log(currentEntryId);
     this.dashboardService
       .closeCurrentEntry(this.currentEntryId)
       .subscribe((v) => {

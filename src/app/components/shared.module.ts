@@ -24,6 +24,8 @@ import { EmployeesComponent } from './employees/employees.component';
 import { LoaderComponent } from './loader/loader.component';
 import { PaymentHistoryComponent } from './payment-history/payment-history.component';
 import { BalanceComponent } from './balance/balance.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { SearchComponent } from './search/search.component';
 
 // import { calendarFormat } from "moment";
 
@@ -54,6 +56,7 @@ import { BalanceComponent } from './balance/balance.component';
     LoaderComponent,
     PaymentHistoryComponent,
     BalanceComponent,
+    // UserListComponent,
   ],
   exports: [
     EntriesComponent,
@@ -73,6 +76,9 @@ import { BalanceComponent } from './balance/balance.component';
     PaymentHistoryComponent,
     LoaderComponent,
     BalanceComponent,
+    CommonModule,
+    RouterModule
+    // UserListComponent,
   ],
   providers: [CustomDatePipe, CalendarComponent],
 })
