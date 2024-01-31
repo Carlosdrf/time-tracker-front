@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 // import { Entries } from 'src/app/models/Entries';
-import { DashboardService } from '../../services/dashboard.service';
+import { EntriesService } from '../../services/entries.service';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { PagesComponent } from '../pages.component';
 import * as moment from 'moment';
@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private socketService: WebSocketService,
-    private dashboardService: DashboardService,
+    private entriesService: EntriesService,
     public customDate: CustomDatePipe,
     private cdRef: ChangeDetectorRef,
     private page: PagesComponent
@@ -55,7 +55,7 @@ export class DashboardComponent implements OnInit {
     // this.getName();
   }
   getEntries() {
-    this.dashboardService.getEntries().subscribe((v) => {
+    this.entriesService.getEntries().subscribe((v) => {
       this.entries = v.result.filter((entry: any) => entry.status !== 0);
       const startedEntry = v.result.filter((entry: any) => entry.status === 0);
       if (startedEntry.length !== 0) {
@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
     });
   }
   getEntryStatus() {
-    this.dashboardService.getEntryCheck().subscribe((res) => {
+    this.entriesService.getEntryCheck().subscribe((res) => {
       console.log('?');
 
       const status = res as Array<any>;
@@ -88,7 +88,7 @@ export class DashboardComponent implements OnInit {
     });
   }
   addEntry(data: any) {
-    this.dashboardService.createEntry(data).subscribe((v) => {
+    this.entriesService.createEntry(data).subscribe((v) => {
       // this.currentEntryId = v as number
       // this.entryCheck = true
       // this.start_time = moment()
@@ -99,7 +99,7 @@ export class DashboardComponent implements OnInit {
   }
   endCurrentEntry(currentEntryId: any) {
     this.currentEntryId = currentEntryId;
-    this.dashboardService
+    this.entriesService
       .closeCurrentEntry(this.currentEntryId)
       .subscribe((v) => {
         this.getEntries();

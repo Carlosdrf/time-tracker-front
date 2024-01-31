@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { AuthService } from "../services/auth.service";
 
-// import { DashboardService } from "../services/dashboard.service";
+// import { EntriesService } from "../services/entries.service";
 import { CustomDatePipe } from '../services/custom-date.pipe';
 // import { Entries } from '../models/Entries';
 
@@ -77,7 +77,7 @@ import { SearchComponent } from './search/search.component';
     LoaderComponent,
     BalanceComponent,
     CommonModule,
-    RouterModule
+    RouterModule,
     // UserListComponent,
   ],
   providers: [CustomDatePipe, CalendarComponent],

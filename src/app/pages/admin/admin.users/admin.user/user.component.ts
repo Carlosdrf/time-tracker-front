@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
-import { DashboardService } from 'src/app/services/dashboard.service';
+import { EntriesService } from 'src/app/services/entries.service';
 import { CompaniesService } from '../../../../services/companies.service';
 import {
   FormGroup,
@@ -11,6 +11,7 @@ import {
 import { Loader } from 'src/app/app.models';
 import { timeThursday } from 'd3';
 import { User } from 'src/app/models/User.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -27,9 +28,10 @@ export class UserComponent implements OnInit {
     company: {},
   };
   constructor(
-    private userService: DashboardService,
+    private userService: EntriesService,
     private fb: FormBuilder,
-    private companiesService: CompaniesService
+    private companiesService: CompaniesService,
+    private route: ActivatedRoute
   ) {
     this.userForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -72,6 +74,9 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.getRoles();
     this.getCompanies();
+    this.route.params.subscribe((params) => {
+      console.log(params['id']);
+    });
   }
   public getRoles() {
     this.userService.getRoles().subscribe({

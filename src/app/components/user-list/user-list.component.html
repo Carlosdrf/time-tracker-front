@@ -1,27 +1,40 @@
-  <!-- <div
-    class="d-flex flex-wrap mx-3 p-2 rounded-top align-items-center justify-content-center justify-content-sm-between"
-  > -->
-    <div class="d-flex flex-column align-items-start">
-      <a
-        (click)="selectUser(user)"
-        routerLink="/reports"
-        class="text-decoration-none mb-0 links"
-      >
-        <span class="fs-3 fw-bolder">{{ user.name }} {{ user.last_name }}</span>
-      </a>
-      <div class="d-flex gap-2">
+<div class="pb-2">
+  <div class="card card-hover mb-3 rounded shadow" *ngFor="let user of users">
+    <div
+      class="d-flex flex-wrap mx-3 p-2 rounded-top align-items-center justify-content-between justify-content-sm-between gap-2"
+    >
+      <div class="d-flex flex-column align-items-center align-items-sm-start mx-sm-0 mx-auto">
         <a
-        class="fs-5 fw-bolder links"
-        routerLink="/user/entries"
-        (click)="selectUser(user)"
-        >Entries</a
-      >
-      <a
-        class="fs-5 fw-bolder links"
-        routerLink="/reports"
-        (click)="selectUser(user)"
-        >Reports</a
-      >
+          (click)="selectUser(user)"
+          routerLink="/admin/user/{{ user.id }}"
+          class="text-decoration-none mb-0 links"
+        >
+          <span class="fs-3 fw-bolder"
+            >{{ user.name }} {{ user.last_name }}</span
+          >
+        </a>
+        <div class="d-flex gap-2">
+          <a
+            *ngFor="let link of links"
+            class="fs-5 fw-bolder links"
+            routerLink="{{ link.url }}"
+            (click)="selectUser(user)"
+            >{{ link.title }}</a
+          >
+        </div>
       </div>
+      <app-user-options
+        *ngIf="!timer"
+        class="mx-auto mx-sm-0"
+      ></app-user-options>
+      <app-timer
+        *ngIf="timer"
+        [user]="user"
+        class="mx-auto mx-sm-0"
+      ></app-timer>
     </div>
-  <!-- </div> -->
+  </div>
+  <div *ngIf="!loaded" class="d-flex justify-content-center">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, SimpleChanges } from '@angular/core';
 import Chart from 'chart.js/auto';
 
-import { DashboardService } from '../../services/dashboard.service';
+import { EntriesService } from '../../services/entries.service';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { ReportsService } from '../../services/reports.service';
 // import * as Chart from 'chart.js';
@@ -33,14 +33,14 @@ export class ReportsComponent implements OnInit {
 
   // chart bottom
   constructor(
-    public dashboardservice: DashboardService,
+    public EntriesService: EntriesService,
     public customDate: CustomDatePipe,
     public reportsService: ReportsService,
     private elementRef: ElementRef
   ) {}
 
-  ngOnChanges(change: SimpleChanges){
-    console.log(this.calendarHead)
+  ngOnChanges(change: SimpleChanges) {
+    console.log(this.calendarHead);
   }
   ngOnInit(): void {
     this.defaultWeek();
@@ -91,16 +91,12 @@ export class ReportsComponent implements OnInit {
             tooltip: {
               callbacks: {
                 label: function (tooltipItem: any) {
-                  const hours = Math.floor(
-                    tooltipItem.raw as number
-                  );
+                  const hours = Math.floor(tooltipItem.raw as number);
                   const minutes = Math.floor(
                     ((tooltipItem.raw as number) - hours) * 60
                   );
                   const seconds = Math.floor(
-                    (((tooltipItem.raw as number) - hours) * 60 -
-                      minutes) *
-                      60
+                    (((tooltipItem.raw as number) - hours) * 60 - minutes) * 60
                   );
                   const total = `${hours.toString().padStart(2, '0')}:${minutes
                     .toString()
@@ -138,7 +134,7 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    console.log(this.datesRange)
+    console.log(this.datesRange);
     if (this.user.id) {
       this.reportsService
         .getRange(this.datesRange, this.user.id)

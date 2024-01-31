@@ -1,0 +1,23 @@
+<div class="d-flex flex-column align-items-center align-items-sm-start">
+  <a
+    (click)="selectUser(user)"
+    routerLink="/reports"
+    class="text-decoration-none mb-0 links"
+  >
+    <span class="fs-3 fw-bolder">{{ user.name }} {{ user.last_name }}</span>
+  </a>
+  <div class="d-flex gap-2">
+    <a
+      class="fs-5 fw-bolder links"
+      routerLink="/user/entries"
+      (click)="selectUser(user)"
+      >Entries</a
+    >
+    <a
+      class="fs-5 fw-bolder links"
+      routerLink="/reports"
+      (click)="selectUser(user)"
+      >Reports</a
+    >
+  </div>
+</div>

@@ -1,7 +1,10 @@
-<main>
-  <div class="container rounded shadow text-center p-4">
-    <h1>{{ title }}</h1>
-    <form
+<main class="container">
+  <div class="rounded shadow text-center mb-5 card">
+    <div class="card-header">
+      <h1 class="mb-0 p-2 text-dark">{{ title }}</h1>
+    </div>
+    <div class="card-body">
+      <form
       action=""
       class="p-2"
       [formGroup]="userForm"
@@ -107,5 +110,6 @@
         </div>
       </div>
     </form>
+    </div>
   </div>
 </main>

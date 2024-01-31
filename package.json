@@ -12,7 +12,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "component": "ng g c pages/admin/admin.users",
-    "shared": "ng g c components/timer",
+    "shared": "ng g c components/user-options",
     "service": "ng g s services/navigation",
     "material": "ng add @angular/material"
   },
