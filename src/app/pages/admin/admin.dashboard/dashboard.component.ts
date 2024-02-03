@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { EntriesService } from '../../../services/entries.service';
 import { CustomDatePipe } from '../../../services/custom-date.pipe';
-import { Entries } from '../../../models/Entries';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { TimerComponent } from 'src/app/components/timer/timer.component';
 import { SearchComponent } from 'src/app/components/search/search.component';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +22,7 @@ export class AdminDashboardComponent implements OnInit {
 
 
   constructor(
-    private entriesService: EntriesService,
+    private userService: UsersService,
     public customDate: CustomDatePipe,
   ) {}
 
@@ -33,7 +32,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   getUsers() {
-    this.entriesService.getUsers(this.searchForm.value).subscribe((users) => {
+    this.userService.getUsers(this.searchForm.value).subscribe((users) => {
       this.users = users;
       this.loaded = true;
     });

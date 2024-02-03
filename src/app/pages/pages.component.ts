@@ -1,5 +1,4 @@
 import { Component, OnChanges, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
 
 
 @Component({

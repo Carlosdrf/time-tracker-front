@@ -6,7 +6,6 @@
       <div class="d-flex flex-column align-items-center align-items-sm-start mx-sm-0 mx-auto">
         <a
           (click)="selectUser(user)"
-          routerLink="/admin/user/{{ user.id }}"
           class="text-decoration-none mb-0 links"
         >
           <span class="fs-3 fw-bolder"
@@ -18,7 +17,7 @@
             *ngFor="let link of links"
             class="fs-5 fw-bolder links"
             routerLink="{{ link.url }}"
-            (click)="selectUser(user)"
+            (click)="setReportInfo(user)"
             >{{ link.title }}</a
           >
         </div>

@@ -1,23 +1,116 @@
-<div class="d-flex flex-column align-items-center align-items-sm-start">
-  <a
-    (click)="selectUser(user)"
-    routerLink="/reports"
-    class="text-decoration-none mb-0 links"
-  >
-    <span class="fs-3 fw-bolder">{{ user.name }} {{ user.last_name }}</span>
-  </a>
-  <div class="d-flex gap-2">
-    <a
-      class="fs-5 fw-bolder links"
-      routerLink="/user/entries"
-      (click)="selectUser(user)"
-      >Entries</a
+<main class="container" id="userForm">
+  <div class="rounded shadow text-center card">
+    <div class="card-header">
+      <h1 class="mb-0 p-2 text-dark">{{ title }}</h1>
+    </div>
+    <div class="card-body">
+      <form
+      action=""
+      class="p-2"
+      [formGroup]="userForm"
+      (ngSubmit)="submitUserForm()"
     >
-    <a
-      class="fs-5 fw-bolder links"
-      routerLink="/reports"
-      (click)="selectUser(user)"
-      >Reports</a
-    >
+      <div class="form-group row justify-content-between">
+        <div class="col-12 col-md-6 mb-3">
+          <input
+            type="text"
+            formControlName="name"
+            class="form-control"
+            placeholder="Name"
+          />
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <input
+            type="text"
+            formControlName="last_name"
+            class="form-control"
+            placeholder="Last Name"
+          />
+        </div>
+      </div>
+      <div class="form-group mb-3">
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Email Address"
+          (keyup)="verifyUserName()"
+        />
+      </div>
+      <div class="form-group mb-3">
+        <input
+          type="password"
+          class="form-control mb-3"
+          formControlName="password"
+          placeholder="Password"
+        />
+        <input
+          type="password"
+          class="form-control mb-3"
+          formControlName="cpassword"
+          placeholder="Confirm Password"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <select
+          class="form-select"
+          formControlName="role"
+          name="role_select"
+          id=""
+        >
+          <option Selected value="Select a role" disabled>Select a Role</option>
+          <option value="{{ role.id }}" *ngFor="let role of roleList">
+            {{ role.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group mb-4" formGroupName="company">
+        <select
+          name="company"
+          formControlName="id"
+          id=""
+          class="form-select"
+          *ngIf="userForm.value.role === EMPLOYEE_ROLE"
+        >
+          <option Selected disabled value="Select a company">
+            Select a company
+          </option>
+          <option value="{{ company.id }}" *ngFor="let company of companies">
+            {{ company.name }}
+          </option>
+        </select>
+        <input
+          name="company_name"
+          formControlName="name"
+          id=""
+          class="form-control mb-4"
+          placeholder="Type the company name..."
+          *ngIf="userForm.value.role === EMPLOYER_ROLE"
+        />
+        <input
+          type="text"
+          name="company_description"
+          formControlName="description"
+          class="form-control mb-4"
+          placeholder="Company description..."
+          *ngIf="userForm.value.role === EMPLOYER_ROLE"
+        />
+      </div>
+      <div
+        class="d-flex position-relative justify-content-center align-items-center"
+      >
+        <button
+          color="primary"
+          mat-raised-button
+          class="btn btn-primary btn-block rounded"
+        >
+          Save
+        </button>
+        <div class="position-absolute end-0 top-0">
+          <app-loader [loader]="loader" [message]="message"></app-loader>
+        </div>
+      </div>
+    </form>
+    </div>
   </div>
-</div>
+</main>

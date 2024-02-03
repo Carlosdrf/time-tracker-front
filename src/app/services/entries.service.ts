@@ -24,11 +24,11 @@ export class EntriesService {
   updateEntryTask(id: string, data: any) {
     return this.http.put<any>(`${this.API_URI}/entries/task/${id}`, data);
   }
-  getUsers(body: any) {
-    const headers = new HttpHeaders({ 'content-type': 'application/json' });
+  // getUsers(body: any) {
+  //   const headers = new HttpHeaders({ 'content-type': 'application/json' });
 
-    return this.http.post<any>(`${this.API_URI}/users`, body, { headers });
-  }
+  //   return this.http.post<any>(`${this.API_URI}/users`, body, { headers });
+  // }
   getUsersEntries(user_id: any) {
     return this.http.post<any>(`${this.API_URI}/entries/user`, user_id);
   }
@@ -61,12 +61,10 @@ export class EntriesService {
       { headers }
     );
   }
-  getRoles() {
-    return this.http.get(`${this.API_URI}/roles`);
-  }
-  createUser(userData: any) {
-    return this.http.post(`${this.API_URI}/users/create`, userData);
-  }
+  
+  // createUser(userData: any) {
+  //   return this.http.post(`${this.API_URI}/users/create`, userData);
+  // }
   // getCurrentEntry(data: any){
   //   return this.http.post(`${this.API_URI}/entries/currentEntry`, data)
   // }
