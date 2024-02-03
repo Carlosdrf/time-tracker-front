@@ -1,0 +1,10 @@
+.slide-in {
+  transform: translateX(0); /* Slide in from the left */
+}
+
+.slide-out {
+  transform: translateY(-900px); /* Slide out to the left */
+}
+.slide{
+    transition: all 0.3s ease-in-out;
+}

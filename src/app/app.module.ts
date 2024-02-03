@@ -16,7 +16,7 @@ import { AppComponent } from './app.component';
 // import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 // import { CustomDatePipe } from "./services/custom-date.pipe";
-// import { DashboardService } from "./services/dashboard.service";
+// import { EntriesService } from "./services/entries.service";
 // import { LoginComponent } from './pages/login/login.component';
 // import { ReportsComponent } from './pages/reports/reports.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,7 +26,6 @@ import { WebSocketService } from './services/socket/web-socket.service';
 import { SocketIoModule } from 'ngx-socket-io';
 
 import { SharedModule } from './components/shared.module';
-import { UserComponent } from './pages/admin/admin.users/user/user.component';
 import { Loader } from './app.models';
 // import { DashboardComponent } from './pages/client/dashboard/dashboard.component';
 // import { AdminDashboardComponent } from './pages/admin/dashboard/dashboard.component';
@@ -70,7 +69,7 @@ const jwtOptions = {
   ],
   providers: [
     // CustomDatePipe,
-    // DashboardService,
+    // EntriesService,
     JwtHelperService,
     WebSocketService,
     ReportsService,

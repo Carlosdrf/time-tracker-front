@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
-import { DashboardService } from 'src/app/services/dashboard.service';
-import { CompaniesService } from '../../../../services/companies.service';
 import {
   FormGroup,
   FormControl,
@@ -11,13 +15,18 @@ import {
 import { Loader } from 'src/app/app.models';
 import { timeThursday } from 'd3';
 import { User } from 'src/app/models/User.model';
+import { ActivatedRoute } from '@angular/router';
+import { CompaniesService } from 'src/app/services/companies.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnChanges {
+  @Input() selectedUser: any;
   newUser: User = {
     name: '',
     last_name: '',
@@ -26,10 +35,21 @@ export class UserComponent implements OnInit {
     role: 0,
     company: {},
   };
+  loader: Loader = new Loader(false, false, false);
+  roleList!: Roles[];
+  title: string = 'New User';
+  userForm!: FormGroup;
+  message: string | null = null;
+  companies: any;
+  ADMIN_ROLE = '1';
+  EMPLOYEE_ROLE = '2';
+  EMPLOYER_ROLE = '3';
+
   constructor(
-    private userService: DashboardService,
+    private userService: UsersService,
     private fb: FormBuilder,
-    private companiesService: CompaniesService
+    private companiesService: CompaniesService,
+    private route: ActivatedRoute
   ) {
     this.userForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -59,19 +79,34 @@ export class UserComponent implements OnInit {
       }
     });
   }
-  loader: Loader = new Loader(false, false, false);
-  roleList!: Roles[];
-  title: string = 'New User';
-  userForm!: FormGroup;
-  message: string | null = null;
-  companies: any;
-  ADMIN_ROLE = '1';
-  EMPLOYEE_ROLE = '2';
-  EMPLOYER_ROLE = '3';
-
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedUser']) {
+      console.log(changes);
+      this.userForm.patchValue(this.selectedUser);
+      if (this.selectedUser) {
+        this.title = 'Edit user';
+      }
+    }
+  }
   ngOnInit(): void {
     this.getRoles();
     this.getCompanies();
+    this.route.params.subscribe((params) => {
+      console.log(params['id']);
+    });
+    this.userForm.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value) => {
+        console.log(value.email);
+        this.userService.verifyUsername(value.email, this.selectedUser.id).subscribe({
+          next: (v: any) => {
+            console.log(v)
+          }, 
+          error: (err: any)=>{
+            console.error(err)
+          }
+        })
+      });
   }
   public getRoles() {
     this.userService.getRoles().subscribe({
@@ -141,5 +176,9 @@ export class UserComponent implements OnInit {
       this.loader = new Loader(false, false, false);
       this.message = '';
     }, 3000);
+  }
+
+  public verifyUserName() {
+    
   }
 }

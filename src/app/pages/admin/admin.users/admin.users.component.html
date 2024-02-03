@@ -1,20 +1,56 @@
-<app-search
-  [searchForm]="searchForm"
-  (onSearch)="getUsers()"
-  (onLoading)="loading()"
-></app-search>
-
-<div class="card card-hover mb-3 rounded shadow" *ngFor="let user of usersInfo">
+<div class="d-flex position-relative">
+  <div class="col-sm-5 col-12">
+    <app-search
+      [searchForm]="searchForm"
+      (onSearch)="getUsers()"
+      (onLoading)="loading()"
+    ></app-search>
+    <div class="p-2 rounded shadow mb-3 card">
+      <div class="d-flex justify-content-between">
+        <h3 class="mb-0 p-2 fs-5">filter by</h3>
+        <a
+          (click)="userToggle()"
+          color="primary"
+          mat-raised-button
+          class="btn p-2 px-3 fs-5"
+          ><mat-icon>add</mat-icon>new user</a
+        >
+      </div>
+    </div>
+    <app-user-list
+      [users]="users"
+      [loaded]="loaded"
+      [links]="links"
+      (onSelectedUser)="setSelectedUser($event)"
+    ></app-user-list>
+  </div>
   <div
-    class="d-flex flex-wrap mx-3 p-2 rounded-top align-items-center justify-content-center justify-content-sm-between"
+    class="position-fixed d-flex justify-content-center align-items-center col-12 col-sm-7 bottom-0 end-0 top-0 start-sm-0"
   >
-    <app-user-list [user]="user"></app-user-list>
-    <!-- <app-timer [user]="user"></app-timer> -->
-    <div id="userOption" class="p-2">
-      <h3>options</h3>
+    <div
+      class="position-absolute bottom-0 end-0 col-12 d-flex justify-content-center"
+    >
+      <img
+        class="col-10 col-sm-8 px-2"
+        src="/assets/images/resources/empleados-section.png"
+        alt=""
+        srcset=""
+      />
+    </div>
+    <div class="visually-hidden col-10 slide" #appUser [ngClass]="{'slide-in': isSlideIn, 'slide-out': !isSlideIn}">
+      <app-user [selectedUser]="selectedUser"></app-user>
     </div>
   </div>
-</div>
-<div *ngIf="!loaded" class="d-flex justify-content-center">
-  <mat-spinner></mat-spinner>
+  <!-- <div
+    class="col-7 d-flex align-items-center justify-content-center position-relative"
+  >
+    <div class="col-4 position-sticky">
+      <img
+        src="/assets/images/resources/empleados-section.png"
+        alt=""
+        srcset=""
+      />
+    </div> -->
+
+  <!-- </div> -->
 </div>

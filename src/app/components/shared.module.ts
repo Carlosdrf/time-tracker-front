@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { AuthService } from "../services/auth.service";
 
-// import { DashboardService } from "../services/dashboard.service";
+// import { EntriesService } from "../services/entries.service";
 import { CustomDatePipe } from '../services/custom-date.pipe';
 // import { Entries } from '../models/Entries';
 
@@ -24,8 +24,8 @@ import { EmployeesComponent } from './employees/employees.component';
 import { LoaderComponent } from './loader/loader.component';
 import { PaymentHistoryComponent } from './payment-history/payment-history.component';
 import { BalanceComponent } from './balance/balance.component';
-import { UserListComponent } from './user-list/user-list.component';
-import { SearchComponent } from './search/search.component';
+import { CompaniesService } from '../services/companies.service';
+import { UserComponent } from './user/user.component';
 
 // import { calendarFormat } from "moment";
 
@@ -56,6 +56,7 @@ import { SearchComponent } from './search/search.component';
     LoaderComponent,
     PaymentHistoryComponent,
     BalanceComponent,
+    UserComponent
     // UserListComponent,
   ],
   exports: [
@@ -77,9 +78,10 @@ import { SearchComponent } from './search/search.component';
     LoaderComponent,
     BalanceComponent,
     CommonModule,
-    RouterModule
+    UserComponent,
+    RouterModule,
     // UserListComponent,
   ],
-  providers: [CustomDatePipe, CalendarComponent],
+    providers: [CustomDatePipe, CalendarComponent, CompaniesService],
 })
 export class SharedModule {}
