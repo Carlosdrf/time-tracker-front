@@ -76,14 +76,7 @@ export class UserComponent implements OnInit, OnChanges {
       if (this.selectedUser) {
         this.title = 'Edit User';
       }
-      if (!this.selectedUser.employee) {
-        this.userForm.reset()
-        this.userForm.get('role')?.setValue('');
-
-        this.userForm.get('employee')?.get('id')?.setValue('');
-        console.log('reset?');
-        return
-      }
+      
       this.userForm.patchValue(this.selectedUser);
 
       console.log(this.selectedUser);

@@ -2,8 +2,12 @@
 <main>
   <router-outlet></router-outlet>
 </main>
-<div id="alert" class="alert-container" [ngClass]="{'alert-active': onAlert == true}">
+<div
+  id="alert"
+  class="alert-container"
+  [ngClass]="{ 'alert-active': onAlert == true }"
+>
   <div class="alert alert-success rounded d-flex align-items-center">
-      <span class="text-white">{{message}}</span>
+    <span class="text-white">{{ message }}</span>
   </div>
 </div>
