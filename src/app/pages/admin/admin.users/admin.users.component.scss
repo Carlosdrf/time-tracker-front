@@ -3,8 +3,18 @@
 }
 
 .slide-out {
-  transform: translateY(-900px); /* Slide out to the left */
+  animation: slide-out 0.2s ease-in-out; /* Slide out to the left */
+  visibility: hidden;
+  transform: translate(900px);
 }
-.slide{
-    transition: all 0.3s ease-in-out;
+.slide {
+  transition: all 0.2s ease-in-out;
+}
+@keyframes slide-out {
+  from{
+    visibility: visible;
+  }  
+  to{
+    opacity: 0;
+  }
 }

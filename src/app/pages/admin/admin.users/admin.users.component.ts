@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SearchComponent } from 'src/app/components/search/search.component';
 import { SharedModule } from 'src/app/components/shared.module';
@@ -13,7 +13,7 @@ import { UsersService } from 'src/app/services/users.service';
   templateUrl: './admin.users.component.html',
   styleUrl: './admin.users.component.scss',
 })
-export class AdminUsersComponent implements AfterViewInit {
+export class AdminUsersComponent {
   @ViewChild('appUser', { static: true }) appUser!: ElementRef;
   public loaded: boolean = false;
   public searchForm: FormGroup = new FormGroup({
@@ -28,8 +28,6 @@ export class AdminUsersComponent implements AfterViewInit {
     public customDate: CustomDatePipe
   ) {}
 
-  ngAfterViewInit(): void {
-  }
   ngOnInit() {
     this.getUsers();
   }
@@ -37,7 +35,6 @@ export class AdminUsersComponent implements AfterViewInit {
   getUsers() {
     this.userService.getUsers(this.searchForm.value).subscribe((users) => {
       this.users = users;
-      console.log(users)
       this.loaded = true;
     });
   }
@@ -48,13 +45,18 @@ export class AdminUsersComponent implements AfterViewInit {
   }
 
   userToggle() {
-    this.appUser.nativeElement.classList.toggle('visually-hidden');
+    if (this.selectedUser) {
+      this.selectedUser = null;
+      // this.appUser.nativeElement.classList.remove('visually-hidden');
+      return;
+    }
+    // this.appUser.nativeElement.classList.toggle('visually-hidden');
     this.isSlideIn = !this.isSlideIn;
   }
   setSelectedUser(user: any) {
     this.selectedUser = user;
     if (this.appUser.nativeElement.classList.contains('visually-hidden')) {
-      this.appUser.nativeElement.classList.remove('visually-hidden');
+      // this.appUser.nativeElement.classList.remove('visually-hidden');
     }
     if (!this.isSlideIn) this.isSlideIn = true;
   }
