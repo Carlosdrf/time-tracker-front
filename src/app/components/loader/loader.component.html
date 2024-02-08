@@ -1,7 +1,9 @@
-<div class="d-flex align-items-center" [ngClass]="{ 'fade-out': loader.complete }" *ngIf="loader.started">
-  <!-- <div > -->
-    <span *ngIf="message !== null">{{ message }}</span>
-  <!-- </div> -->
+<div
+  class="d-flex align-items-center"
+  [ngClass]="{ 'fade-out': loader.complete }"
+  *ngIf="loader.started"
+>
+  <span *ngIf="message !== null">{{ message }}</span>
   <div class="">
     <mat-spinner *ngIf="loader.loading" [diameter]="44"
       >check_circle_outline</mat-spinner

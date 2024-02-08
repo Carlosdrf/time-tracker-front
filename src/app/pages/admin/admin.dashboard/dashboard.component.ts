@@ -6,6 +6,7 @@ import { SharedModule } from 'src/app/components/shared.module';
 import { TimerComponent } from 'src/app/components/timer/timer.component';
 import { SearchComponent } from 'src/app/components/search/search.component';
 import { UsersService } from 'src/app/services/users.service';
+import { userRoles } from 'src/app/app.models';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,10 +17,15 @@ import { UsersService } from 'src/app/services/users.service';
 })
 export class AdminDashboardComponent implements OnInit {
   public loaded: boolean = false;
-  public searchForm: FormGroup = new FormGroup({ searchField: new FormControl('') });
+  public searchForm: FormGroup = new FormGroup({
+    searchField: new FormControl(''),
+    filter: new FormControl(userRoles.user)
+  });
   public users: any = [];
-  public links: any = [{url: '/user/entries', title: 'Entries'}, {url: '/reports', title: 'Reports'}]
-
+  public links: any = [
+    { url: '/user/entries', title: 'Entries' },
+    { url: '/reports', title: 'Reports' },
+  ];
 
   constructor(
     private userService: UsersService,
