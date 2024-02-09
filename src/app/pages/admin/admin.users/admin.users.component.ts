@@ -60,4 +60,18 @@ export class AdminUsersComponent {
     }
     if (!this.isSlideIn) this.isSlideIn = true;
   }
+  handleSavedUser(user: any) {
+    const userIds = this.users.map((user: any) => user.id);
+    if (userIds.includes(user.id)) {
+      this.users.forEach((oldUser: any, i: number) => {
+        if (oldUser.id == user.id) {
+          console.log(this.users[i]);
+          this.users[i] = user;
+        }
+      });
+    } else {
+      this.users = [user, ...this.users];
+    }
+    this.selectedUser = user;
+  }
 }

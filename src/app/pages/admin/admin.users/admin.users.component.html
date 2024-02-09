@@ -48,6 +48,6 @@
   [ngClass]="{ 'slide-in': isSlideIn, 'slide-out': !isSlideIn }"
 >
   <div class="col-9 col-sm-10">
-    <app-user [selectedUser]="selectedUser"></app-user>
+    <app-user [selectedUser]="selectedUser" (onSaveSelectedUser)="handleSavedUser($event)"></app-user>
   </div>
 </div>

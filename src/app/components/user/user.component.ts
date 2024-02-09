@@ -1,8 +1,10 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
@@ -11,6 +13,7 @@ import {
   FormControl,
   Validators,
   FormBuilder,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
 import { timeThursday } from 'd3';
@@ -27,13 +30,16 @@ import { UsersService } from 'src/app/services/users.service';
 })
 export class UserComponent implements OnInit, OnChanges {
   @Input() selectedUser: any;
+  @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   newUser: User = {
+    id: '',
     name: '',
     last_name: '',
     email: '',
     password: '',
     role: 0,
     company: {},
+    employee: {},
   };
   loader: Loader = new Loader(false, false, false);
   roleList!: Roles[];
@@ -55,31 +61,37 @@ export class UserComponent implements OnInit, OnChanges {
       name: [null, [Validators.required]],
       last_name: [null, [Validators.required]],
       email: [null, [Validators.required]],
-      role: ["", [Validators.required]],
-      password: [null, Validators.required],
-      cpassword: [null, Validators.required],
-      company: this.fb.group({ id: ["", [Validators.required]]}),
+      role: [0, [Validators.required]],
+      password: [null],
+      cpassword: ['xd'],
+      company: this.fb.group({ id: [''] }),
       employee: this.fb.group({}),
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('password');
     if (changes['selectedUser']) {
       if (!this.selectedUser) {
         this.title = 'New User';
-        this.userForm.reset();
+        this.resetForm();
         this.userForm.get('role')?.setValue('');
-
-        this.formInit();
+        this.userForm.get('password')?.setValidators(Validators.required);
+        if (this.userForm.get('employee'))
+          this.userForm.get('employee')?.get('id')?.setValue('');
         return;
       }
+
+      this.resetForm();
+      this.userForm.patchValue(this.selectedUser);
       if (this.selectedUser) {
         this.title = 'Edit User';
+        this.userForm.get('password')?.clearValidators();
       }
-      
-      this.userForm.patchValue(this.selectedUser);
-
-      console.log(this.selectedUser);
+      if (!this.selectedUser.employee && this.selectedUser.role == 2) {
+        this.userForm.get('employee')?.get('id')?.setValue('');
+      }
+      this.userForm.get('password')?.updateValueAndValidity();
     }
   }
 
@@ -87,37 +99,42 @@ export class UserComponent implements OnInit, OnChanges {
     this.getRoles();
     this.getCompanies();
 
-    this.userForm.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
+    this.userForm
+      .get('email')!
+      .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((email) => {
+        console.log('valuechanges');
         const userId = this.selectedUser ? this.selectedUser.id : -1;
-        this.userService.verifyUsername(value.email, userId).subscribe({
+        this.userService.verifyUsername(email, userId).subscribe({
           next: (v: any) => {
-            console.log(v);
+            // console.log(v);
           },
           error: (err: any) => {
-            console.error(err);
+            // console.error(err);
           },
         });
       });
-    this.formInit();
+
+    this.handleRole();
+    console.log(this.userForm);
+  }
+  resetForm() {
+    this.userForm.reset({ password: '', cpassword: '' });
   }
 
-  formInit() {
+  handleRole() {
     this.userForm.get('role')!.valueChanges.subscribe((role: string) => {
       const companyGroup = this.userForm.get('company') as FormGroup;
       const employeeGroup = this.userForm.get('employee') as FormGroup;
-      console.log(employeeGroup);
-      for (let controlName in companyGroup.controls) {
-        companyGroup.removeControl(controlName);
-      }
-      for (let controlId in employeeGroup.controls) {
-        console.log(controlId);
-        employeeGroup.removeControl(controlId);
-      }
       if (role == this.EMPLOYEE_ROLE) {
+        for (let controlName in companyGroup.controls) {
+          companyGroup.removeControl(controlName);
+        }
         employeeGroup.addControl('id', this.fb.control(''));
       } else if (role == this.EMPLOYER_ROLE) {
+        for (let controlId in employeeGroup.controls) {
+          employeeGroup.removeControl(controlId);
+        }
         companyGroup.addControl('name', this.fb.control(null));
         companyGroup.addControl('description', this.fb.control(null));
       }
@@ -138,6 +155,8 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
   public submitUserForm() {
+    if (this.selectedUser) this.newUser.id = this.selectedUser.id;
+    else this.newUser.id = '-1';
     this.loader = new Loader(true, true, false);
     if (
       this.userForm.valid &&
@@ -152,10 +171,9 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.role = this.userForm.value.role;
         this.newUser.password = this.userForm.value.password;
 
-        if (this.userForm.value.role != this.ADMIN_ROLE) {
+        if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company.id != null) {
             this.newUser.company.id = this.userForm.value.company.id;
-          } else {
             this.newUser.company.name = this.userForm.value.company.name;
             if (this.userForm.value.company.description != null) {
               this.newUser.company.description =
@@ -163,9 +181,16 @@ export class UserComponent implements OnInit, OnChanges {
             }
           }
         }
+        if (
+          this.userForm.value.employee &&
+          this.EMPLOYEE_ROLE == this.userForm.value.role
+        ) {
+          this.newUser.employee.id = this.userForm.value.employee.id;
+        }
         // console.log(this.newUser);
         this.userService.createUser(this.newUser).subscribe({
-          next: () => {
+          next: (user) => {
+            this.onSaveSelectedUser.emit(user);
             this.loader = new Loader(false, true, true);
             this.resetLoader();
           },

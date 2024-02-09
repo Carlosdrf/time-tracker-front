@@ -4,7 +4,7 @@
       <h4 class="mb-0">Historial de pagos:</h4>
     </div>
     <div class="card-body">
-      <div *ngIf="payments.length > 0">
+      <div *ngIf="payments">
         <div class="card p-2 mb-2" *ngFor="let payment of payments">
           <!-- <div class="card-body"> -->
             <h5>${{ payment.currency.name }} {{ payment.amount }}</h5>
@@ -12,7 +12,7 @@
           <!-- </div> -->
         </div>
       </div>
-      <p *ngIf="payments.length == 0">No available records...</p>
+      <p *ngIf="!payments">No available records...</p>
     </div>
   </section>
 </main>

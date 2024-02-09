@@ -2,9 +2,7 @@
   <section class="position-fixed top-0 start-0 end-0 bottom-0">
     <div class="col-12 p-4 h-100 d-flex align-items-center justify-content-end">
       <div class="p-4 col-6 d-sm-none d-md-block h-100">
-        <div
-          class="bg-mask col-10"
-        ></div>
+        <div class="bg-mask col-10"></div>
       </div>
     </div>
   </section>
@@ -21,7 +19,7 @@
             <h4 class="mb-0">Estado de pagos pendientes:</h4>
           </div>
           <div class="card-body">
-            <div *ngIf="pending.length > 0">
+            <div *ngIf="getPending()">
               <div *ngFor="let payment of pending" class="card p-2 mb-2">
                 <div class="row align-items-center">
                   <div class="col-8">
@@ -36,7 +34,7 @@
                 </div>
               </div>
             </div>
-            <p *ngIf="pending.length == 0">No current pending payments...</p>
+            <p *ngIf="!getPending()">No current pending payments...</p>
           </div>
         </div>
       </div>
