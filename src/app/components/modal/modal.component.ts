@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
@@ -9,12 +9,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
   styleUrl: './modal.component.scss',
 })
 export class ModalComponent {
+  constructor(){}
 
-  constructor(private dialog: MatDialog){}
-
-  select(choise: boolean){
-    console.log(choise)
-  }
 }
 
 

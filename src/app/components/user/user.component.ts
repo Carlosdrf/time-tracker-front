@@ -30,6 +30,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class UserComponent implements OnInit, OnChanges {
   @Input() selectedUser: any;
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
   newUser: User = {
     id: '',
     name: '',
@@ -223,10 +224,16 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public deleteUser(id: string) {
-    console.log(id);
     const dialog = this.dialog.open(ModalComponent);
-    // this.dialog.afterClosed().subscribe((value: any) => {
-    //   console.log(value);
-    // });
+    dialog.afterClosed().subscribe((value: any) => {
+      if (value) {
+        this.userService.delete(id).subscribe({
+          next: (value) => {
+            console.log(value);
+            this.onDeletedUser.emit(id);
+          },
+        });
+      }
+    });
   }
 }

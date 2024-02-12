@@ -43,11 +43,15 @@
   </div>
 </div>
 <div
-  class=" slide col-sm-7 col-12 position-fixed top-0 end-0 start-sm-0 bottom-0 d-flex justify-content-center align-items-center z-1"
+  class="slide col-sm-7 col-12 position-fixed top-0 end-0 start-sm-0 bottom-0 d-flex justify-content-center align-items-center z-1"
   #appUser
   [ngClass]="{ 'slide-in': isSlideIn, 'slide-out': !isSlideIn }"
 >
   <div class="col-9 col-sm-10">
-    <app-user [selectedUser]="selectedUser" (onSaveSelectedUser)="handleSavedUser($event)"></app-user>
+    <app-user
+      [selectedUser]="selectedUser"
+      (onSaveSelectedUser)="handleSavedUser($event)"
+      (onDeletedUser)="handleDeletedUser($event)"
+    ></app-user>
   </div>
 </div>

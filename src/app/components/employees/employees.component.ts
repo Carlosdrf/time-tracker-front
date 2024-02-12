@@ -8,7 +8,7 @@ import { ReportsService } from 'src/app/services/reports.service';
   styleUrls: ['./employees.component.scss']
 })
 export class EmployeesComponent implements OnInit{
-  employees: any
+  employees: any = []
   constructor(private employeesService: EmployeesService, private reports: ReportsService){}
 
   ngOnInit(): void {
@@ -18,6 +18,7 @@ export class EmployeesComponent implements OnInit{
     this.employeesService.getEmployees().subscribe({
       next: employees=>{
         this.employees = employees
+        console.log(this.employees)
       }
     })
   }

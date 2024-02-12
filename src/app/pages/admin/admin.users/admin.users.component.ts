@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { SearchComponent } from 'src/app/components/search/search.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
-import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
 import { UsersService } from 'src/app/services/users.service';
 
 @Component({
@@ -23,10 +22,7 @@ export class AdminUsersComponent {
   public links: any = '';
   public isSlideIn: boolean = false;
   public selectedUser: any;
-  constructor(
-    private userService: UsersService,
-    public customDate: CustomDatePipe
-  ) {}
+  constructor(private userService: UsersService) {}
 
   ngOnInit() {
     this.getUsers();
@@ -65,7 +61,6 @@ export class AdminUsersComponent {
     if (userIds.includes(user.id)) {
       this.users.forEach((oldUser: any, i: number) => {
         if (oldUser.id == user.id) {
-          console.log(this.users[i]);
           this.users[i] = user;
         }
       });
@@ -73,5 +68,9 @@ export class AdminUsersComponent {
       this.users = [user, ...this.users];
     }
     this.selectedUser = user;
+  }
+  handleDeletedUser(user_id: string) {
+    this.users = this.users.filter((user: any) => user.id !== user_id);
+    this.selectedUser = null;
   }
 }
