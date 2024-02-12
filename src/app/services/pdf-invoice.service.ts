@@ -32,7 +32,7 @@ export class PdfInvoiceService {
 
     doc.setFont('Helvetica');
     doc.setFontSize(14);
-    const title = 'COMPROBANTE DE PAGO';
+    const title = 'BILL PAYMENT';
     const textWidth = doc.getTextWidth(title);
     const x = (doc.internal.pageSize.width - textWidth) / 2;
     doc.text(title, x, 40);
@@ -40,22 +40,22 @@ export class PdfInvoiceService {
     // Date "dd/MM/yyyy"
     doc.setFont('Helvetica');
     doc.setFontSize(12);
-    const date = 'Fecha:';
+    const date = 'Date:';
     const datei = new Date(selectedPayment.updated_at).toLocaleDateString('es-ES');
     doc.text(`${date} ${datei}`, 20, 50);
     const xdatei = (doc.internal.pageSize.width - 20)
 
     // Client
     doc.setFontSize(12);
-    const client = `Cliente: ${name}`;
+    const client = `Client: ${name}`;
     doc.text(client, 20, 60);
 
     // Description
-    const description = `Descripción: ${selectedPayment.description}`;
+    const description = `Description: ${selectedPayment.description}`;
     doc.text(description, 20, 70);
 
     // Amount
-    const amount = `Monto: $USD ${selectedPayment.amount}`;
+    const amount = `Amount: $USD ${selectedPayment.amount}`;
     doc.text(amount, 20, 80);
 
     // Save the PDF in a variable
@@ -63,7 +63,7 @@ export class PdfInvoiceService {
 
     // Create a download link
     const downloadLink = document.createElement('a');
-    const fileName = `factura_${datei}.pdf`;
+    const fileName = `invoice_${datei}.pdf`;
 
     // Assign the download link and file name
     downloadLink.href = URL.createObjectURL(pdfOutput);
