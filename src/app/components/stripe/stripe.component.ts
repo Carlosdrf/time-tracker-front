@@ -57,6 +57,7 @@ export class StripeComponent implements AfterViewInit {
       const emailAddress = '';
       const linkAuthenticationElement = elements.create('linkAuthentication');
       linkAuthenticationElement.mount('#link-authentication-element');
+      // const userIdElement = elements.create('#userRef');
       // console.log(linkAuthenticationElement.nativeElement)
       // linkAuthenticationElement.attr('placeholder', 'Email address')
 

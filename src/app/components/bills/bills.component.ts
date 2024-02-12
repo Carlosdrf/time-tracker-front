@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { PaymentsService } from 'src/app/services/payments.service';
-import { Router, NavigationExtras } from "@angular/router";
+import { Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-bills',
   templateUrl: './bills.component.html',
-  styleUrls: ['./bills.component.scss']
+  styleUrls: ['./bills.component.scss'],
 })
 export class BillsComponent implements OnInit {
-  billsList!: Array<any>
+  billsList!: Array<any>;
 
-  constructor(private billService: PaymentsService, private router: Router){}
+  constructor(private billService: PaymentsService, private router: Router) {}
   ngOnInit(): void {
-    this.getPayments()
-    this.checkStatus()
+    this.getPayments();
+    this.checkStatus();
   }
   async checkStatus() {
     const clientSecret = new URLSearchParams(window.location.search).get(
       'payment_intent_client_secret'
     );
-
     if (!clientSecret) {
       return;
     }
@@ -52,20 +51,22 @@ export class BillsComponent implements OnInit {
       messageContainer!.textContent = '';
     }, 4000);
   }
-  public getPayments(){
+  public getPayments() {
     this.billService.getPendingBills().subscribe({
-      next:(v: any) =>{
-        console.log(v)
-        v = v as Array<any>[]
-        this.billsList = v.filter((item: any)=>item.status.name === 'Pending')
+      next: (v: any) => {
+        console.log(v);
+        v = v as Array<any>[];
+        this.billsList = v.filter(
+          (item: any) => item.status.name === 'Pending'
+        );
       },
-    })
+    });
   }
-  setPaymentParams(data: any){
+  setPaymentParams(data: any) {
     const paymentParams: NavigationExtras = {
-      queryParams: data
-    }
-    console.log(paymentParams)
-    this.router.navigate(['/client/payments'], paymentParams)
+      queryParams: data,
+    };
+    console.log(paymentParams);
+    this.router.navigate(['/client/payments'], paymentParams);
   }
 }
