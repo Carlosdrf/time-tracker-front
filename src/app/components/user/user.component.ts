@@ -13,15 +13,14 @@ import {
   FormControl,
   Validators,
   FormBuilder,
-  ReactiveFormsModule,
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
-import { timeThursday } from 'd3';
 import { User } from 'src/app/models/User.model';
-import { ActivatedRoute } from '@angular/router';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
+import { ModalComponent } from '../modal/modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user',
@@ -55,7 +54,7 @@ export class UserComponent implements OnInit, OnChanges {
     private userService: UsersService,
     private fb: FormBuilder,
     private companiesService: CompaniesService,
-    private route: ActivatedRoute
+    private dialog: MatDialog
   ) {
     this.userForm = this.fb.group({
       name: [null, [Validators.required]],
@@ -70,7 +69,6 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('password');
     if (changes['selectedUser']) {
       if (!this.selectedUser) {
         this.title = 'New User';
@@ -98,7 +96,7 @@ export class UserComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.getRoles();
     this.getCompanies();
-
+    // this.getTimezones()
     this.userForm
       .get('email')!
       .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
@@ -107,16 +105,15 @@ export class UserComponent implements OnInit, OnChanges {
         const userId = this.selectedUser ? this.selectedUser.id : -1;
         this.userService.verifyUsername(email, userId).subscribe({
           next: (v: any) => {
-            // console.log(v);
+            console.log(v);
           },
           error: (err: any) => {
-            // console.error(err);
+            console.error(err);
           },
         });
       });
 
     this.handleRole();
-    console.log(this.userForm);
   }
   resetForm() {
     this.userForm.reset({ password: '', cpassword: '' });
@@ -151,6 +148,13 @@ export class UserComponent implements OnInit, OnChanges {
     this.companiesService.getCompanies().subscribe({
       next: (v) => {
         this.companies = v;
+      },
+    });
+  }
+  public getTimezones() {
+    this.userService.fetchTimezonesApi().subscribe({
+      next(value) {
+        console.log(value);
       },
     });
   }
@@ -218,5 +222,11 @@ export class UserComponent implements OnInit, OnChanges {
     }, 3000);
   }
 
-  public verifyUserName() {}
+  public deleteUser(id: string) {
+    console.log(id);
+    const dialog = this.dialog.open(ModalComponent);
+    // this.dialog.afterClosed().subscribe((value: any) => {
+    //   console.log(value);
+    // });
+  }
 }

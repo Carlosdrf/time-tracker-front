@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Confirmation</h2>
+<mat-dialog-content>
+  Are you sure you want to delete this user?
+</mat-dialog-content>
+<mat-dialog-actions class="d-flex flex-end">
+  <button
+    mat-button
+    class="ms-2 rounded shadow px-4 py-1 btn btn-primary"
+    (click)="select(true)"
+    [mat-dialog-close]="true"
+  >
+    Yes
+  </button>
+  <button
+    mat-button
+    class="ms-2 rounded shadow px-4 py-1 btn btn-danger"
+    (click)="select(false)"
+    [mat-dialog-close]="false"
+  >
+    No
+  </button>
+</mat-dialog-actions>

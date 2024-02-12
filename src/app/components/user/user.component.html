@@ -34,7 +34,6 @@
             class="form-control p-2"
             formControlName="email"
             placeholder="Email Address"
-            (keyup)="verifyUserName()"
           />
         </div>
         <div class="form-group mb-3">
@@ -100,13 +99,24 @@
           class="d-flex position-relative justify-content-between align-items-center"
         >
           <app-loader [loader]="loader" [message]="message"></app-loader>
-          <button
-            color="primary"
-            mat-raised-button
-            class="btn btn-primary btn-block rounded px-4"
-          >
-            Save
-          </button>
+          <div>
+            <a
+              color="warn"
+              mat-raised-button
+              class="btn btn-block rounded px-4"
+              (click)="deleteUser(selectedUser.id)"
+              *ngIf="selectedUser"
+            >
+              Delete
+            </a>
+            <button
+              color="primary"
+              mat-raised-button
+              class="btn btn-primary btn-block rounded px-4 ms-2"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </form>
     </div>
