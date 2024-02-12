@@ -55,58 +55,80 @@ export class UserComponent implements OnInit, OnChanges {
       name: [null, [Validators.required]],
       last_name: [null, [Validators.required]],
       email: [null, [Validators.required]],
-      role: ['Select a role', [Validators.required]],
+      role: ["", [Validators.required]],
       password: [null, Validators.required],
       cpassword: [null, Validators.required],
-      company: this.fb.group({}),
+      company: this.fb.group({ id: ["", [Validators.required]]}),
+      employee: this.fb.group({}),
     });
+  }
 
-    this.userForm.get('role')!.valueChanges.subscribe((role) => {
-      console.log('role ha cambiado: ' + role);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedUser']) {
+      if (!this.selectedUser) {
+        this.title = 'New User';
+        this.userForm.reset();
+        this.userForm.get('role')?.setValue('');
+
+        this.formInit();
+        return;
+      }
+      if (this.selectedUser) {
+        this.title = 'Edit User';
+      }
+      if (!this.selectedUser.employee) {
+        this.userForm.reset()
+        this.userForm.get('role')?.setValue('');
+
+        this.userForm.get('employee')?.get('id')?.setValue('');
+        console.log('reset?');
+        return
+      }
+      this.userForm.patchValue(this.selectedUser);
+
+      console.log(this.selectedUser);
+    }
+  }
+
+  ngOnInit(): void {
+    this.getRoles();
+    this.getCompanies();
+
+    this.userForm.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value) => {
+        const userId = this.selectedUser ? this.selectedUser.id : -1;
+        this.userService.verifyUsername(value.email, userId).subscribe({
+          next: (v: any) => {
+            console.log(v);
+          },
+          error: (err: any) => {
+            console.error(err);
+          },
+        });
+      });
+    this.formInit();
+  }
+
+  formInit() {
+    this.userForm.get('role')!.valueChanges.subscribe((role: string) => {
       const companyGroup = this.userForm.get('company') as FormGroup;
+      const employeeGroup = this.userForm.get('employee') as FormGroup;
+      console.log(employeeGroup);
       for (let controlName in companyGroup.controls) {
-        console.log('se ha removido: ' + controlName);
         companyGroup.removeControl(controlName);
       }
-      if (role === this.EMPLOYEE_ROLE) {
-        companyGroup.addControl(
-          'id',
-          this.fb.control('Select a company', Validators.required)
-        );
-      } else if (role === this.EMPLOYER_ROLE) {
+      for (let controlId in employeeGroup.controls) {
+        console.log(controlId);
+        employeeGroup.removeControl(controlId);
+      }
+      if (role == this.EMPLOYEE_ROLE) {
+        employeeGroup.addControl('id', this.fb.control(''));
+      } else if (role == this.EMPLOYER_ROLE) {
         companyGroup.addControl('name', this.fb.control(null));
         companyGroup.addControl('description', this.fb.control(null));
       }
     });
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedUser']) {
-      console.log(changes);
-      this.userForm.patchValue(this.selectedUser);
-      if (this.selectedUser) {
-        this.title = 'Edit user';
-      }
-    }
-  }
-  ngOnInit(): void {
-    this.getRoles();
-    this.getCompanies();
-    this.route.params.subscribe((params) => {
-      console.log(params['id']);
-    });
-    this.userForm.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        console.log(value.email);
-        this.userService.verifyUsername(value.email, this.selectedUser.id).subscribe({
-          next: (v: any) => {
-            console.log(v)
-          }, 
-          error: (err: any)=>{
-            console.error(err)
-          }
-        })
-      });
   }
   public getRoles() {
     this.userService.getRoles().subscribe({
@@ -148,7 +170,7 @@ export class UserComponent implements OnInit, OnChanges {
             }
           }
         }
-        console.log(this.newUser);
+        // console.log(this.newUser);
         this.userService.createUser(this.newUser).subscribe({
           next: () => {
             this.loader = new Loader(false, true, true);
@@ -178,7 +200,5 @@ export class UserComponent implements OnInit, OnChanges {
     }, 3000);
   }
 
-  public verifyUserName() {
-    
-  }
+  public verifyUserName() {}
 }
