@@ -1,3 +1,10 @@
-.bg-container{
-    background-image: url('../../../assets/images/resources/resumen-pagos.png');
+.bg-container {
+  background-image: url("../../../assets/images/resources/resumen-pagos.png");
+}
+.max-height {
+  max-height: 180px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

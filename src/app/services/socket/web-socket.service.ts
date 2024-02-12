@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { local } from 'd3';
-import { Socket, io } from "socket.io-client";
+import { Socket, io } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class WebSocketService{
-  socket: Socket
-  API_URI = 'http://localhost:3000'
+export class WebSocketService {
+  socket: Socket;
+  API_URI = environment.socket;
 
   constructor() {
-    this.socket = io(this.API_URI)
-    const email = localStorage.getItem('email')
+    this.socket = io(this.API_URI);
+    const email = localStorage.getItem('email');
     // this.socket.emit('client:joinRoom', email)
     // super({
     //   url: API_URI
@@ -31,5 +32,4 @@ export class WebSocketService{
   //     console.log(data);
   //   })
   // }
-
 }

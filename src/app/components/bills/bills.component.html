@@ -11,24 +11,28 @@
       <h3>Resumen de Pagos</h3>
       <div *ngIf="billsList">
         <div id="payment-message" class="hidden"></div>
-        <div
-          class="d-flex flex-wrap justify-content-between align-items-center p-2 border border-1 rounded mb-2"
-          *ngFor="let bill of billsList"
-        >
-          <div class="section">
-            <p class="mb-0">Por pagar:</p>
-            <p class="mb-0">
-              <span>{{ bill.currency.name }} {{ bill.amount }}</span>
-            </p>
-          </div>
-          <div class="section">
-            <a (click)="setPaymentParams(bill)" routerLink="payments"
-              >realizar pago</a
-            >
+        <div class="max-height">
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-center p-2 border border-1 rounded mb-2"
+            *ngFor="let bill of billsList"
+          >
+            <div class="section">
+              <p class="mb-0">Por pagar:</p>
+              <p class="mb-0">
+                <span>{{ bill.currency.name }} {{ bill.amount }}</span>
+              </p>
+            </div>
+            <div class="section">
+              <a (click)="setPaymentParams(bill)" routerLink="payments"
+                >realizar pago</a
+              >
+            </div>
           </div>
         </div>
       </div>
-      <p *ngIf="billsList === null" class="mt-2">No current pending payments...</p>
+      <p *ngIf="billsList === null" class="mt-2">
+        No current pending payments...
+      </p>
     </div>
   </div>
   <div class="card-header text-center bg-primary rounded-bottom">
