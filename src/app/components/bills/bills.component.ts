@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PaymentsService } from 'src/app/services/payments.service';
 import { Router, NavigationExtras } from '@angular/router';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 @Component({
   selector: 'app-bills',
@@ -27,29 +28,27 @@ export class BillsComponent implements OnInit {
 
     switch (paymentIntent.status) {
       case 'succeeded':
-        this.showMessage('Payment succeeded!');
+        this.showMessage('Payment succeeded!', 'success');
         break;
       case 'processing':
-        this.showMessage('Your payment is processing.');
+        this.showMessage('Your payment is processing.', 'info');
         break;
       case 'requires_payment_method':
-        this.showMessage('Your payment was not successful, please try again.');
+        this.showMessage('Your payment was not successful, please try again.', 'error');
         break;
       default:
-        this.showMessage('Something went wrong.');
+        this.showMessage('Something went wrong.', 'error');
         break;
     }
   }
-  showMessage(messageText: string) {
-    const messageContainer = document.querySelector('#payment-message');
-
-    messageContainer!.classList.remove('hidden');
-    messageContainer!.textContent = messageText;
-
-    setTimeout(function () {
-      messageContainer!.classList.add('hidden');
-      messageContainer!.textContent = '';
-    }, 4000);
+  showMessage(messageText: string, iconType: SweetAlertIcon) {
+    Swal.fire({
+      position: 'center',
+      icon: iconType,
+      title: messageText,
+      showConfirmButton: false,
+      timer: 2500
+    });
   }
   public getPayments() {
     this.billService.getPendingBills().subscribe({

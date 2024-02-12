@@ -18,6 +18,10 @@ ul {
     color: #92b46c !important
 }
 
+body {
+  overflow-y: auto!important;
+  padding-right: calc(100vw - 100%)!important;
+}
 
 
 
