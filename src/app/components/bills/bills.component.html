@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="position-relative z-1">
-      <h3>Resumen de Pagos</h3>
+      <h3>Payment Status</h3>
       <div *ngIf="billsList">
         <div id="payment-message" class="hidden"></div>
         <div class="max-height">
@@ -17,27 +17,27 @@
             *ngFor="let bill of billsList"
           >
             <div class="section">
-              <p class="mb-0">Por pagar:</p>
+              <p class="mb-0">Pending Payment:</p>
               <p class="mb-0">
                 <span>{{ bill.currency.name }} {{ bill.amount }}</span>
               </p>
             </div>
             <div class="section">
               <a (click)="setPaymentParams(bill)" routerLink="payments"
-                >realizar pago</a
+                >Settle Bill</a
               >
             </div>
           </div>
         </div>
       </div>
-      <p *ngIf="billsList === null" class="mt-2">
+      <p *ngIf="billsList.length === 0" class="mt-2">
         No current pending payments...
       </p>
     </div>
   </div>
   <div class="card-header text-center bg-primary rounded-bottom">
     <a class="text-white text-decoration-none" routerLink="balance"
-      >ver pagos</a
+      >See Payments</a
     >
   </div>
 </div>

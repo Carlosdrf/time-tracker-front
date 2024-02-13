@@ -10,9 +10,7 @@ import { CustomDatePipe } from '../services/custom-date.pipe';
 
 import { NavigationComponent } from './navigation/navigation.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { calendarFormat } from 'moment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,8 +24,6 @@ import { PaymentHistoryComponent } from './payment-history/payment-history.compo
 import { BalanceComponent } from './balance/balance.component';
 import { CompaniesService } from '../services/companies.service';
 import { UserComponent } from './user/user.component';
-
-// import { calendarFormat } from "moment";
 
 @NgModule({
   imports: [
@@ -56,7 +52,7 @@ import { UserComponent } from './user/user.component';
     LoaderComponent,
     PaymentHistoryComponent,
     BalanceComponent,
-    UserComponent
+    UserComponent,
     // UserListComponent,
   ],
   exports: [
@@ -80,8 +76,7 @@ import { UserComponent } from './user/user.component';
     CommonModule,
     UserComponent,
     RouterModule,
-    // UserListComponent,
   ],
-    providers: [CustomDatePipe, CalendarComponent, CompaniesService],
+  providers: [CustomDatePipe, CalendarComponent, CompaniesService],
 })
 export class SharedModule {}

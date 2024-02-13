@@ -8,7 +8,7 @@ import { PaymentsService } from 'src/app/services/payments.service';
   styleUrls: ['./client.balance.component.scss'],
 })
 export class ClientBalanceComponent implements OnInit {
-  payments: any;
+  payments: any = [];
   pending: any;
 
   constructor(

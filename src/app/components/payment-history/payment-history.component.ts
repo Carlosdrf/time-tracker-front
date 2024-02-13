@@ -7,7 +7,7 @@ import { UsersService } from 'src/app/services/users.service';
 @Component({
   selector: 'app-payment-history',
   templateUrl: './payment-history.component.html',
-  styleUrls: ['./payment-history.component.scss']
+  styleUrls: ['./payment-history.component.scss'],
 })
 export class PaymentHistoryComponent {
   @Input() payments: any
@@ -40,4 +40,5 @@ export class PaymentHistoryComponent {
   downloadPDF() {
     this.pdfInvoiceService.generatePDF(this.name, this.selectedPayment);
   }
+
 }

@@ -1,7 +1,7 @@
 <main class="container">
   <section class="card rounded">
     <div class="card-header">
-      <h4 class="mb-0">Historial de pagos:</h4>
+      <h4 class="mb-0">Transaction History:</h4>
     </div>
     <div class="card-body">
       <div *ngIf="payments">
@@ -12,17 +12,16 @@
               <p>{{ payment.updated_at | date : "EEEE, dd/MM/YYYY" }}</p>
             </div>
             <div class="col-4">
-              <!-- <a (click)="viewMore(payment)" routerLink="payments"
-               >ver más</a> -->
                <a (click)="viewMore(payment)"
                 style="text-decoration: underline;"
                 data-bs-toggle="modal"
-                data-bs-target="#invoice">ver más</a>
+                data-bs-target="#invoice">See more</a>
             </div>
           </div>
+
         </div>
       </div>
-      <p *ngIf="!payments">No available records...</p>
+      <p *ngIf="payments.length == 0">No available records...</p>
     </div>
   </section>
 

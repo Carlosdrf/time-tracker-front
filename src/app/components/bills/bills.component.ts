@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { PaymentsService } from 'src/app/services/payments.service';
 import { Router, NavigationExtras } from '@angular/router';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
@@ -9,7 +9,7 @@ import Swal, { SweetAlertIcon } from 'sweetalert2';
   styleUrls: ['./bills.component.scss'],
 })
 export class BillsComponent implements OnInit {
-  billsList!: Array<any>;
+  billsList: Array<any> = [];
 
   constructor(private billService: PaymentsService, private router: Router) {}
   ngOnInit(): void {
@@ -53,7 +53,6 @@ export class BillsComponent implements OnInit {
   public getPayments() {
     this.billService.getPendingBills().subscribe({
       next: (v: any) => {
-        console.log(v);
         v = v as Array<any>[];
         this.billsList = v.filter(
           (item: any) => item.status.name === 'Pending'
