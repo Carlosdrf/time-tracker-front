@@ -50,6 +50,7 @@ export class UserComponent implements OnInit, OnChanges {
   ADMIN_ROLE = '1';
   EMPLOYEE_ROLE = '2';
   EMPLOYER_ROLE = '3';
+  timezones!: any;
 
   constructor(
     private userService: UsersService,
@@ -64,8 +65,14 @@ export class UserComponent implements OnInit, OnChanges {
       role: [0, [Validators.required]],
       password: [null],
       cpassword: ['xd'],
-      company: this.fb.group({ id: [''] }),
-      employee: this.fb.group({}),
+      company: this.fb.group({
+        id: [''],
+        timezone: new FormControl(null) // Mover el control timezone aquí dentro del control company
+      }),
+      employee: this.fb.group({
+        'jobPosition': [null, [Validators.required]],
+        'hourlyRate': [null, [Validators.required]]
+      })
     });
   }
 
@@ -115,6 +122,18 @@ export class UserComponent implements OnInit, OnChanges {
       });
 
     this.handleRole();
+
+    this.userService.fetchTimezonesApi().subscribe((data: any) => {
+      if (data.status === 'OK' && Array.isArray(data.zones)) {
+        this.timezones = data.zones.filter(
+          (zone:any) =>
+            zone.countryName === 'United States' || zone.countryName === 'USA'
+        );
+        console.log(this.timezones)
+      } else {
+        console.error('Error: Invalid data structure');
+      }
+    });
   }
   resetForm() {
     this.userForm.reset({ password: '', cpassword: '' });
@@ -124,15 +143,26 @@ export class UserComponent implements OnInit, OnChanges {
     this.userForm.get('role')!.valueChanges.subscribe((role: string) => {
       const companyGroup = this.userForm.get('company') as FormGroup;
       const employeeGroup = this.userForm.get('employee') as FormGroup;
+      companyGroup.addControl('timezone', new FormControl(null));
+      companyGroup.reset();
+      employeeGroup.reset();
       if (role == this.EMPLOYEE_ROLE) {
         for (let controlName in companyGroup.controls) {
           companyGroup.removeControl(controlName);
+        }
+        if (!employeeGroup.get('jobPosition')) {
+          employeeGroup.addControl('jobPosition', this.fb.control(null, Validators.required));
+        }
+        if (!employeeGroup.get('hourlyRate')) {
+          employeeGroup.addControl('hourlyRate', this.fb.control(null, Validators.required));
         }
         employeeGroup.addControl('id', this.fb.control(''));
       } else if (role == this.EMPLOYER_ROLE) {
         for (let controlId in employeeGroup.controls) {
           employeeGroup.removeControl(controlId);
         }
+        employeeGroup.removeControl('jobPosition');
+        employeeGroup.removeControl('hourlyRate');
         companyGroup.addControl('name', this.fb.control(null));
         companyGroup.addControl('description', this.fb.control(null));
       }

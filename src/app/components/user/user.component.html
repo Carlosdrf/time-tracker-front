@@ -76,6 +76,22 @@
               {{ company.name }}
             </option>
           </select>
+          <input
+            type="text"
+            name="Job Position"
+            formControlName="jobPosition"
+            class="form-control p-2 mb-3"
+            placeholder="Job Position"
+            *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"
+          />
+          <input
+            type="number"
+            name="Hourly rate"
+            formControlName="hourlyRate"
+            class="form-control p-2 mb-3"
+            placeholder="Hourly rate"
+            *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"
+          />
         </div>
         <div class="form-group" formGroupName="company">
           <input
@@ -94,6 +110,17 @@
             placeholder="Company description..."
             *ngIf="userForm.get('role')!.value == EMPLOYER_ROLE"
           />
+          <select
+            name="timezone"
+            formControlName="timezone"
+            class="form-select p-2 mb-3"
+            *ngIf="userForm.get('role')!.value == EMPLOYER_ROLE"
+          >
+            <option value="" disabled>Select a timezone</option>
+            <option value="{{ timezone.zoneName }}" *ngFor="let timezone of timezones">
+              {{ timezone.zoneName }} {{ timezone.timestamp | date:'hh:mm a' }}
+            </option>
+          </select>
         </div>
         <div
           class="d-flex position-relative justify-content-between align-items-center"
