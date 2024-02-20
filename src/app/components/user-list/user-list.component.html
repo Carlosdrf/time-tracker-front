@@ -3,11 +3,10 @@
     <div
       class="d-flex flex-wrap mx-3 p-2 rounded-top align-items-center justify-content-between justify-content-sm-between gap-2"
     >
-      <div class="d-flex flex-column align-items-center align-items-sm-start mx-sm-0 mx-auto">
-        <a
-          (click)="selectUser(user)"
-          class="text-decoration-none mb-0 links"
-        >
+      <div
+        class="d-flex flex-column align-items-center align-items-sm-start mx-sm-0 mx-auto"
+      >
+        <a (click)="selectUser(user)" class="text-decoration-none mb-0 links">
           <span class="fs-3 fw-bolder"
             >{{ user.name }} {{ user.last_name }}</span
           >
@@ -22,10 +21,13 @@
           >
         </div>
       </div>
-      <app-user-options
+      <div
+        class="mx-auto mx-sm-0 rounded-circle p-2 btn"
+        title="{{ user.active ? 'Deactivate' : 'Activate' }}"
         *ngIf="!timer"
-        class="mx-auto mx-sm-0"
-      ></app-user-options>
+        [ngClass]="{ 'bg-primary': user.active, 'bg-danger': !user.active }"
+        (click)="toggleUserStatus(user)"
+      ></div>
       <app-timer
         *ngIf="timer"
         [user]="user"

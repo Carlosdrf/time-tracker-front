@@ -17,18 +17,14 @@ export class EntriesService {
   }
   getAllEntries(data: any) {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    return this.http.post<any>(`${this.API_URI}/entries/all`, data, {
+    return this.http.post<any>(`${this.API_URI}/entries`, data, {
       headers,
     });
   }
   updateEntryTask(id: string, data: any) {
     return this.http.put<any>(`${this.API_URI}/entries/task/${id}`, data);
   }
-  // getUsers(body: any) {
-  //   const headers = new HttpHeaders({ 'content-type': 'application/json' });
 
-  //   return this.http.post<any>(`${this.API_URI}/users`, body, { headers });
-  // }
   getUsersEntries(user_id: any) {
     return this.http.post<any>(`${this.API_URI}/entries/user`, user_id);
   }
@@ -43,7 +39,7 @@ export class EntriesService {
   createEntry(entry: any) {
     const jwt = localStorage.getItem('jwt');
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    return this.http.post(`${this.API_URI}/entries`, entry);
+    return this.http.post(`${this.API_URI}/entries/add`, entry);
   }
   deleteEntry(id: number) {
     return this.http.delete(`${this.API_URI}/entries/${id}`);
@@ -53,19 +49,11 @@ export class EntriesService {
   }
   updateEntry(id: number, updatedEntry: Entries): Observable<Entries> {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    // const body = JSON.stringify({hour_init});
-    // console.log(updatedEntry)
     return this.http.put<Entries>(
       `${this.API_URI}/entries/${id}`,
       updatedEntry,
       { headers }
     );
   }
-  
-  // createUser(userData: any) {
-  //   return this.http.post(`${this.API_URI}/users/create`, userData);
-  // }
-  // getCurrentEntry(data: any){
-  //   return this.http.post(`${this.API_URI}/entries/currentEntry`, data)
-  // }
+
 }

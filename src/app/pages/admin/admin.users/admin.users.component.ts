@@ -73,4 +73,16 @@ export class AdminUsersComponent {
     this.users = this.users.filter((user: any) => user.id !== user_id);
     this.selectedUser = null;
   }
+  toggleUserStatus(user: any) {
+    console.log(user);
+    user.active = !user.active;
+    this.userService.update(user).subscribe({
+      next: (value: any) => {
+        if (!user.active) {
+          console.log(value);
+          this.users = this.users.filter((user: any) => user.id !== value.id);
+        }
+      },
+    });
+  }
 }

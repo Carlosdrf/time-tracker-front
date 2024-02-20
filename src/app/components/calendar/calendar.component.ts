@@ -1,4 +1,11 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  Input,
+  SimpleChanges,
+} from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
@@ -32,6 +39,7 @@ export class CalendarComponent {
       new Date().getFullYear()
     );
   }
+  ngOnChanges(change: SimpleChanges) {}
 
   changeMonth(n: number) {
     // if (n > 0) {
@@ -154,7 +162,7 @@ export class CalendarComponent {
       lastSelect: this.datesRange.lastSelect,
     };
     this.rangeSelection.emit(selection);
-    
+
     this.getEntries.emit();
   }
   getTime(date: any, selection: any) {

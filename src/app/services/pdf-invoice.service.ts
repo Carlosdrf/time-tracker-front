@@ -18,7 +18,7 @@ export class PdfInvoiceService {
     })
 
     const img = new Image();
-    img.src = '../assets/images/inimble.png';
+    img.src = './assets/images/inimble.png';
 
     const imageWidth = 55; 
     const imageHeight = 15; 

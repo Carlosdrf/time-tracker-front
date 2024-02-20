@@ -3,8 +3,8 @@ import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { EntriesService } from '../../services/entries.service';
 import { Entries } from '../../models/Entries';
 import { PagesComponent } from '../../pages/pages.component';
-import { WebSocketService } from 'src/app/services/socket/web-socket.service';
-// import * as moment from 'moment';
+import { ModalComponent } from '../modal/modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-entries',
@@ -13,10 +13,10 @@ import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 })
 export class EntriesComponent implements OnInit {
   @Output() getEntries: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onDeleteEntry: EventEmitter<any> = new EventEmitter<any>();
   @Input() entries: any;
   @Input() loaded?: boolean;
   updateDate: Date = new Date();
-  entryCheck: string = '';
   currentEntryId: number = 0;
   timer: any = '00:00:00';
   currenttime: any;
@@ -32,34 +32,25 @@ export class EntriesComponent implements OnInit {
     end_time: new Date(),
   };
   constructor(
-    private socketService: WebSocketService,
     private entriesService: EntriesService,
     private customDate: CustomDatePipe,
-    private page: PagesComponent
+    private page: PagesComponent,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
     this.loaded = false;
-    // this.socketService.connect()
   }
 
-  // getEntries(){
-  //   this.entriesService.getEntries().subscribe(
-  //     (v) => {
-  //       this.entries = v.result;
-  //       if(v.token !== null){
-  //         localStorage.setItem('jwt', v.token)
-  //       }
-  //       this.loaded = true
-  //     }
-  //   )
-  // }
-
   deleteEntry(id: number) {
-    this.entriesService.deleteEntry(id).subscribe((v) => {
-      this.getEntries.emit();
-      this.message = 'Entry deleted!';
-      this.page.setAlert(this.message);
+    const dialog = this.dialog.open(ModalComponent, {
+      data: { subject: 'entry' },
+    });
+    dialog.afterClosed().subscribe((option: boolean) => {
+      if (option) {
+        this.onDeleteEntry.emit(id);
+        console.log('delete')
+      }
     });
   }
   getTotalHours(start: Date, end: Date) {
@@ -87,9 +78,8 @@ export class EntriesComponent implements OnInit {
   updateTask(i: number, event: any) {
     this.entriesService
       .updateEntryTask(this.entries[i].task_id, this.entries[i])
-      .subscribe((v) => {
-        console.log(v);
-        this.message = 'Task updated successfully!';
+      .subscribe((res) => {
+        this.message = res.message;
         this.page.setAlert(this.message);
         this.getEntries.emit();
       });
@@ -154,18 +144,22 @@ export class EntriesComponent implements OnInit {
       this.getEntries.emit();
     }
   }
-  getFormatDate(date: any, value: any) {
+  getFormatDate(date: Date, value: any) {
     const seconds = this.customDate.transform(date, 'ss');
     const [newHour, newMinute] = [value.slice(0, 2), value.slice(2)];
-    const dateformat = this.customDate.transform(date, 'YYYY-MM-DD');
-    const [year, month, day] = dateformat.split('-');
-    this.updateDate.setFullYear(Number(year), Number(month), Number(day));
-    this.updateDate.setHours(
+    const newYear = new Date(date).getFullYear();
+    const newMonth = new Date(date).getMonth();
+    const newDay = new Date(date).getDate();
+    const newDate = new Date(
+      newYear,
+      newMonth,
+      newDay,
       Number(newHour),
       Number(newMinute),
       Number(seconds)
     );
-    return this.updateDate;
+
+    return newDate;
   }
   transform(value: Date) {
     return this.customDate.transform(value, 'HH:mm');
@@ -176,13 +170,10 @@ export class EntriesComponent implements OnInit {
       'DD-MM-YYYY'
     );
     const today = this.customDate.transform(new Date(), 'DD-MM-YYYY');
-    // console.log(date)
     const compareDate = this.customDate.transform(
       date.toLocaleString(),
       'DD-MM-YYYY'
     );
-    // console.log(compareDate)
-    // console.log(yesterday)
     if (compareDate === today) {
       return 'Today';
     } else if (compareDate === yesterday) {

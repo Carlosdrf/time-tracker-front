@@ -25,6 +25,7 @@
       [loaded]="loaded"
       [links]="links"
       (onSelectedUser)="setSelectedUser($event)"
+      (onToggleStatus)="toggleUserStatus($event)"
     ></app-user-list>
   </div>
 </div>
@@ -36,7 +37,7 @@
   >
     <img
       class="col-10 col-sm-8 px-2"
-      src="/assets/images/resources/empleados-section.png"
+      src="./assets/images/resources/empleados-section.png"
       alt=""
       srcset=""
     />

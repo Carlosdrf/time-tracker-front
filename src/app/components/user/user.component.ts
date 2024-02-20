@@ -97,7 +97,7 @@ export class UserComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.getRoles();
     this.getCompanies();
-    // this.getTimezones()
+    this.getTimezones()
     this.userForm
       .get('email')!
       .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
@@ -224,7 +224,7 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public deleteUser(id: string) {
-    const dialog = this.dialog.open(ModalComponent);
+    const dialog = this.dialog.open(ModalComponent, {data: {subject: 'user'}});
     dialog.afterClosed().subscribe((value: any) => {
       if (value) {
         this.userService.delete(id).subscribe({

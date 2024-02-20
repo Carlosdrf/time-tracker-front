@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { EntriesService } from '../../../services/entries.service';
 import { Entries } from '../../../models/Entries';
-import { Router, Navigation, RouterModule } from '@angular/router';
-import { ReportsService } from '../../../services/reports.service';
+import { Router } from '@angular/router';
 import { CustomDatePipe } from '../../../services/custom-date.pipe';
-import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import * as moment from 'moment';
+import { PagesComponent } from '../../pages.component';
 
 @Component({
   selector: 'app-reports',
-  templateUrl: './entries.component.html',
-  styleUrls: ['./entries.component.scss'],
+  templateUrl: './admin.entries.component.html',
+  styleUrls: ['./admin.entries.component.scss'],
 })
 export class EntriesComponent implements OnInit {
+  currentEntryId: string = '';
   regex = /^\d+$/;
   entry: Entries = {
     status: 0,
@@ -25,39 +26,59 @@ export class EntriesComponent implements OnInit {
   entryCheck: any;
   updateDate: Date = new Date();
   loaded!: boolean;
+  isActive: boolean = false;
+  datesRange: any = { firstSelect: '', lastSelect: '' };
+  calendarHead: any;
+  message: string = '';
 
   constructor(
     private customDate: CustomDatePipe,
     private entriesService: EntriesService,
     private router: Router,
-    private reports: ReportsService
+    private page: PagesComponent
   ) {}
 
   ngOnInit(): void {
     this.loaded = false;
+    document.addEventListener('click', this.onClick.bind(this));
+
     this.user = {
       id: localStorage.getItem('userid'),
       name: localStorage.getItem('user_name'),
     };
-    // this.user = this.reports.getSelectedUser()
     if (this.user.id) {
       this.getEntries();
-      this.getEntryStatus();
+      // this.getEntryStatus();
     } else {
       this.router.navigateByUrl('/admin/dashboard');
     }
   }
 
   getEntries() {
-    const user = {
+    let user: any;
+    user = {
       user_id: this.user.id,
     };
-    this.entriesService.getUsersEntries(user).subscribe((v) => {
-      this.entries = v.filter((item: any) => item.status !== 0);
+    // console.log(this.datesRange)
+    if (this.datesRange.firstSelect) {
+      user.start_time = new Date(this.datesRange.firstSelect);
+      user.end_time = new Date(this.datesRange.lastSelect);
+    }
+
+    this.entriesService.getAllEntries(user).subscribe((entries) => {
+      this.entries = entries.filter((item: any) => item.status !== 0);
+      if (entries.length == 0 && this.datesRange.firstSelect) {
+        this.message = 'No logs in the dates selected';
+      }
       this.loaded = true;
     });
   }
 
+  onClick(event: MouseEvent): void {
+    if (!(event.target as HTMLElement).closest('#content')) {
+      this.isActive = false;
+    }
+  }
   getTotalHours(start: Date, end: Date) {
     const [startformat, endformat] = [new Date(start), new Date(end)];
     const start_time = startformat.getTime();
@@ -99,15 +120,8 @@ export class EntriesComponent implements OnInit {
     };
     this.entriesService.getUserEntryStatus(user).subscribe((res) => {
       const status = res as Array<any>;
-      if (status.length > 0) {
-        if (status[0].status === 0) {
-          this.entryCheck = 'started';
-        } else {
-          this.entryCheck = 'ended';
-        }
-      } else {
-        this.entryCheck = 'no entries';
-      }
+      console.log(status);
+      console.log('status');
     });
   }
   updateStart_time(date: Date, event: any, i: number) {
@@ -129,19 +143,24 @@ export class EntriesComponent implements OnInit {
       this.getEntries();
     }
   }
-  getFormatDate(date: any, value: any) {
+  getFormatDate(date: Date, value: any) {
     const seconds = this.customDate.transform(date, 'ss');
     const [newHour, newMinute] = [value.slice(0, 2), value.slice(2)];
-    const dateformat = this.customDate.transform(date, 'YYYY-MM-DD');
-    const [year, month, day] = dateformat.split('-');
-    this.updateDate.setFullYear(Number(year), Number(month), Number(day));
-    this.updateDate.setHours(
+    const newYear = new Date(date).getFullYear();
+    const newMonth = new Date(date).getMonth();
+    const newDay = new Date(date).getDate();
+    const newDate = new Date(
+      newYear,
+      newMonth,
+      newDay,
       Number(newHour),
       Number(newMinute),
       Number(seconds)
     );
-    return this.updateDate;
+
+    return newDate;
   }
+
   updateEnd_time(date: Date, event: any, i: number) {
     if (this.regex.test(event.target.value)) {
       if (event.target.value.length == 3) {
@@ -161,25 +180,32 @@ export class EntriesComponent implements OnInit {
       this.getEntries();
     }
   }
-  // public addEntry(){
-
-  // }
-  // public endCurrentEntry(){
-
-  // }
+  public addEntry(data: any) {}
+  public endCurrentEntry(data: any) {}
   public updateTask(i: number, event: any) {
     this.entriesService
       .updateEntry(this.entries[i].id, this.entries[i])
       .subscribe((v) => {
-        // console.log(v)
         this.getEntries();
-        // this.getEntryStatus()
       });
   }
   public deleteEntry(id: number) {
     this.entriesService.deleteEntry(id).subscribe((v) => {
+      this.message = 'Entry deleted!';
+      this.page.setAlert(this.message);
       this.getEntries();
-      this.getEntryStatus();
+      // this.getEntryStatus();
     });
+  }
+  public toggleCalendar() {
+    this.isActive = !this.isActive;
+  }
+  setDatesGroup(dateRange: any) {
+    this.toggleCalendar();
+  }
+  resetDates() {
+    this.datesRange.firstSelect = '';
+    this.datesRange.lastSelect = '';
+    this.getEntries();
   }
 }

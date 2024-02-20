@@ -1,4 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { TimerComponent } from '../timer/timer.component';
 import { ReportsService } from 'src/app/services/reports.service';
@@ -11,13 +18,14 @@ import { UserOptionsComponent } from '../user-options/user-options.component';
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
 })
-export class UserListComponent {  
+export class UserListComponent {
   @Input() users!: any;
   @Input() timer: boolean = false;
   @Input() loaded!: boolean;
   // @Input() editMode: boolean = false
-  @Input() links: any
-  @Output() onSelectedUser: EventEmitter<any> = new EventEmitter<any>()
+  @Input() links: any;
+  @Output() onSelectedUser: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onToggleStatus: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private reportService: ReportsService) {}
 
@@ -25,9 +33,10 @@ export class UserListComponent {
     this.reportService.setUserInformation(user);
   }
 
-  selectUser(user: any){
+  selectUser(user: any) {
     this.onSelectedUser.emit(user);
   }
-
-
+  toggleUserStatus(user: any) {
+    this.onToggleStatus.emit(user);
+  }
 }
