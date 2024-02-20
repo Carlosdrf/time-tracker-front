@@ -7,4 +7,11 @@
 // .mat-mdc-progress-spinner {
 //     --mdc-circular-progress-active-indicator-color: #92b46c;
 // }
-@import '../../pages.component.scss'
+@import "../../pages.component.scss";
+
+.calendar {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  // top: 0;
+}

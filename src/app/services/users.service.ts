@@ -18,6 +18,9 @@ export class UsersService {
   createUser(userData: any) {
     return this.http.post(`${this.API_URI}/users/create`, userData);
   }
+  public update(user: any){
+    return this.http.put(`${this.API_URI}/users/${user.id}`, user)
+  }
   public delete(id: string) {
     return this.http.delete(`${this.API_URI}/users/${id}`)
   }

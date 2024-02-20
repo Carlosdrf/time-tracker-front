@@ -5,4 +5,4 @@
 (end_entry)="endCurrentEntry($event)"
 (start_entry)="addEntry($event)"></app-entries-panel>
 
-<app-entries (getEntries)="getEntries()" [entries]="entries" [loaded]="loaded"></app-entries>
+<app-entries (getEntries)="getEntries()" (onDeleteEntry)="deleteEntry($event)" [entries]="entries" [loaded]="loaded"></app-entries>

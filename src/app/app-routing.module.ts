@@ -5,8 +5,8 @@ import { AuthGuard } from './services/guards/auth-guard.service';
 import { notAuthGuard } from './services/guards/notAuth-guard.service';
 import { AdminGuard } from './services/guards/admin-guard.service';
 import { NotAdmin } from './services/guards/not-admin.service';
-import { EntriesComponent } from './pages/admin/admin.entries/entries.component';
-import { EntriesModule } from './pages/admin/admin.entries/entries.module';
+import { EntriesComponent } from './pages/admin/admin.entries/admin.entries.component';
+import { EntriesModule } from './pages/admin/admin.entries/admin.entries.module';
 import { UserTypeGuardService } from './services/guards/user-type-guard.service';
 import { path } from 'd3';
 
@@ -73,7 +73,7 @@ export const routes: Routes = [
       {
         path: 'user',
         loadChildren: () =>
-          import('./pages/admin/admin.entries/entries.module').then(
+          import('./pages/admin/admin.entries/admin.entries.module').then(
             (m) => EntriesModule
           ),
         canActivate: [UserTypeGuardService],

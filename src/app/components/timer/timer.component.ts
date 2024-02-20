@@ -24,7 +24,7 @@ import { Entry } from 'src/app/models/Entries';
 })
 export class TimerComponent implements OnChanges, OnInit {
   @Input() user: any;
-  start_date: string = moment().isoWeekday(1).format('YYYY/MM/DD');
+  start_date: string = moment().format('YYYY/MM/DD');
   end_date: string = moment().format('YYYY/MM/DD');
   private subscription: Subscription[] = [];
   private entries: any;
@@ -56,7 +56,8 @@ export class TimerComponent implements OnChanges, OnInit {
 
   getEntries() {
     const data = {
-      start_time: this.start_date,
+      user_id: this.user.id,
+      start_time: new Date(this.start_date).toUTCString(),
       end_time: new Date(this.end_date).toUTCString(),
     };
     this.entriesService.getAllEntries(data).subscribe((entries) => {

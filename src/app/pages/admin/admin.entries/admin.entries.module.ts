@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '../../../components/shared.module';
-import { EntriesComponent } from './entries.component';
+import { EntriesComponent } from './admin.entries.component';
 import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
