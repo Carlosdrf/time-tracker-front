@@ -8,12 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder,
-} from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
 import { User } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
@@ -63,7 +58,7 @@ export class UserComponent implements OnInit, OnChanges {
       email: [null, [Validators.required]],
       role: [0, [Validators.required]],
       password: [null],
-      cpassword: ['xd'],
+      cpassword: [''],
       company: this.fb.group({ id: [''] }),
       employee: this.fb.group({}),
     });
@@ -97,12 +92,11 @@ export class UserComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.getRoles();
     this.getCompanies();
-    this.getTimezones()
+    this.getTimezones();
     this.userForm
       .get('email')!
       .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((email) => {
-        console.log('valuechanges');
         const userId = this.selectedUser ? this.selectedUser.id : -1;
         this.userService.verifyUsername(email, userId).subscribe({
           next: (v: any) => {
@@ -113,7 +107,6 @@ export class UserComponent implements OnInit, OnChanges {
           },
         });
       });
-
     this.handleRole();
   }
   resetForm() {
@@ -224,7 +217,9 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public deleteUser(id: string) {
-    const dialog = this.dialog.open(ModalComponent, {data: {subject: 'user'}});
+    const dialog = this.dialog.open(ModalComponent, {
+      data: { subject: 'user' },
+    });
     dialog.afterClosed().subscribe((value: any) => {
       if (value) {
         this.userService.delete(id).subscribe({
