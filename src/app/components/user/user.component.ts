@@ -13,6 +13,7 @@ import {
   FormControl,
   Validators,
   FormBuilder,
+  FormArray,
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
 import { User } from 'src/app/models/User.model';
@@ -51,6 +52,8 @@ export class UserComponent implements OnInit, OnChanges {
   EMPLOYEE_ROLE = '2';
   EMPLOYER_ROLE = '3';
   timezones!: any;
+  daysOfWeekOptions: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  selectedDaysOfWeek: string[] = [];
 
   constructor(
     private userService: UsersService,
@@ -67,13 +70,21 @@ export class UserComponent implements OnInit, OnChanges {
       cpassword: ['xd'],
       company: this.fb.group({
         id: [''],
-        timezone: new FormControl(null) // Mover el control timezone aquí dentro del control company
+        name: [null, [Validators.required]],
+        timezone: new FormControl(null) 
       }),
       employee: this.fb.group({
         'jobPosition': [null, [Validators.required]],
-        'hourlyRate': [null, [Validators.required]]
+        'hourlyRate': [null, [Validators.required]],
+        'daysOfWeek': this.fb.array([]),
+        'startTime': [null, [Validators.required]],
+        'endTime': [null, [Validators.required]]
       })
     });
+    const daysOfWeekFormArray = this.userForm.get('employee.daysOfWeek') as FormArray;
+    this.daysOfWeekOptions.forEach(() => {
+    daysOfWeekFormArray.push(new FormControl(false)); 
+  });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -104,7 +115,6 @@ export class UserComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.getRoles();
     this.getCompanies();
-    // this.getTimezones()
     this.userForm
       .get('email')!
       .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
@@ -129,7 +139,6 @@ export class UserComponent implements OnInit, OnChanges {
           (zone:any) =>
             zone.countryName === 'United States' || zone.countryName === 'USA'
         );
-        console.log(this.timezones)
       } else {
         console.error('Error: Invalid data structure');
       }
@@ -156,16 +165,53 @@ export class UserComponent implements OnInit, OnChanges {
         if (!employeeGroup.get('hourlyRate')) {
           employeeGroup.addControl('hourlyRate', this.fb.control(null, Validators.required));
         }
+        if (!employeeGroup.get('daysOfWeek')) {
+          employeeGroup.addControl('daysOfWeek', this.fb.array([]));
+        }
+        this.addDaysOfWeekOptions();
+        if (!employeeGroup.get('startTime')) {
+          employeeGroup.addControl('startTime', this.fb.control(null, Validators.required));
+        }
+        if (!employeeGroup.get('endTime')) {
+          employeeGroup.addControl('endTime', this.fb.control(null, Validators.required));
+        }
         employeeGroup.addControl('id', this.fb.control(''));
       } else if (role == this.EMPLOYER_ROLE) {
+        companyGroup.addControl('name', this.fb.control(''));
+        companyGroup.addControl('description', this.fb.control(''));
+        companyGroup.addControl('timezone', this.fb.control(null));
         for (let controlId in employeeGroup.controls) {
           employeeGroup.removeControl(controlId);
         }
+        if (employeeGroup.get('daysOfWeek')) {
+          employeeGroup.removeControl('daysOfWeek');
+        }
         employeeGroup.removeControl('jobPosition');
         employeeGroup.removeControl('hourlyRate');
+        employeeGroup.removeControl('startTime');
+        employeeGroup.removeControl('endTime');
         companyGroup.addControl('name', this.fb.control(null));
         companyGroup.addControl('description', this.fb.control(null));
       }
+    });
+  }
+  public addDaysOfWeekOptions() {
+    const daysOfWeekArray = this.userForm.get('employee.daysOfWeek') as FormArray;
+    const daysOfWeekOptions = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  
+    daysOfWeekOptions.forEach((day) => {
+      const control = new FormControl(false);
+      daysOfWeekArray.push(control);
+    });
+  
+    daysOfWeekArray.valueChanges.subscribe((selectedValues) => {
+      const selectedDaysOfWeek:string[] = [];
+      selectedValues.forEach((value:any, index:any) => {
+        if (value) {
+          selectedDaysOfWeek.push(daysOfWeekOptions[index]);
+        }
+      });
+      this.selectedDaysOfWeek = selectedDaysOfWeek;
     });
   }
   public getRoles() {
@@ -183,11 +229,14 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
   public getTimezones() {
-    this.userService.fetchTimezonesApi().subscribe({
-      next(value) {
-        console.log(value);
+    this.userService.fetchTimezonesApi().subscribe(
+      (timezones) => {
+        this.timezones = timezones; 
       },
-    });
+      (error) => {
+        console.log(error); 
+      }
+    );
   }
   public submitUserForm() {
     if (this.selectedUser) this.newUser.id = this.selectedUser.id;
@@ -207,9 +256,10 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.password = this.userForm.value.password;
 
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
-          if (this.userForm.value.company.id != null) {
+          if (this.userForm.value.company != null) {
             this.newUser.company.id = this.userForm.value.company.id;
             this.newUser.company.name = this.userForm.value.company.name;
+            this.newUser.company.timezone = this.userForm.value.company.timezone;
             if (this.userForm.value.company.description != null) {
               this.newUser.company.description =
                 this.userForm.value.company.description;
@@ -221,8 +271,13 @@ export class UserComponent implements OnInit, OnChanges {
           this.EMPLOYEE_ROLE == this.userForm.value.role
         ) {
           this.newUser.employee.id = this.userForm.value.employee.id;
+          this.newUser.employee.jobPosition = this.userForm.value.employee.jobPosition;
+          this.newUser.employee.hourlyRate = this.userForm.value.employee.hourlyRate;
+          this.newUser.employee.daysOfWeek = this.selectedDaysOfWeek;
+          this.newUser.employee.startTime = this.userForm.value.employee.startTime;
+          this.newUser.employee.endTime = this.userForm.value.employee.endTime;
         }
-        // console.log(this.newUser);
+        console.log(this.newUser);
         this.userService.createUser(this.newUser).subscribe({
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
