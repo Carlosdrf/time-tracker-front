@@ -36,6 +36,13 @@ export const routes: Routes = [
         data: { allowedUserTypes: [ADMIN_TYPE_ROLE, USER_TYPE_ROLE] },
       },
       {
+        path: 'employees',
+        loadChildren: () =>
+          import('./pages/employees/employees.module').then((m) => m.EmployeesModule),
+        canActivate: [UserTypeGuardService],
+        data: { allowedUserTypes: [CLIENT_TYPE_ROLE] },
+      },
+      {
         path: 'login',
         canActivate: [notAuthGuard],
         loadChildren: () =>
@@ -77,7 +84,7 @@ export const routes: Routes = [
             (m) => EntriesModule
           ),
         canActivate: [UserTypeGuardService],
-        data: { allowedUserTypes: [ADMIN_TYPE_ROLE] },
+        data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
       },
       {
         path: 'client',
