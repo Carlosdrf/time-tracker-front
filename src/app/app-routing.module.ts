@@ -43,6 +43,13 @@ export const routes: Routes = [
         data: { allowedUserTypes: [CLIENT_TYPE_ROLE] },
       },
       {
+        path: 'entries',
+        loadChildren: () =>
+          import('./pages/dashboard/entries.employees/entries.employees.module').then((m) => m.EntriesEmployeesModule),
+        canActivate: [UserTypeGuardService],
+        data: { allowedUserTypes: [USER_TYPE_ROLE] },
+      },
+      {
         path: 'login',
         canActivate: [notAuthGuard],
         loadChildren: () =>

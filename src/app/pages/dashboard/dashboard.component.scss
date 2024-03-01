@@ -14,3 +14,23 @@
     opacity: 1;
     display: block;
 }
+
+.min-height {
+  min-height: 300px;
+}
+
+.user-ico {
+  font-size: 35px;
+}
+
+.bg-container {
+  background-image: url(../../../assets/images/resources/customer-service-section.png);
+}
+
+.bg-container-2 {
+  background-image: url(../../../assets/images/resources/blog-section.png);
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+  
