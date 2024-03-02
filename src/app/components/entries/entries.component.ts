@@ -49,7 +49,7 @@ export class EntriesComponent implements OnInit {
     dialog.afterClosed().subscribe((option: boolean) => {
       if (option) {
         this.onDeleteEntry.emit(id);
-        console.log('delete')
+        console.log('delete');
       }
     });
   }
@@ -91,17 +91,18 @@ export class EntriesComponent implements OnInit {
       date: entry.date,
     };
   }
-  updateStart_time(date: Date, event: any, i: number) {
-    if (this.regex.test(event.target.value)) {
-      if (event.target.value.length == 3) {
-        event.target.value = 0 + event.target.value;
+  updateStart_time(entry: any, event: Event) {
+    let input = (event.target as HTMLInputElement).value;
+    if (this.regex.test(input)) {
+      if (input.length == 3) {
+        input = 0 + input;
       }
-      const data = this.setUpdateData(
-        date,
-        event.target.value,
-        this.entries[i]
-      );
-      this.entriesService.updateEntry(this.entries[i].id, data).subscribe({
+      const data = {
+        start_time: this.getFormatDate(entry.start_time, input),
+        end_time: entry.end_time,
+        date: entry.date,
+      };
+      this.entriesService.updateEntry(entry.id, data).subscribe({
         next: () => {
           this.getEntries.emit();
           this.message = 'Start time updated successfully!';
@@ -117,18 +118,18 @@ export class EntriesComponent implements OnInit {
       this.getEntries.emit();
     }
   }
-  updateEnd_time(date: Date, event: any, i: number) {
-    if (this.regex.test(event.target.value)) {
-      if (event.target.value.length == 3) {
-        event.target.value = 0 + event.target.value;
+  updateEnd_time(entry: any, event: Event) {
+    let input = (event.target as HTMLInputElement).value;
+    if (this.regex.test(input)) {
+      if (input.length == 3) {
+        input = 0 + input;
       }
-      const data = this.setUpdateData(
-        date,
-        event.target.value,
-        this.entries[i]
-      );
-
-      this.entriesService.updateEntry(this.entries[i].id, data).subscribe({
+      const data = {
+        start_time: entry.start_time,
+        end_time: this.getFormatDate(entry.start_time, input),
+        date: entry.date,
+      };
+      this.entriesService.updateEntry(entry.id, data).subscribe({
         next: (v) => {
           this.getEntries.emit();
           this.message = 'End time updated successfully!';

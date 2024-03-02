@@ -171,11 +171,12 @@ export class EntriesComponent implements OnInit {
         end_time: this.getFormatDate(date, event.target.value),
         date: this.entries[i].date,
       };
-      this.entriesService
-        .updateEntry(this.entries[i].id, data)
-        .subscribe((v) => {
-          this.getEntries();
-        });
+      console.log(data)
+      // this.entriesService
+      //   .updateEntry(this.entries[i].id, data)
+      //   .subscribe((v) => {
+      //     this.getEntries();
+      //   });
     } else {
       this.getEntries();
     }

@@ -1,12 +1,12 @@
-<main class="container" id="userForm">
-  <div class="rounded shadow text-center card">
+<main class="h-100 d-flex flex-column justify-content-center">
+  <div class="rounded shadow text-center card max-h-75 mt-5">
     <div class="card-header">
       <h1 class="mb-0 text-dark fs-3">{{ title }}</h1>
     </div>
-    <div class="card-body">
+    <div class="card-body position-relative i-flow">
       <form
         action=""
-        class="p-1"
+        class="p-1 mb-2"
         [formGroup]="userForm"
         (ngSubmit)="submitUserForm()"
       >
@@ -121,4 +121,5 @@
       </form>
     </div>
   </div>
+  <div></div>
 </main>

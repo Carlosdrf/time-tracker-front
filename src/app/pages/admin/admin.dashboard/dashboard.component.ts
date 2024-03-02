@@ -39,7 +39,7 @@ export class AdminDashboardComponent implements OnInit {
 
   getUsers() {
     this.userService.getUsers(this.searchForm.value).subscribe((users) => {
-      this.users = users;
+      this.users = users.filter((user: any)=> user.active !== 0);
       this.loaded = true;
     });
   }

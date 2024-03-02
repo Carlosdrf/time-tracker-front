@@ -1,76 +1,82 @@
-<div class="container">
-  <div class="col-md-12">
-    <div class="card rounded mb-4">
-      <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5
-            class="title mb-0 p-2"
-            *ngIf="user.name !== null && (role === '1' || role === '3')"
+<div class="card rounded shadow mb-3">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5
+        class="title mb-0 p-2"
+        *ngIf="user.name !== null && (role === '1' || role === '3')"
+      >
+        Report: {{ user.name }} {{user.last_name}}
+      </h5>
+      <h5
+        class="title mb-0 p-2"
+        *ngIf="user.name == null && (role === '1' || role === '3')"
+      >
+        Report: Your Team
+      </h5>
+      <h5 class="title mb-0 p-2" *ngIf="user.name == null && role === '2'">
+        Your Reports:
+      </h5>
+      <a
+        routerLink="/user/entries"
+        *ngIf="user.name !== null && role === '1' && user.company == null && selectedUser"
+        class="mb-0 links"
+        ><span>See Entries</span></a
+      >
+    </div>
+  </div>
+  <div class="p-2 card-body">
+    <div
+      class="d-flex flex-wrap justify-content-between align-items-center gap-1"
+    >
+      <!-- filter options -->
+      <div>
+        <app-user-options
+          (onSelectUserId)="filterByUser($event)"
+          *ngIf="role !== '2'"
+        ></app-user-options>
+      </div>
+      <div class="">
+        <div class="d-flex justify-content-end flex-wrap">
+          <button
+            mat-raised-button
+            class="m-1"
+            color="primary"
+            id="content"
+            (click)="toggleCalendar()"
           >
-            Report: {{ user.name }}
-          </h5>
-          <h5
-            class="title mb-0 p-2"
-            *ngIf="user.name == null && (role === '1' || role === '3')"
-          >
-            I-nimble Reports: Everyone
-          </h5>
-          <h5 class="title mb-0 p-2" *ngIf="user.name == null && role === '2'">
-            Your Reports:
-          </h5>
+            Calendar
+          </button>
+
           <a
-            routerLink="/user/entries"
-            *ngIf="user.name !== null && role === '1'"
-            class="mb-0 links"
-            ><span>See Entries</span></a
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="rounded text-decoration-none m-1"
+            (click)="downloadReport()"
+            ><span><mat-icon>download</mat-icon></span></a
           >
         </div>
-      </div>
-      <div class="p-2 card-body">
-        <div class="d-flex justify-content-end">
-          <div>
-            <button
-              mat-raised-button
-              class="m-1"
-              color="primary"
-              id="content"
-              (click)="toggleCalendar()"
-            >
-              Calendar
-            </button>
-            <div class="calendar" id="content" *ngIf="isActive">
-              <app-calendar
-                (rangeSelection)="setDatesGroup($event)"
-                (getEntries)="getEntries()"
-                [datesRange]="datesRange"
-                [calendar]="calendarHead"
-              ></app-calendar>
-            </div>
-            <a
-              mat-raised-button
-              color="primary"
-              type="submit"
-              class="m-1 rounded text-decoration-none"
-              (click)="downloadReport()"
-              ><span><mat-icon>download</mat-icon></span></a
-            >
-          </div>
+        <div class="calendar" id="content" *ngIf="isActive">
+          <app-calendar
+            (rangeSelection)="setDatesGroup($event)"
+            (getEntries)="getEntries()"
+            [datesRange]="datesRange"
+            [calendar]="calendarHead"
+          ></app-calendar>
         </div>
       </div>
     </div>
-
-    <div class="card rounded shadow">
-      <div class="card-header">
-        <div class="row">
-          <p class="mb-0">{{ calendarHead }}</p>
-        </div>
-      </div>
-
-      <div class="card-body">
-        <div class="chart">
-          <canvas id="myChart"></canvas>
-        </div>
-      </div>
+  </div>
+</div>
+<div class="card rounded shadow">
+  <div class="card-header">
+    <div class="row">
+      <p class="mb-0">{{ calendarHead }}</p>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="chart">
+      <canvas id="myChart"></canvas>
     </div>
   </div>
 </div>

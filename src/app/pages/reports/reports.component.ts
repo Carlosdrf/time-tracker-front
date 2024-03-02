@@ -7,13 +7,19 @@ import { ReportsService } from '../../services/reports.service';
 // import * as Chart from 'chart.js';
 import * as filesaver from 'file-saver';
 import * as moment from 'moment';
+import { CalendarComponent } from 'src/app/components/calendar/calendar.component';
+import { UserOptionsComponent } from 'src/app/components/user-options/user-options.component';
+import { SharedModule } from 'src/app/components/shared.module';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
+  standalone: true,
+  imports: [UserOptionsComponent, SharedModule],
 })
 export class ReportsComponent implements OnInit {
+  selectedUser: any;
   entries: any = [];
   isActive: boolean = false;
   datesSelection: any;
@@ -22,7 +28,7 @@ export class ReportsComponent implements OnInit {
   totalEntries: any = [];
   role = localStorage.getItem('role');
   params!: string;
-  user: any;
+  user: any = { id: null, name: null, company: null };
   // chart init
   single: any;
   chart: any;
@@ -123,6 +129,19 @@ export class ReportsComponent implements OnInit {
     }
   }
 
+  filterByUser(user: any) {
+    this.selectedUser = user;
+    this.user = user;
+    localStorage.setItem('userid', user.id);
+    localStorage.setItem('user_name', user.name);
+    if (user.id == 0) {
+      this.user.id = null;
+      this.user.name = null;
+      localStorage.removeItem('userid');
+      localStorage.removeItem('user_name');
+    }
+    this.getEntries();
+  }
   toggleCalendar() {
     this.isActive = !this.isActive;
   }
@@ -134,10 +153,9 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    console.log(this.datesRange);
     if (this.user.id) {
       this.reportsService
-        .getRange(this.datesRange, this.user.id)
+        .getRange(this.datesRange, this.user)
         .subscribe((v) => {
           this.entries = v;
           this.arrangeEntries();
@@ -153,7 +171,7 @@ export class ReportsComponent implements OnInit {
   downloadReport() {
     if (this.user.id) {
       this.reportsService
-        .getReport(this.datesRange, this.user.id)
+        .getReport(this.datesRange, this.user)
         .subscribe((v) => {
           let filename;
           const [name, lastname] = this.user.name.split(' ');

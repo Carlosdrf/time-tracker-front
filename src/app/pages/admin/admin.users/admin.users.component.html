@@ -48,7 +48,7 @@
   #appUser
   [ngClass]="{ 'slide-in': isSlideIn, 'slide-out': !isSlideIn }"
 >
-  <div class="col-9 col-sm-10">
+  <div class="col-9 vh-100 col-sm-10 position-relative">
     <app-user
       [selectedUser]="selectedUser"
       (onSaveSelectedUser)="handleSavedUser($event)"

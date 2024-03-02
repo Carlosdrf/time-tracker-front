@@ -4,8 +4,10 @@
       {{ entry.started }} {{ entry.timeRef }}
     </p>
     <p class="text-muted mb-0" *ngIf="entry.status == null">Inactive</p>
+    <p *ngIf="entry.status != null">Initiated at {{ entry.start_time | date : "HH:mm" }}</p>
+
   </div>
   <div class="ms-0 ms-md-3 text-center">
-    <p class="fs-3 mb-0">{{ entry.totalHours }}</p>
+    <!-- <p class="fs-3 mb-0">{{ entry.totalHours }}</p> -->
   </div>
 </div>

@@ -16,10 +16,10 @@
       <div class="card-body row justify-content-center">
           <form class="col-lg-11 col-md-10 col-sm-12 text-center row" action="">
               <div class="col-lg-2 col-md-3 col-6">
-                  <input type="text" name="start_time" class="form-control text-center m-1" [ngModel]="entry.start_time | customDate:'HH:mm'" [ngModelOptions]="{standalone: true}" (ngModelChange)="entry.start_time" (focus)="timeFormat($event, i)" (blur)="updateStart_time(entry.start_time, $event, i)" (keydown.enter)="updateStart_time(entry.start_time, $event, i)">
+                  <input type="text" name="start_time" class="form-control text-center m-1" [ngModel]="entry.start_time | customDate:'HH:mm'" [ngModelOptions]="{standalone: true}" (ngModelChange)="entry.start_time" (focus)="timeFormat($event, i)" (blur)="updateStart_time(entry, $event)" (keydown.enter)="updateStart_time(entry, $event)">
               </div>
               <div class="col-lg-2 col-md-3 col-6">
-                  <input type="text" name="end_time" class="form-control text-center m-1" [ngModel]="entry.end_time | customDate:'HH:mm'"  [ngModelOptions]="{standalone: true}" (ngModelChange)="entry.end_time" (focus)="timeFormat($event, i)" (blur)="updateEnd_time(entry.end_time, $event, i)" (keydown.enter)="updateEnd_time(entry.end_time, $event, i)">
+                  <input type="text" name="end_time" class="form-control text-center m-1" [ngModel]="entry.end_time | customDate:'HH:mm'"  [ngModelOptions]="{standalone: true}" (ngModelChange)="entry.end_time" (focus)="timeFormat($event, i)" (blur)="updateEnd_time(entry, $event)" (keydown.enter)="updateEnd_time(entry, $event)">
               </div>
               <div class="col-lg-8 col-md-6">
                   <input type="text" name="task" class="form-control m-1" [(ngModel)]="entries[i].description" (blur)="updateTask(i, $event)" placeholder="Add a comment" (keydown.enter)="updateTask(i, $event)">
