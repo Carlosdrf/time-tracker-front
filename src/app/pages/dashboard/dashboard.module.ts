@@ -6,9 +6,11 @@ import { CustomDatePipe } from "../../services/custom-date.pipe";
 import { FormsModule } from "@angular/forms";
 import { DashboardComponent } from "./dashboard.component";
 import { SharedModule } from "src/app/components/shared.module";
+import { ClientCustomerServiceComponent } from "../client/client.customer-service/client.customer-service.component";
 
 export const routes: Routes = [
-    {path: '', component: DashboardComponent, pathMatch: 'full'}
+    {path: '', component: DashboardComponent, pathMatch: 'full'},
+    {path: 'customer-service', component: ClientCustomerServiceComponent, pathMatch: 'full'}
 ]
 
 @NgModule({

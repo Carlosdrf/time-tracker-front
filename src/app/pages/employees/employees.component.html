@@ -1,0 +1,7 @@
+<app-search
+  [searchForm]="searchForm"
+  (onSearch)="getUsers()"
+  (onLoading)="loading()"
+></app-search>
+<app-user-list [users]="users" [timer]="true" [loaded]="loaded" [links]="links"></app-user-list>
+

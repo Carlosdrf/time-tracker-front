@@ -1,0 +1,8 @@
+<app-entries-panel
+[entryCheck]="entryCheck"
+[currentEntryId]="currentEntryId"
+[start_time]="start_time"
+(end_entry)="endCurrentEntry($event)"
+(start_entry)="addEntry($event)"></app-entries-panel>
+
+<app-entries (getEntries)="getEntries()" (onDeleteEntry)="deleteEntry($event)" [entries]="entries" [loaded]="loaded"></app-entries>

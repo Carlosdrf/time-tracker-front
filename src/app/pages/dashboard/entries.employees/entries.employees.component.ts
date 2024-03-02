@@ -1,15 +1,26 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { EntriesService } from '../../services/entries.service';
-import { CustomDatePipe } from '../../services/custom-date.pipe';
-import { PagesComponent } from '../pages.component';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { userRoles } from 'src/app/app.models';
+import { SearchComponent } from 'src/app/components/search/search.component';
+import { SharedModule } from 'src/app/components/shared.module';
+import { TimerComponent } from 'src/app/components/timer/timer.component';
+import { UserListComponent } from 'src/app/components/user-list/user-list.component';
+import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
+import { EmployeesService } from 'src/app/services/employees.service';
+import { EntriesService } from 'src/app/services/entries.service';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
+import { UsersService } from 'src/app/services/users.service';
+import { PagesComponent } from '../../pages.component';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  selector: 'app-entries-employees',
+  standalone: true,
+  imports: [UserListComponent, SharedModule, TimerComponent, SearchComponent],
+  templateUrl: './entries.employees.component.html',
+  styleUrls: ['./entries.employees.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class EntriesEmployeesComponent implements OnInit {
   @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
   name: any;
   entries: any = [];
