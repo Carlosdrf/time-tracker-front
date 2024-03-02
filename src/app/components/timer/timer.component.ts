@@ -29,6 +29,7 @@ export class TimerComponent implements OnChanges, OnInit {
   private subscription: Subscription[] = [];
   private entries: any;
   public entry: Entry = {
+    start_time: null,
     status: null,
     timeRef: undefined,
     started: '',
@@ -78,28 +79,32 @@ export class TimerComponent implements OnChanges, OnInit {
         acc += this.getHours(entry.start_time, entry.end_time);
       }
     });
-    let status = entries.filter(
+    let status = entries.find(
       (item: any) => item.status === 0 && item.user_id === user.id
     );
-    if (status.length > 0) {
+    console.log(status)
+    if (status) {
+      this.entry.start_time = status.start_time
       let timer = interval(1000).subscribe(() => {
         this.entry.started = this.customDate.getTotalHours(
-          status[0].start_time
+          status.start_time
         );
         this.entry.timeRef = this.getTimeAgo(this.entry.started.split(':'));
       });
       this.subscription.push(timer);
-      this.entry.status = status[0].status;
+      this.entry.status = status.status;
     } else {
+      this.entry.start_time = null;
       this.entry.started = '00:00:00 seconds';
       this.entry.timeRef = null;
       this.entry.status = null;
     }
     this.entry.totalHours = this.formatHours(acc);
+    console.log(this.entry)
   }
 
   getTimeAgo(time: Array<any>) {
-    if (time[1] == '00') return 'seconds';
+    if (time[1] == '00' && time[0] == '00') return 'seconds';
     if (time[0] == '00') return 'minutes';
     return 'hours';
   }

@@ -1,31 +1,29 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EmployeesService } from 'src/app/services/employees.service';
-import { ReportsService } from 'src/app/services/reports.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
-  styleUrls: ['./employees.component.scss']
+  styleUrls: ['./employees.component.scss'],
 })
-export class EmployeesComponent implements OnInit{
-  employees: any = []
-  constructor(private employeesService: EmployeesService, private reports: ReportsService){}
+export class EmployeesComponent implements OnInit {
+  employees: any = [];
+  constructor(private userService: UsersService) {}
 
   ngOnInit(): void {
-    this.getEmployees()
+    this.getEmployees();
   }
-  getEmployees(){
-    this.employeesService.getEmployees().subscribe({
-      next: employees=>{
-        this.employees = employees
-        console.log(this.employees)
-      }
-    })
+  getEmployees() {
+    this.userService.getEmployees().subscribe({
+      next: (employees: any) => {
+        this.employees = employees.filter((user: any) => user.user.active == 1);
+      },
+    });
   }
-  onSelectUser(data:any){
-    this.reports.setUserInformation(data)
+  onSelectUser(data: any) {
+    this.userService.setUserInformation(data);
   }
-  resetUserReport(){
-    this.reports.resetUser()
+  resetUserReport() {
+    this.userService.resetUser();
   }
 }

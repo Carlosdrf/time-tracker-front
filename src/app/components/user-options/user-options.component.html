@@ -1,3 +1,25 @@
-<div class="p-2 d-flex">
-  <mat-icon class="secondary-color">edit</mat-icon>
+<div class="d-flex flex-wrap align-items-center gap-1 mx-1">
+  <div class="form-group " *ngIf="role !== '2'">
+    <select
+      [(ngModel)]="select"
+      class="form-select py-1"
+      (change)="selectUserId($event)"
+    >
+      <option value="" disabled>Select a user</option>
+      <option value="0" *ngIf="!byClient">All</option>
+      <option *ngFor="let user of users" [value]="user.id">
+        {{handleDisplay(user)}}
+      </option>
+    </select>
+  </div>
+  <div class="form-check mx-2" *ngIf="role == '1'">
+    <input
+      type="checkbox"
+      name="client"
+      id="client"
+      class="form-check-input"
+      (change)="toggleCheck()"
+    />
+    <label for="client" class="form-check-label">Filter by clients?</label>
+  </div>
 </div>

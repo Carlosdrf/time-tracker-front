@@ -12,4 +12,5 @@ export class Entry {
   timeRef!: any;
   started: string = '';
   totalHours: string = "";
+  start_time: any;
 }
