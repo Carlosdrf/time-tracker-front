@@ -7,7 +7,6 @@ import { SharedModule } from 'src/app/components/shared.module';
 import { TimerComponent } from 'src/app/components/timer/timer.component';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
-import { EmployeesService } from 'src/app/services/employees.service';
 import { EntriesService } from 'src/app/services/entries.service';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { UsersService } from 'src/app/services/users.service';

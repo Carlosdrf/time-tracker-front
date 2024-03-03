@@ -7,7 +7,6 @@ import { SharedModule } from 'src/app/components/shared.module';
 import { TimerComponent } from 'src/app/components/timer/timer.component';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
-import { EmployeesService } from 'src/app/services/employees.service';
 import { UsersService } from 'src/app/services/users.service';
 
 @Component({
@@ -32,7 +31,6 @@ export class EmployeesComponent {
 
   constructor(
     private userService: UsersService,
-    private employeesService: EmployeesService,
     public customDate: CustomDatePipe,
   ) {}
 
@@ -43,7 +41,7 @@ export class EmployeesComponent {
 
   getUsers() {
     forkJoin([
-      this.employeesService.getEmployees(),
+      this.userService.getEmployees(),
       this.userService.getUsers(this.searchForm.value)
     ]).subscribe(([employees, users]) => {
       this.employees = employees;

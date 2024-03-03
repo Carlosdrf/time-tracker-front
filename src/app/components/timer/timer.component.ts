@@ -82,13 +82,10 @@ export class TimerComponent implements OnChanges, OnInit {
     let status = entries.find(
       (item: any) => item.status === 0 && item.user_id === user.id
     );
-    console.log(status)
     if (status) {
-      this.entry.start_time = status.start_time
+      this.entry.start_time = status.start_time;
       let timer = interval(1000).subscribe(() => {
-        this.entry.started = this.customDate.getTotalHours(
-          status.start_time
-        );
+        this.entry.started = this.customDate.getTotalHours(status.start_time);
         this.entry.timeRef = this.getTimeAgo(this.entry.started.split(':'));
       });
       this.subscription.push(timer);
@@ -100,7 +97,6 @@ export class TimerComponent implements OnChanges, OnInit {
       this.entry.status = null;
     }
     this.entry.totalHours = this.formatHours(acc);
-    console.log(this.entry)
   }
 
   getTimeAgo(time: Array<any>) {
