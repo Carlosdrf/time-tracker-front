@@ -3,6 +3,7 @@ import { SharedModule } from '../shared.module';
 import { TimerComponent } from '../timer/timer.component';
 import { UserOptionsComponent } from '../user-options/user-options.component';
 import { UsersService } from 'src/app/services/users.service';
+import { EntriesService } from 'src/app/services/entries.service';
 
 @Component({
   selector: 'app-user-list',
@@ -12,6 +13,7 @@ import { UsersService } from 'src/app/services/users.service';
   styleUrl: './user-list.component.scss',
 })
 export class UserListComponent {
+  role = localStorage.getItem('role');
   @Input() users!: any;
   @Input() timer: boolean = false;
   @Input() loaded!: boolean;
@@ -19,7 +21,10 @@ export class UserListComponent {
   @Output() onSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onToggleStatus: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private entriesService: EntriesService
+  ) {}
 
   setReportInfo(user: any) {
     this.userService.setUserInformation(user);
@@ -28,6 +33,7 @@ export class UserListComponent {
   selectUser(user: any) {
     this.onSelectedUser.emit(user);
   }
+
   toggleUserStatus(user: any) {
     this.onToggleStatus.emit(user);
   }

@@ -1,5 +1,10 @@
+@import "/src/theme/variables.scss";
+
 .mat-primary {
   color: white !important;
+}
+.bg-accent{
+  background-color: #818181;
 }
 
 .form-group .mat-mdc-raised-button {

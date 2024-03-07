@@ -1,0 +1,73 @@
+    <div class="card rounded shadow overflow-hidden">
+      <div class="card-header rounded-top" [ngClass]="{'bg-primary': !suspicious, 'bg-danger': suspicious}">
+        <div class="row align-items-center">
+          <p class="fs-5 text-white col-md-8 mb-0">
+            <ng-template
+              [ngIf]="isToday(entry.start_time)"
+              [ngIfElse]="elseBlock"
+            >
+              {{ isToday(entry.start_time) }}
+            </ng-template>
+            <ng-template #elseBlock>
+              {{ entry.start_time | date : "EEEE" }},
+              {{ entry.start_time | customDate : "MMM D" }}
+            </ng-template>
+          </p>
+          <p class="col-md-4 fw-bolder fs-5 mb-0 text-light text-end">
+            Total: {{ getTotalHours(entry.start_time, entry.end_time) }}
+          </p>
+        </div>
+      </div>
+      <div class="card-body p-2 row justify-content-center " [ngClass]="{'bg-accent': suspicious}">
+        <form class="col-lg-11 col-md-10 col-sm-12 text-center row" action="">
+          <div class="col-lg-2 col-md-3 col-6">
+            <input
+              type="text"
+              name="start_time"
+              class="form-control text-center m-1 p-2"
+              [ngModel]="entry.start_time | customDate : 'HH:mm'"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="(entry.start_time)"
+              (focus)="timeFormat($event)"
+              (blur)="updateStart_time(entry, $event)"
+              (keydown.enter)="updateStart_time(entry, $event)"
+            />
+          </div>
+          <div class="col-lg-2 col-md-3 col-6">
+            <input
+              type="text"
+              name="end_time"
+              class="form-control text-center m-1 p-2"
+              [ngModel]="entry.end_time | customDate : 'HH:mm'"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="(entry.end_time)"
+              (focus)="timeFormat($event)"
+              (blur)="updateEnd_time(entry, $event)"
+              (keydown.enter)="updateEnd_time(entry, $event)"
+            />
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <input
+              type="text"
+              name="task"
+              class="form-control m-1 p-2"
+              [(ngModel)]="entry.description"
+              (blur)="updateTask(entry, entry.description)"
+              placeholder="Add a comment"
+              (keydown.enter)="updateTask(entry, entry.description)"
+            />
+          </div>
+        </form>
+        <div
+          class="col-lg-1 col-md-2 col-sm-12 col-12 d-flex justify-content-end"
+        >
+          <div
+            (click)="deleteEntry(entry.id)"
+            class="d-flex align-items-center justify-content-center col-lg-12 col-md-12 col-sm-2 col-3 p-2 btn btn-danger rounded m-1"
+          >
+            <!-- <i class="far fa-trash-alt"></i> -->
+            <mat-icon>delete</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>

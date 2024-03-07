@@ -11,7 +11,7 @@
       <h3>Payment Status</h3>
       <div *ngIf="billsList">
         <div id="payment-message" class="hidden"></div>
-        <div class="max-height">
+        <div class="max-height py-2">
           <div
             class="d-flex flex-wrap justify-content-between align-items-center p-2 border border-1 rounded mb-2"
             *ngFor="let bill of billsList"
@@ -24,7 +24,7 @@
             </div>
             <div class="section">
               <a (click)="setPaymentParams(bill)" routerLink="payments"
-                >Settle Bill</a
+                >Pay bill</a
               >
             </div>
           </div>

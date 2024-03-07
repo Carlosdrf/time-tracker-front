@@ -1,13 +1,14 @@
-<div class="d-flex flex-wrap align-items-center flex-md-row flex-column">
-  <div class="p-2">
+<div class="">
+  <div class="p-2 text-center">
     <p class="mb-0" *ngIf="entry.status !== null">
       {{ entry.started }} {{ entry.timeRef }}
     </p>
     <p class="text-muted mb-0" *ngIf="entry.status == null">Inactive</p>
-    <p *ngIf="entry.status != null">Initiated at {{ entry.start_time | date : "HH:mm" }}</p>
-
+    <p class="text-muted mb-0" *ngIf="entry.status != null">
+      Initiated at {{ entry.start_time | date : "HH:mm" }}
+    </p>
   </div>
-  <div class="ms-0 ms-md-3 text-center">
-    <!-- <p class="fs-3 mb-0">{{ entry.totalHours }}</p> -->
-  </div>
+  <!-- <div class="ms-0 ms-md-3 text-center">
+    <p class="fs-3 mb-0">{{ entry.totalHours }}</p>
+  </div> -->
 </div>

@@ -3,15 +3,18 @@ import { EntriesService } from '../../../services/entries.service';
 import { Entries } from '../../../models/Entries';
 import { Router } from '@angular/router';
 import { CustomDatePipe } from '../../../services/custom-date.pipe';
-import * as moment from 'moment';
 import { PagesComponent } from '../../pages.component';
+import { SharedModule } from 'src/app/components/shared.module';
+import { EntriesComponent } from 'src/app/components/entries/entries.component';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './admin.entries.component.html',
   styleUrls: ['./admin.entries.component.scss'],
+  standalone: true,
+  imports: [SharedModule, EntriesComponent]
 })
-export class EntriesComponent implements OnInit {
+export class AdminEntriesComponent implements OnInit {
   currentEntryId: string = '';
   regex = /^\d+$/;
   entry: Entries = {
@@ -21,6 +24,7 @@ export class EntriesComponent implements OnInit {
     end_time: new Date(),
     description: '',
   };
+  reviewEntries: any = [];
   entries: any;
   user: any;
   entryCheck: any;
@@ -65,7 +69,10 @@ export class EntriesComponent implements OnInit {
       user.end_time = new Date(this.datesRange.lastSelect);
     }
 
-    this.entriesService.getAllEntries(user).subscribe((entries) => {
+    this.entriesService.getAllEntries(user).subscribe(({entries, suspicious}) => {
+      this.reviewEntries = suspicious
+
+      console.log(suspicious)
       this.entries = entries.filter((item: any) => item.status !== 0);
       if (entries.length == 0 && this.datesRange.firstSelect) {
         this.message = 'No logs in the dates selected';

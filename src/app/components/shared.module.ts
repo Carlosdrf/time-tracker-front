@@ -44,7 +44,7 @@ import { UserComponent } from './user/user.component';
     NavigationComponent,
     CalendarComponent,
     CustomDatePipe,
-    EntriesComponent,
+    // EntriesComponent,
     EntriesPanelComponent,
     BillsComponent,
     StripeComponent,
@@ -56,7 +56,7 @@ import { UserComponent } from './user/user.component';
     // UserListComponent,
   ],
   exports: [
-    EntriesComponent,
+    // EntriesComponent,
     EntriesPanelComponent,
     NavigationComponent,
     CalendarComponent,

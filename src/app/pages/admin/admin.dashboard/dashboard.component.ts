@@ -23,7 +23,7 @@ export class AdminDashboardComponent implements OnInit {
   });
   public users: any = [];
   public links: any = [
-    { url: '/user/entries', title: 'Entries' },
+    { url: '/admin/entries', title: 'Entries' },
     { url: '/reports', title: 'Reports' },
   ];
 
