@@ -3,6 +3,7 @@ import { EntriesService } from '../../services/entries.service';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { PagesComponent } from '../pages.component';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
+import { Entries } from 'src/app/models/Entries';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,6 +20,12 @@ export class DashboardComponent implements OnInit {
   timer: any = '00:00:00';
   message: any;
   start_time: any;
+  startedEntry: Entries = {
+    status: 0,
+    description: '',
+    start_time: new Date(),
+    end_time: new Date(),
+  };
 
   constructor(
     private socketService: WebSocketService,
@@ -57,6 +64,7 @@ export class DashboardComponent implements OnInit {
       if (startedEntry.length !== 0) {
         this.currentEntryId = startedEntry[0].id;
         this.start_time = startedEntry[0].start_time;
+        this.startedEntry = startedEntry[0]
         this.entryCheck = true;
       } else {
         this.entryCheck = false;
@@ -80,6 +88,8 @@ export class DashboardComponent implements OnInit {
   addEntry(data: any) {
     this.entriesService.createEntry(data).subscribe((startedEntry: any) => {
       this.currentEntryId = startedEntry.id;
+      console.log(startedEntry)
+      this.startedEntry = startedEntry
       this.start_time = new Date();
       this.entryCheck = true;
       this.message = 'Entry Started Successfully';
@@ -88,10 +98,10 @@ export class DashboardComponent implements OnInit {
       this.socketService.socket.emit('client:loadEntries', this.entries);
     });
   }
-  endCurrentEntry(currentEntryId: any) {
-    this.currentEntryId = currentEntryId;
+  endCurrentEntry(currentEntry: any) {
+    this.currentEntryId = currentEntry.id;
     this.entriesService
-      .closeCurrentEntry(this.currentEntryId)
+      .closeCurrentEntry(currentEntry)
       .subscribe((v) => {
         this.getEntries();
         this.message = 'Entry Ended Successfully';

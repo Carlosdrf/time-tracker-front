@@ -21,9 +21,9 @@ export class EntriesPanelComponent implements OnChanges {
   @Input() start_time!: Date | null;
   @Input() entryCheck: boolean = false;
   offHours: boolean = false;
-  entry: Entries = {
+  @Input() entry: Entries = {
     status: 0,
-    task: '',
+    description: '',
     start_time: new Date(),
     end_time: new Date(),
   };
@@ -46,20 +46,21 @@ export class EntriesPanelComponent implements OnChanges {
         this.stopTimer();
       }
     }
+    console.log(changes);
   }
   addEntry() {
     const data = {
-      task: this.entry.task,
+      description: this.entry.description,
       status: this.entry.status,
       start_time: new Date().toUTCString(),
     };
 
     this.start_entry.emit(data);
-    this.entry.task = '';
   }
   endCurrentEntry() {
     this.start_time = new Date();
-    this.end_entry.emit(this.currentEntryId);
+    this.end_entry.emit(this.entry);
+    this.entry.description = '';
   }
   public getName() {
     const name = localStorage.getItem('name');

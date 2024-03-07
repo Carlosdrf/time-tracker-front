@@ -12,11 +12,18 @@ import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { UsersService } from 'src/app/services/users.service';
 import { PagesComponent } from '../../pages.component';
 import { EntriesComponent } from 'src/app/components/entries/entries.component';
+import { Entries } from 'src/app/models/Entries';
 
 @Component({
   selector: 'app-entries-employees',
   standalone: true,
-  imports: [UserListComponent, SharedModule, TimerComponent, SearchComponent, EntriesComponent],
+  imports: [
+    UserListComponent,
+    SharedModule,
+    TimerComponent,
+    SearchComponent,
+    EntriesComponent,
+  ],
   templateUrl: './entries.employees.component.html',
   styleUrls: ['./entries.employees.component.scss'],
 })
@@ -30,6 +37,12 @@ export class EntriesEmployeesComponent implements OnInit {
   timer: any = '00:00:00';
   message: any;
   start_time: any;
+  startedEntry: Entries = {
+    status: 0,
+    description: '',
+    start_time: new Date(),
+    end_time: new Date(),
+  };
 
   constructor(
     private socketService: WebSocketService,
@@ -68,6 +81,7 @@ export class EntriesEmployeesComponent implements OnInit {
       if (startedEntry.length !== 0) {
         this.currentEntryId = startedEntry[0].id;
         this.start_time = startedEntry[0].start_time;
+        this.startedEntry = startedEntry[0];
         this.entryCheck = true;
       } else {
         this.entryCheck = false;
@@ -91,6 +105,7 @@ export class EntriesEmployeesComponent implements OnInit {
   addEntry(data: any) {
     this.entriesService.createEntry(data).subscribe((startedEntry: any) => {
       this.currentEntryId = startedEntry.id;
+      this.startedEntry = startedEntry;
       this.start_time = new Date();
       this.entryCheck = true;
       this.message = 'Entry Started Successfully';
@@ -99,10 +114,10 @@ export class EntriesEmployeesComponent implements OnInit {
       this.socketService.socket.emit('client:loadEntries', this.entries);
     });
   }
-  endCurrentEntry(currentEntryId: any) {
-    this.currentEntryId = currentEntryId;
+  endCurrentEntry(currentEntry: any) {
+    this.currentEntryId = currentEntry.id;
     this.entriesService
-      .closeCurrentEntry(this.currentEntryId)
+      .closeCurrentEntry(currentEntry)
       .subscribe((v) => {
         this.getEntries();
         this.message = 'Entry Ended Successfully';

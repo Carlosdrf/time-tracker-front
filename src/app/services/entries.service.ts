@@ -44,8 +44,8 @@ export class EntriesService {
   deleteEntry(id: number) {
     return this.http.delete(`${this.API_URI}/entries/${id}`);
   }
-  closeCurrentEntry(entryId: number) {
-    return this.http.get(`${this.API_URI}/entries/closeEntry/${entryId}`);
+  closeCurrentEntry(entry: any) {
+    return this.http.put(`${this.API_URI}/entries/closeEntry/${entry.id}`, entry);
   }
   updateEntry(id: number, updatedEntry: Entries): Observable<Entries> {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
