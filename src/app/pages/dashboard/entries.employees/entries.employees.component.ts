@@ -11,11 +11,12 @@ import { EntriesService } from 'src/app/services/entries.service';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { UsersService } from 'src/app/services/users.service';
 import { PagesComponent } from '../../pages.component';
+import { EntriesComponent } from 'src/app/components/entries/entries.component';
 
 @Component({
   selector: 'app-entries-employees',
   standalone: true,
-  imports: [UserListComponent, SharedModule, TimerComponent, SearchComponent],
+  imports: [UserListComponent, SharedModule, TimerComponent, SearchComponent, EntriesComponent],
   templateUrl: './entries.employees.component.html',
   styleUrls: ['./entries.employees.component.scss'],
 })
@@ -38,7 +39,7 @@ export class EntriesEmployeesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.name = this.getUserName()
+    this.name = this.getUserName();
     this.getEntries();
     this.socketService.socket?.on('server:start_timer', (data) => {
       if (data.length !== 0) {
@@ -56,14 +57,14 @@ export class EntriesEmployeesComponent implements OnInit {
       this.getEntries();
     });
   }
-  getUserName(){
-    const name = localStorage.getItem('name')
+  getUserName() {
+    const name = localStorage.getItem('name');
     return name;
   }
   getEntries() {
-    this.entriesService.getEntries().subscribe((result) => {
-      this.entries = result.filter((entry: any) => entry.status !== 0);
-      const startedEntry = result.filter((entry: any) => entry.status === 0);
+    this.entriesService.getEntries().subscribe(({ entries }) => {
+      this.entries = entries.filter((entry: any) => entry.status !== 0);
+      const startedEntry = entries.filter((entry: any) => entry.status === 0);
       if (startedEntry.length !== 0) {
         this.currentEntryId = startedEntry[0].id;
         this.start_time = startedEntry[0].start_time;

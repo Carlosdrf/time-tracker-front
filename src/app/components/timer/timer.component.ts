@@ -61,7 +61,7 @@ export class TimerComponent implements OnChanges, OnInit {
       start_time: new Date(this.start_date).toUTCString(),
       end_time: new Date(this.end_date).toUTCString(),
     };
-    this.entriesService.getAllEntries(data).subscribe((entries) => {
+    this.entriesService.getAllEntries(data).subscribe(({entries}) => {
       this.entries = entries;
       this.filterUsersData(this.entries, this.user);
     });

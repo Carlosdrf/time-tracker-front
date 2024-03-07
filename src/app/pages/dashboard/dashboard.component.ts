@@ -51,9 +51,9 @@ export class DashboardComponent implements OnInit {
     return name;
   }
   getEntries() {
-    this.entriesService.getEntries().subscribe((result) => {
-      this.entries = result.filter((entry: any) => entry.status !== 0);
-      const startedEntry = result.filter((entry: any) => entry.status === 0);
+    this.entriesService.getEntries().subscribe(({entries}) => {
+      this.entries = entries.filter((entry: any) => entry.status !== 0);
+      const startedEntry = entries.filter((entry: any) => entry.status === 0);
       if (startedEntry.length !== 0) {
         this.currentEntryId = startedEntry[0].id;
         this.start_time = startedEntry[0].start_time;

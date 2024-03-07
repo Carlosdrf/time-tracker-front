@@ -5,16 +5,21 @@ import { Entries } from '../../models/Entries';
 import { PagesComponent } from '../../pages/pages.component';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { EntryComponent } from '../entry/entry.component';
+import { SharedModule } from '../shared.module';
 
 @Component({
   selector: 'app-entries',
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.scss'],
+  standalone: true,
+  imports: [EntryComponent, SharedModule],
 })
 export class EntriesComponent implements OnInit {
   @Output() getEntries: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeleteEntry: EventEmitter<any> = new EventEmitter<any>();
   @Input() entries: any;
+  @Input() reviewEntries: any = [];
   @Input() loaded?: boolean;
   updateDate: Date = new Date();
   currentEntryId: number = 0;
@@ -53,56 +58,30 @@ export class EntriesComponent implements OnInit {
       }
     });
   }
-  getTotalHours(start: Date, end: Date) {
-    const [startformat, endformat] = [new Date(start), new Date(end)];
-    const starts = startformat.getTime();
-    const ends = endformat.getTime();
-    const difference = ends - starts;
-    const hours = Math.floor(difference / 1000 / 60 / 60);
-    const minutes = Math.floor((difference / 1000 / 60) % 60);
-    const seconds = Math.floor((difference / 1000) % 60);
-    return (
-      this.padZero(hours) +
-      ':' +
-      this.padZero(minutes) +
-      ':' +
-      this.padZero(seconds)
-    );
-  }
-  padZero(num: number): string {
-    return num < 10 ? `0${num}` : `${num}`;
-  }
-  timeFormat(event: any, i: number) {
-    event.target.value = event.target.value.replace(/:/g, '');
-  }
-  updateTask(i: number, event: any) {
+
+  updateTask(entry: any) {
     this.entriesService
-      .updateEntryTask(this.entries[i].task_id, this.entries[i])
+      .updateEntryTask(entry.task_id, entry)
       .subscribe((res) => {
         this.message = res.message;
         this.page.setAlert(this.message);
         this.getEntries.emit();
       });
   }
-  setUpdateData(date: Date, value: any, entry: any) {
-    return {
-      start_time: this.getFormatDate(date, value),
-      end_time: entry.end_time,
-      date: entry.date,
-    };
-  }
-  updateStart_time(entry: any, event: Event) {
+
+  updateStart_time(data: any) {
+    const { entry, event } = data;
     let input = (event.target as HTMLInputElement).value;
     if (this.regex.test(input)) {
       if (input.length == 3) {
         input = 0 + input;
       }
-      const data = {
+      const newData = {
         start_time: this.getFormatDate(entry.start_time, input),
         end_time: entry.end_time,
         date: entry.date,
       };
-      this.entriesService.updateEntry(entry.id, data).subscribe({
+      this.entriesService.updateEntry(entry.id, newData).subscribe({
         next: () => {
           this.getEntries.emit();
           this.message = 'Start time updated successfully!';
@@ -118,18 +97,19 @@ export class EntriesComponent implements OnInit {
       this.getEntries.emit();
     }
   }
-  updateEnd_time(entry: any, event: Event) {
+  updateEnd_time(data: any) {
+    const { entry, event } = data;
     let input = (event.target as HTMLInputElement).value;
     if (this.regex.test(input)) {
       if (input.length == 3) {
         input = 0 + input;
       }
-      const data = {
+      const newData = {
         start_time: entry.start_time,
         end_time: this.getFormatDate(entry.start_time, input),
         date: entry.date,
       };
-      this.entriesService.updateEntry(entry.id, data).subscribe({
+      this.entriesService.updateEntry(entry.id, newData).subscribe({
         next: (v) => {
           this.getEntries.emit();
           this.message = 'End time updated successfully!';
@@ -161,26 +141,5 @@ export class EntriesComponent implements OnInit {
     );
 
     return newDate;
-  }
-  transform(value: Date) {
-    return this.customDate.transform(value, 'HH:mm');
-  }
-  public isToday(date: any) {
-    const yesterday = this.customDate.transform(
-      new Date(Date.now() - 24 * 60 * 60 * 1000),
-      'DD-MM-YYYY'
-    );
-    const today = this.customDate.transform(new Date(), 'DD-MM-YYYY');
-    const compareDate = this.customDate.transform(
-      date.toLocaleString(),
-      'DD-MM-YYYY'
-    );
-    if (compareDate === today) {
-      return 'Today';
-    } else if (compareDate === yesterday) {
-      return 'Yesterday';
-    } else {
-      return false;
-    }
   }
 }

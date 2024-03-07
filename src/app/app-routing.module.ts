@@ -5,14 +5,13 @@ import { AuthGuard } from './services/guards/auth-guard.service';
 import { notAuthGuard } from './services/guards/notAuth-guard.service';
 import { AdminGuard } from './services/guards/admin-guard.service';
 import { NotAdmin } from './services/guards/not-admin.service';
-import { EntriesComponent } from './pages/admin/admin.entries/admin.entries.component';
-import { EntriesModule } from './pages/admin/admin.entries/admin.entries.module';
+import { AdminEntriesComponent } from './pages/admin/admin.entries/admin.entries.component';
 import { UserTypeGuardService } from './services/guards/user-type-guard.service';
-import { path } from 'd3';
 
-let ADMIN_TYPE_ROLE = '1';
-let USER_TYPE_ROLE = '2';
-let CLIENT_TYPE_ROLE = '3';
+const ADMIN_TYPE_ROLE = '1';
+const USER_TYPE_ROLE = '2';
+const CLIENT_TYPE_ROLE = '3';
+
 export const routes: Routes = [
   {
     path: '',
@@ -38,16 +37,20 @@ export const routes: Routes = [
       {
         path: 'employees',
         loadChildren: () =>
-          import('./pages/employees/employees.module').then((m) => m.EmployeesModule),
+          import('./pages/client/client.employees/employees.module').then(
+            (m) => m.EmployeesModule
+          ),
         canActivate: [UserTypeGuardService],
         data: { allowedUserTypes: [CLIENT_TYPE_ROLE] },
       },
       {
         path: 'entries',
         loadChildren: () =>
-          import('./pages/dashboard/entries.employees/entries.employees.module').then((m) => m.EntriesEmployeesModule),
+          import(
+            './pages/dashboard/entries.employees/entries.employees.module'
+          ).then((m) => m.EntriesEmployeesModule),
         canActivate: [UserTypeGuardService],
-        data: { allowedUserTypes: [USER_TYPE_ROLE] },
+        data: { allowedUserTypes: [USER_TYPE_ROLE, CLIENT_TYPE_ROLE] },
       },
       {
         path: 'login',
@@ -62,37 +65,27 @@ export const routes: Routes = [
           import('./pages/login/login.module').then((m) => m.LoginModule),
         canActivate: [notAuthGuard],
       },
-
       {
         path: 'admin',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('./pages/admin/admin.dashboard/dashboard.module').then(
-                (m) => m.DashboardModule
-              ),
+              import('./pages/admin/admin.module').then((m) => m.AdminModule),
             canActivate: [UserTypeGuardService],
             data: { allowedUserTypes: [ADMIN_TYPE_ROLE] },
           },
-          {
-            path: '',
-            loadChildren: () =>
-              import('./pages/admin/admin.users/user.module').then(
-                (m) => m.UserModule
-              ),
-          },
         ],
       },
-      {
-        path: 'user',
-        loadChildren: () =>
-          import('./pages/admin/admin.entries/admin.entries.module').then(
-            (m) => EntriesModule
-          ),
-        canActivate: [UserTypeGuardService],
-        data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
-      },
+      // {
+      //   path: 'user',
+      //   loadChildren: () =>
+      //     import('./pages/admin/admin.entries/admin.entries.module').then(
+      //       (m) => EntriesModule
+      //     ),
+      //   canActivate: [UserTypeGuardService],
+      //   data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
+      // },
       {
         path: 'client',
         loadChildren: () =>
@@ -100,24 +93,8 @@ export const routes: Routes = [
         canActivate: [UserTypeGuardService],
         data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
       },
-      // {
-      //   path: 'login',
-      //   component: LoginComponent,
-      //   canActivate: [notAuthGuard]
-      // },
-      // {
-      //   path: 'signup',
-      //   component: LoginComponent,
-      //   canActivate: [notAuthGuard]
-      // },
-      // {
-      //   path: 'reports',
-      //   component: ReportsComponent,
-      //   canActivate: [AuthGuard]
-      // }
     ],
   },
-  // ,{path: '', redirectTo: 'app-timer', pathMatch: 'full'}
 ];
 
 @NgModule({

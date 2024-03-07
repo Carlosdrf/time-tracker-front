@@ -10,10 +10,10 @@
           (click)="selectUser(user)"
           class="text-decoration-none mb-0 links d-flex align-items-center"
         >
-          <span class="fs-3 fw-bolder"
+          <span class="fs-4 fw-bolder"
             >{{ user.name }} {{ user.last_name }}</span
           >
-          <mat-icon color="warn" title="Entries for review" *ngIf="user.review">error_outline</mat-icon>
+          <mat-icon color="warn" title="Entries for review" *ngIf="user.review && role == '1'">error_outline</mat-icon>
         </a>
         <div class="d-flex gap-2">
           <a

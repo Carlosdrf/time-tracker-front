@@ -33,7 +33,6 @@ export class ClientBalanceComponent implements OnInit {
         this.payments = (v as Array<any>).filter(
           (payment: any) => payment.status.name === 'Active'
         );
-        console.log(this.pending);
       },
     });
   }

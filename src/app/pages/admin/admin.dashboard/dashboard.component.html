@@ -1,6 +1,15 @@
-<app-search
-  [searchForm]="searchForm"
-  (onSearch)="getUsers()"
-  (onLoading)="loading()"
-></app-search>
-<app-user-list [users]="users" [timer]="true" [loaded]="loaded" [links]="links"></app-user-list>
+<div class="d-flex flex-wrap justify-content-between">
+  <app-search
+    class="col-12 col-md-4 position-sticky h-100" style="top: 70px;"
+    [searchForm]="searchForm"
+    (onSearch)="getUsers()"
+    (onLoading)="loading()"
+  ></app-search>
+  <app-user-list
+    class="col-12 col-md-8 ps-md-2"
+    [users]="users"
+    [timer]="true"
+    [loaded]="loaded"
+    [links]="links"
+  ></app-user-list>
+</div>
