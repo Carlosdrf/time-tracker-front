@@ -24,6 +24,7 @@ import { PaymentHistoryComponent } from './payment-history/payment-history.compo
 import { BalanceComponent } from './balance/balance.component';
 import { CompaniesService } from '../services/companies.service';
 import { UserComponent } from './user/user.component';
+import { GoBackComponent } from './go-back/go-back.component';
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { UserComponent } from './user/user.component';
     PaymentHistoryComponent,
     BalanceComponent,
     UserComponent,
+    GoBackComponent
     // UserListComponent,
   ],
   exports: [
@@ -73,6 +75,7 @@ import { UserComponent } from './user/user.component';
     PaymentHistoryComponent,
     LoaderComponent,
     BalanceComponent,
+    GoBackComponent,
     CommonModule,
     UserComponent,
     RouterModule,
