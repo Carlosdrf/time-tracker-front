@@ -26,10 +26,12 @@ export class UserComponent implements OnInit, OnChanges {
   @Input() selectedUser: any;
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
+  img: any;
   newUser: User = {
     id: '',
     name: '',
     last_name: '',
+    profile: '',
     email: '',
     password: '',
     role: 0,
@@ -53,6 +55,7 @@ export class UserComponent implements OnInit, OnChanges {
     private dialog: MatDialog
   ) {
     this.userForm = this.fb.group({
+      profile: [''],
       name: [null, [Validators.required]],
       last_name: [null, [Validators.required]],
       email: [null, [Validators.required]],
@@ -168,7 +171,7 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.email = this.userForm.value.email;
         this.newUser.role = this.userForm.value.role;
         this.newUser.password = this.userForm.value.password;
-
+        this.newUser.profile = this.userForm.value.profile
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company.id != null) {
             this.newUser.company.id = this.userForm.value.company.id;
@@ -230,5 +233,19 @@ export class UserComponent implements OnInit, OnChanges {
         });
       }
     });
+  }
+  onFileSelected(event: any) {
+    const img = event.target.files[0];
+    if (img) {
+      this.previewImage(img);
+      this.userForm.patchValue({ profile: img });
+    }
+  }
+  previewImage(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.img = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 }

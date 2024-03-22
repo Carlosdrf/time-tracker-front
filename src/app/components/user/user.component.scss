@@ -1,3 +1,46 @@
-.max-h-75{
-    max-height: 75%;
+.max-h-75 {
+  max-height: 75%;
+}
+
+.profile-img {
+  width: 200px; /* alto y ancho específico para que el círculo sea redondo */
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden; /* oculta todo el contenido fuera de la caja */
+  position: relative;
+  background-color: #b7b7b7;
+}
+
+.profile-img img {
+  position: relative;
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+}
+.profile-img i {
+  font-size: 160px;
+  padding: 20px;
+}
+
+.profile-img .file {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  font-size: 14px;
+  background: #212529b8;
+  color: #fff;
+  text-align: center;
+  padding: 7px 0 20px;
+}
+
+.profile-img .file input {
+  position: absolute;
+  display: block;
+  width: 100%;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  cursor: pointer; /* manita de selección al hacer hover */
 }
