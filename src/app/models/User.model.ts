@@ -15,11 +15,12 @@ export interface Company{
     name?: string;
     description?: string;
     timezone?: string;
+    countryName?: string;
 }
 
 export interface Employee { 
     id?: string;
-    jobPosition?: string; 
+    position?: string; 
     hourlyRate?: number; 
     daysOfWeek?: string[]; 
     startTime?: string; 
