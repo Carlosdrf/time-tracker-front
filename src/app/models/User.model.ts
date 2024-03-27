@@ -1,28 +1,31 @@
-export interface User {
-    id: string;
-    name: string;
-    last_name: string;
-    profile: any;
-    email: string;
-    password: string;
-    role: number;
-    company: Company;
-    employee: Employee;
+export class User {
+  constructor(
+    public id: string,
+    public name: string = '',
+    public last_name: string = '',
+    public profile: any,
+    public email: string = '',
+    public password: string = '',
+    public role: number = 0,
+    public active: number = 0,
+    public company: Company,
+    public employee: Employee
+  ) {}
 }
 
-export interface Company{
-    id?: string;
-    name?: string;
-    description?: string;
-    timezone?: string;
-    countryName?: string;
+export class Company {
+  id?: string;
+  name?: string;
+  description?: string;
+  timezone?: string;
+  countryName?: string;
 }
 
-export interface Employee { 
-    id?: string;
-    position?: string; 
-    hourlyRate?: number; 
-    daysOfWeek?: string[]; 
-    startTime?: string; 
-    endTime?: string; 
+export class Employee {
+  id?: string;
+  position?: string;
+  hourlyRate?: number;
+  daysOfWeek?: string[];
+  startTime?: string;
+  endTime?: string;
 }

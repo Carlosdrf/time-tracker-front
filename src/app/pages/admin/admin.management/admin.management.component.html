@@ -1,0 +1,18 @@
+<div class="d-flex justify-content-between">
+  <div class="col-12 col-sm-4 border shadow rounded-1 overflow-hidden">
+    <div *ngFor="let option of options" class="d-flex align-items-center justify-content-between gap-2 p-4 border-bottom card-hover transition">
+      <h2 [title]="option.label" class="mb-0 fs-5">{{ option.title }}</h2>
+      <i class="fa-solid fa-angle-right"></i>
+    </div>
+  </div>
+  <div class="col-12 col-sm-7 border shadow bg-white overflow-hidden rounded-1 card">
+    <div class="card-header">
+        <h1 class="mb-0 text-center">Form Header</h1>
+    </div>
+    <div class="card-body">
+        <form action="">
+            <input type="text" class="form-control rounded" placeholder="Input">
+        </form>
+    </div>
+  </div>
+</div>

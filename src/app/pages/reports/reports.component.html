@@ -7,7 +7,7 @@
         class="title mb-0 p-2"
         *ngIf="user.name !== null && (role === '1' || role === '3')"
       >
-        Report: {{ user.name }} {{user.last_name}}
+        Report: {{ user.name }} {{ user.last_name }}
       </h5>
       <h5
         class="title mb-0 p-2"
@@ -20,7 +20,12 @@
       </h5>
       <a
         routerLink="/user/entries"
-        *ngIf="user.name !== null && role === '1' && user.company == null && selectedUser"
+        *ngIf="
+          user.name !== null &&
+          role === '1' &&
+          user.company == null &&
+          selectedUser
+        "
         class="mb-0 links"
         ><span>See Entries</span></a
       >
@@ -41,22 +46,23 @@
         <div class="d-flex justify-content-end flex-wrap">
           <button
             mat-raised-button
-            class="m-1"
+            class="m-1 btn-hover transition"
             color="primary"
             id="content"
             (click)="toggleCalendar()"
           >
-            Calendar
+            <i class="fa-regular fa-calendar"></i>
+            <span class="ms-2">Calendar</span>
           </button>
 
           <a
             mat-raised-button
             color="primary"
             type="submit"
-            class="rounded text-decoration-none m-1"
+            class="text-decoration-none m-1 btn-hover transition"
             (click)="downloadReport()"
-            ><span><mat-icon>download</mat-icon></span></a
-          >
+            ><span><i class="fa-solid fa-download"></i></span
+          ></a>
         </div>
         <div class="calendar" id="content" *ngIf="isActive">
           <app-calendar

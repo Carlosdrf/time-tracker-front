@@ -1,15 +1,60 @@
-<div class="d-flex flex-wrap justify-content-between">
-  <app-search
-    class="col-12 col-md-4 position-sticky h-100" style="top: 70px;"
-    [searchForm]="searchForm"
-    (onSearch)="getUsers()"
-    (onLoading)="loading()"
-  ></app-search>
-  <app-user-list
-    class="col-12 col-md-8 ps-md-2"
-    [users]="users"
-    [timer]="true"
-    [loaded]="loaded"
-    [links]="links"
-  ></app-user-list>
+<div class="">
+  <div class="d-flex align-items-center p-1">
+    <i class="fa-regular fa-circle-user user-ico" style="color: #9a9a9a"></i>
+    <h1 class="p-2 mb-0">Welcome, {{ name }}</h1>
+  </div>
+  <div class="d-flex flex-wrap">
+    <div
+      class="col-12 col-md-6 min-height p-1"
+      *ngFor="let component of components"
+    >
+      <div class="card rounded-1 shadow h-100 overflow-hidden">
+        <div class="card-body position-relative d-flex flex-column p-4">
+          <div class="position-absolute start-0 end-0 bottom-0 top-0 z-1">
+            <div class="d-flex h-100 justify-content-center align-items-end">
+              <div
+                *ngIf="component.resource"
+                class="p-5 mb-2 bg-container"
+                style="background-image: url(./assets/images/resources/{{component.resource}});"
+              ></div>
+            </div>
+          </div>
+          <div class="z-3">
+            <h2>{{ component.title }}:</h2>
+            <p>{{ component.description }}</p>
+          </div>
+          <div
+            *ngIf="component.options && component.options.length > 0"
+            class="z-3 my-auto"
+          >
+            <div class="d-flex align-items-center justify-content-evenly flex-wrap gap-2">
+              <a
+                color="primary"
+                class="shadow transition fs-5 btn-hover btn btn-primary py-2 px-3"
+                *ngFor="let option of component.options"
+                routerLink="{{ option.path }}"
+                [title]="option.label ? option.label : ''"
+                ><i class="{{ option.icon }}" *ngIf="option.icon"></i
+                ><span class="ms-2">{{ option.title }}</span></a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="card-header p-1 bg-primary text-center fs-4">
+          <a
+            class="text-white text-decoration-none"
+            *ngIf="component.path"
+            routerLink="{{ component.path }}"
+            >{{ component.header }}</a
+          >
+          <a
+            class="text-white text-decoration-none"
+            *ngIf="component.href"
+            href="{{ component.href }}"
+            >{{ component.header }}</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

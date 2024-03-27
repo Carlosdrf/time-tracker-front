@@ -61,7 +61,7 @@ export class TimerComponent implements OnChanges, OnInit {
       start_time: new Date(this.start_date).toUTCString(),
       end_time: new Date(this.end_date).toUTCString(),
     };
-    this.entriesService.getAllEntries(data).subscribe(({entries}) => {
+    this.entriesService.getAllEntries(data).subscribe(({ entries }) => {
       this.entries = entries;
       this.filterUsersData(this.entries, this.user);
     });
@@ -92,7 +92,7 @@ export class TimerComponent implements OnChanges, OnInit {
       this.entry.status = status.status;
     } else {
       this.entry.start_time = null;
-      this.entry.started = '00:00:00 seconds';
+      this.entry.started = '00:00:00 sec';
       this.entry.timeRef = null;
       this.entry.status = null;
     }
@@ -100,8 +100,8 @@ export class TimerComponent implements OnChanges, OnInit {
   }
 
   getTimeAgo(time: Array<any>) {
-    if (time[1] == '00' && time[0] == '00') return 'seconds';
-    if (time[0] == '00') return 'minutes';
+    if (time[1] == '00' && time[0] == '00') return 'sec';
+    if (time[0] == '00') return 'min';
     return 'hours';
   }
 

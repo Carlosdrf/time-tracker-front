@@ -8,10 +8,10 @@
   "scripts": {
     "ng": "ng version",
     "start": "ng serve --open",
-    "build": "ng build --base-href /app-timer/ --configuration=production",
+    "build": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "component": "ng g c pages/admin/admin.users",
+    "component": "ng g c pages/admin/admin.management",
     "shared": "ng g c components/entry",
     "service": "ng g s services/positions",
     "material": "ng add @angular/material"

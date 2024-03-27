@@ -1,11 +1,11 @@
 <div class="">
-  <div class="p-2 text-center">
-    <p class="mb-0" *ngIf="entry.status !== null">
+  <div class="text-sm-end text-center">
+    <p class="mb-0 fs-4" *ngIf="entry.status !== null">
       {{ entry.started }} {{ entry.timeRef }}
     </p>
     <p class="text-muted mb-0" *ngIf="entry.status == null">Inactive</p>
-    <p class="text-muted mb-0" *ngIf="entry.status != null">
-      Initiated at {{ entry.start_time | date : "HH:mm" }}
+    <p class="text-muted fs-6 mb-0" *ngIf="entry.status != null">
+      Clock-in: {{ entry.start_time | date : "hh:mm a" }}
     </p>
   </div>
   <!-- <div class="ms-0 ms-md-3 text-center">

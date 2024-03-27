@@ -15,10 +15,6 @@ ul {
   list-style-type: none;
 }
 
-.bg-primary,
-.btn-primary {
-  background-color: #92b46c !important;
-}
 .primary-text {
   color: #92b46c !important;
 }

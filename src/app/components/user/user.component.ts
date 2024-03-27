@@ -36,17 +36,7 @@ export class UserComponent implements OnInit, OnChanges {
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
   img: any;
-  newUser: User = {
-    id: '',
-    name: '',
-    last_name: '',
-    profile: '',
-    email: '',
-    password: '',
-    role: 0,
-    company: {},
-    employee: {},
-  };
+  newUser!: User;
   loader: Loader = new Loader(false, false, false);
   roleList!: Roles[];
   title: string = 'New User';
@@ -93,17 +83,17 @@ export class UserComponent implements OnInit, OnChanges {
         id: [''],
         position: [''],
         hourlyRate: [null, [Validators.required]],
-        daysOfWeek: this.fb.array([]),
-        startTime: [null, [Validators.required]],
-        endTime: [null, [Validators.required]],
+        // daysOfWeek: this.fb.array([]),
+        // startTime: [null, [Validators.required]],
+        // endTime: [null, [Validators.required]],
       }),
     });
-    const daysOfWeekFormArray = this.userForm.get(
-      'employee.daysOfWeek'
-    ) as FormArray;
-    this.daysOfWeekOptions.forEach(() => {
-      daysOfWeekFormArray.push(new FormControl(false));
-    });
+    // const daysOfWeekFormArray = this.userForm.get(
+    //   'employee.daysOfWeek'
+    // ) as FormArray;
+    // this.daysOfWeekOptions.forEach(() => {
+    //   daysOfWeekFormArray.push(new FormControl(false));
+    // });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -136,6 +126,7 @@ export class UserComponent implements OnInit, OnChanges {
           }
         }
       }
+      this.newUser = this.selectedUser
       if (this.userForm.get('company.timezone')?.value == null) {
         this.userForm.get('company.timezone')?.setValue('');
       }
@@ -143,7 +134,6 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log(new Date().getTime());
     this.getRoles();
     this.getCompanies();
     this.getPositions();
@@ -165,10 +155,10 @@ export class UserComponent implements OnInit, OnChanges {
 
     this.userService.fetchTimezonesApi().subscribe((data: any) => {
       if (data.status === 'OK' && Array.isArray(data.zones)) {
-        this.timezones = data.zones.filter(
-          (zone: any) =>
-            zone.countryName === 'United States' || zone.countryName === 'US'
-        );
+        this.timezones = data.zones.map((timezone: any) => {
+          timezone.fechaActual = this.convertTimezone(timezone);
+          return timezone;
+        });
       } else {
         console.error('Error: Invalid data structure');
       }
@@ -178,7 +168,7 @@ export class UserComponent implements OnInit, OnChanges {
   convertTimezone(timezone: any) {
     const { countryName, timestamp, gmtOffset, zoneName, countryCode } =
       timezone;
-    const fechaHoraActual = new Date().toLocaleTimeString(countryCode, {
+    const fechaHoraActual = new Date().toLocaleString(countryCode, {
       timeZone: zoneName,
     });
 
@@ -246,6 +236,7 @@ export class UserComponent implements OnInit, OnChanges {
           employeeGroup.removeControl(controlId);
           console.log(controlId);
         }
+        companyGroup.addControl('id', this.fb.control(''));
         companyGroup.addControl('name', this.fb.control(''));
         companyGroup.addControl('description', this.fb.control(''));
         companyGroup.addControl('timezone', this.fb.control(''));
@@ -333,11 +324,13 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.role = this.userForm.value.role;
         this.newUser.password = this.userForm.value.password;
         this.newUser.profile = this.userForm.value.profile;
+        this.newUser.active = this.selectedUser.active
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
             this.newUser.company.id = this.userForm.value.company.id;
             this.newUser.company.name = this.userForm.value.company.name;
-            this.newUser.company.timezone = this.userForm.value.company.timezone;
+            this.newUser.company.timezone =
+              this.userForm.value.company.timezone;
             if (this.userForm.value.company.description != null) {
               this.newUser.company.description =
                 this.userForm.value.company.description;

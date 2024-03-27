@@ -37,7 +37,6 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/browser",
-            "baseHref": "/app-timer",
             "allowedCommonJsDependencies": ["lodash"],
             "index": "src/index.html",
             "main": "src/main.ts",

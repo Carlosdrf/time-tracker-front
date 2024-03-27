@@ -57,6 +57,7 @@ export class AdminUsersComponent {
     if (!this.isSlideIn) this.isSlideIn = true;
   }
   handleSavedUser(user: any) {
+    console.log(user)
     const userIds = this.users.map((user: any) => user.id);
     if (userIds.includes(user.id)) {
       this.users.forEach((oldUser: any, i: number) => {

@@ -14,6 +14,7 @@
                 <a routerLink="admin/users" class="nav-link" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false">Users</a>
                 <!-- admin dashboard -->
                 <a class="nav-link" routerLink="admin/dashboard" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
+                <a class="nav-link" routerLink="admin/teams" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false" routerLinkActive="active">Teams</a>
                 <!-- user dashboard -->
                 <a class="nav-link" routerLink="dashboard" *ngIf="authenticated == true && userType == '2'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
                 <!-- client dashboard -->
