@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-between flex-wrap">
+<div class="d-flex justify-content-between flex-wrap position-relative">
   <div class="col-12 col-sm-5 col-md-4 px-1 mb-2">
     <div class="border shadow rounded overflow-hidden">
       <div
@@ -8,44 +8,53 @@
       >
         <div
           [ngClass]="{ active: option.active }"
-          class="d-flex align-items-center card-hover justify-content-between gap-2 p-3 border-bottom"
+          class="d-flex align-items-center card-hover justify-content-between gap-2 p-3 border-top border-bottom"
         >
-          <div class="d-flex">
+          <div class="d-flex align-items-center justify-content-between">
             <h2 [title]="option.label" class="mb-0 fs-5">
               {{ option.title }}
             </h2>
-            <i
-              class="fa-solid fa-plus cursor-pointer ms-2"
-              [title]="'New ' + option.formGroup"
+            <button
+              mat-button
+              class="ms-2"
               (click)="resetForm()"
-            ></i>
+              [title]="'New ' + option.formGroup"
+            >
+              <i class="fa-solid fa-plus cursor-pointer"></i>
+              <span class="ms-1">New</span>
+            </button>
           </div>
           <i class="fa-solid fa-angle-right"></i>
         </div>
-        <div
-          *ngFor="let select of option.select; let i = index"
-          class="border-bottom transition dropdown overflow-hidden"
-          [ngClass]="{ active: option.active }"
-        >
+        <div class="max-height i-flow">
           <div
-            class="px-3 py-2 card-hover d-flex gap-2"
-            [ngClass]="{ active: selectedForm == select }"
-            (click)="toggleActive(select); fillForm(option, select)"
+            *ngFor="let select of option.select; let i = index"
+            class="border-bottom transition dropdown overflow-hidden"
+            [ngClass]="{ active: option.active }"
           >
-            <input
-              type="checkbox"
-              class="form-check-input"
-              [checked]="selectedForm == select"
-            />
-            <p class="mb-0 col-9 col-sm-10">
-              {{ select.title || select.name }}
-            </p>
+            <div
+              class="px-3 py-2 card-hover d-flex gap-2"
+              [ngClass]="{ active: selectedForm == select }"
+              (click)="toggleActive(select); fillForm(option, select)"
+            >
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="selectedForm == select"
+              />
+              <p class="mb-0 col-9 col-sm-10">
+                {{ select.title || select.name }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-12 col-sm-7 col-md-8 px-1 mb-2">
+  <div
+    class="col-12 col-sm-7 col-md-8 px-1 mb-2 sticky-md-top h-100"
+    style="top: 80px"
+  >
     <div class="border shadow bg-white overflow-hidden rounded card">
       <div class="card-header">
         <h1 class="mb-0 text-center">
@@ -68,7 +77,11 @@
               <input
                 *ngIf="option.active"
                 type="text"
-                [placeholder]="form.label"
+                [placeholder]="
+                  form.label == 'Description'
+                    ? 'Short ' + form.label + ' (optional)'
+                    : form.label
+                "
                 formControlName="{{ form.control }}"
                 class="form-control rounded mb-2 py-2"
                 placeholder="Input"
