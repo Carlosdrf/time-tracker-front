@@ -1,4 +1,42 @@
-.card-hover:hover i {
-    transition: all 0.1s ease-in;
-    transform: translateX(5px);
+@import "/src/theme/variables.scss";
+.card-hover:hover > i {
+  transition: all 0.2s ease-in;
+  transform: translateX(5px);
+}
+.card-hover.active {
+  background-color: $primary-color;
+  & h2 {
+    color: white;
+  }
+  & i {
+    color: white;
+  }
+  & > i {
+    transform: rotate(90deg);
+  }
+  & p {
+    color: white;
+  }
+}
+// input[type=checkbox]{
+//   width: 16px;
+// }
+.dropdown {
+  height: 100%;
+  &.active {
+    animation: dropdown 0.2s linear;
+  }
+  &:not(.active) {
+    // animation: dropdown 0.2s reverse;
+    display: none;
+  }
+}
+
+@keyframes dropdown {
+  from {
+    height: 0;
+  }
+  to {
+    height: 30px;
+  }
 }

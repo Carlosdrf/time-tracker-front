@@ -47,7 +47,7 @@ ul {
   background-color: $secondary-color;
 }
 
-.card-hover:hover {
+.card-hover:hover:not(.active) {
   background-color: $secondary-color;
   transition: all 0.1s ease-in;
   transition: all 0.3s ease-out;
@@ -116,4 +116,7 @@ ul {
 }
 .bg-payments {
   background-image: url(../../assets/images/resources/payments-section.png);
+}
+.cursor-pointer{
+  cursor: pointer;
 }

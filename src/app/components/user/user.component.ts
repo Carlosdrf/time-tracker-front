@@ -72,7 +72,7 @@ export class UserComponent implements OnInit, OnChanges {
       last_name: [null, [Validators.required]],
       email: [null, [Validators.required]],
       role: ['', [Validators.required]],
-      password: [null],
+      password: [''],
       cpassword: [''],
       company: this.fb.group({
         id: [''],
@@ -120,13 +120,12 @@ export class UserComponent implements OnInit, OnChanges {
         if (propName == 'employee') {
           for (let employeeKey in this.selectedUser[propName]) {
             if (this.selectedUser[propName][employeeKey] == null) {
-              console.log('set', employeeKey);
               this.userForm.get(propName)?.get(employeeKey)?.setValue('');
             }
           }
         }
       }
-      this.newUser = this.selectedUser
+      this.newUser = this.selectedUser;
       if (this.userForm.get('company.timezone')?.value == null) {
         this.userForm.get('company.timezone')?.setValue('');
       }
@@ -168,10 +167,15 @@ export class UserComponent implements OnInit, OnChanges {
   convertTimezone(timezone: any) {
     const { countryName, timestamp, gmtOffset, zoneName, countryCode } =
       timezone;
-    const fechaHoraActual = new Date().toLocaleString(countryCode, {
-      timeZone: zoneName,
-    });
-
+    const fechaHoraActual = new Date()
+      .toLocaleTimeString(countryCode, {
+        timeZone: zoneName,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })
+      .toUpperCase()
+      .replace('.', '');
     return fechaHoraActual;
   }
   resetForm() {
@@ -214,16 +218,10 @@ export class UserComponent implements OnInit, OnChanges {
         }
         this.addDaysOfWeekOptions();
         if (!employeeGroup.get('startTime')) {
-          employeeGroup.addControl(
-            'startTime',
-            this.fb.control(null, Validators.required)
-          );
+          employeeGroup.addControl('startTime', this.fb.control(null));
         }
         if (!employeeGroup.get('endTime')) {
-          employeeGroup.addControl(
-            'endTime',
-            this.fb.control(null, Validators.required)
-          );
+          employeeGroup.addControl('endTime', this.fb.control(null));
         }
         employeeGroup.addControl('id', this.fb.control(''));
         if (!this.selectedUser) {
@@ -308,6 +306,7 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public submitUserForm() {
+    console.log(this.userForm.value);
     if (this.selectedUser) this.newUser.id = this.selectedUser.id;
     else this.newUser.id = '-1';
     this.loader = new Loader(true, true, false);
@@ -324,7 +323,7 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.role = this.userForm.value.role;
         this.newUser.password = this.userForm.value.password;
         this.newUser.profile = this.userForm.value.profile;
-        this.newUser.active = this.selectedUser.active
+        this.newUser.active = this.selectedUser.active;
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
             this.newUser.company.id = this.userForm.value.company.id;

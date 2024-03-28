@@ -178,7 +178,7 @@
               value="{{ timezone.zoneName }}:{{ timezone.countryCode }}"
               *ngFor="let timezone of timezones"
             >
-              {{ timezone.fechaActual | date: 'hh:mm a' }}
+              {{ timezone.fechaActual }}
               {{ timezone.zoneName }}
             </option>
           </select>

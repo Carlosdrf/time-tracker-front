@@ -5,14 +5,22 @@ import { Positions } from '../models/Position.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PositionsService {
+  constructor(private http: HttpClient) {}
+  private API_URI = environment.apiUrl + '/positions';
 
-  constructor(private http: HttpClient) { }
-  private API_URI = environment.apiUrl
+  public get(): Observable<Positions[]> {
+    return this.http.get<Positions[]>(`${this.API_URI}`);
+  }
 
-  public get(): Observable<Positions[]>{
-    return this.http.get<Positions[]>(`${this.API_URI}/positions`)
+  public submit(data: any, id: any = null) {
+    if (id) return this.http.put(`${this.API_URI}/${id}`, data);
+    return this.http.post(`${this.API_URI}`, data);
+  }
+
+  public delete(id: number){
+    return this.http.delete(`${this.API_URI}/${id}`)
   }
 }
