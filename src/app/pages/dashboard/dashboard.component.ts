@@ -10,7 +10,7 @@ import { Entries } from 'src/app/models/Entries';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class ClientDashboardComponent implements OnInit {
   @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
   name: any;
   entries: any = [];

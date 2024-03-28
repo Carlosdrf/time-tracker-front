@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import * as moment from "moment";
-// import { DashboardComponent } from "../components/dashboard/dashboard.component";
+// import { ClientDashboardComponent } from "../components/dashboard/dashboard.component";
 
 @Pipe({
     name: 'customDate'

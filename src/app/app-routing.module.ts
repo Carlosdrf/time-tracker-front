@@ -3,9 +3,6 @@ import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { PagesComponent } from './pages/pages.component';
 import { AuthGuard } from './services/guards/auth-guard.service';
 import { notAuthGuard } from './services/guards/notAuth-guard.service';
-import { AdminGuard } from './services/guards/admin-guard.service';
-import { NotAdmin } from './services/guards/not-admin.service';
-import { AdminEntriesComponent } from './pages/admin/admin.entries/admin.entries.component';
 import { UserTypeGuardService } from './services/guards/user-type-guard.service';
 
 const ADMIN_TYPE_ROLE = '1';
@@ -67,15 +64,10 @@ export const routes: Routes = [
       },
       {
         path: 'admin',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./pages/admin/admin.module').then((m) => m.AdminModule),
-            canActivate: [UserTypeGuardService],
-            data: { allowedUserTypes: [ADMIN_TYPE_ROLE] },
-          },
-        ],
+        loadChildren: () =>
+          import('./pages/admin/admin.module').then((m) => m.AdminModule),
+        canActivate: [UserTypeGuardService],
+        data: { allowedUserTypes: [ADMIN_TYPE_ROLE] },
       },
       // {
       //   path: 'user',

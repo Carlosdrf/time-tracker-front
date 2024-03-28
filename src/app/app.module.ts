@@ -19,7 +19,7 @@ import { SharedModule } from './components/shared.module';
 
 const jwtOptions = {
   tokenGetter: () => localStorage.getItem('access_token'),
-  allowedDomains: ['example.com'],
+  allowedDomains: ['i-nimble.com'],
   disallowedRoutes: ['http://example.com/api/login'],
 };
 
@@ -38,7 +38,7 @@ const jwtOptions = {
     SocketIoModule,
     // CustomDatePipe,
     BrowserAnimationsModule,
-    // DashboardComponent,
+    // ClientDashboardComponent,
     // NgbModule
   ],
   providers: [

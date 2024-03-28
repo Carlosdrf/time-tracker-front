@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between flex-wrap">
+  <div class="col-12 col-sm-5 col-md-4 px-1 mb-2">
+    <div class="border shadow rounded overflow-hidden">
+      <div
+        *ngFor="let option of options; let i = index"
+        (click)="setForm(i)"
+        class="transition"
+      >
+        <div
+          [ngClass]="{ active: option.active }"
+          class="d-flex align-items-center card-hover justify-content-between gap-2 p-3 border-bottom"
+        >
+          <div class="d-flex">
+            <h2 [title]="option.label" class="mb-0 fs-5">
+              {{ option.title }}
+            </h2>
+            <i
+              class="fa-solid fa-plus cursor-pointer ms-2"
+              [title]="'New ' + option.formGroup"
+              (click)="resetForm()"
+            ></i>
+          </div>
+          <i class="fa-solid fa-angle-right"></i>
+        </div>
+        <div
+          *ngFor="let select of option.select; let i = index"
+          class="border-bottom transition dropdown overflow-hidden"
+          [ngClass]="{ active: option.active }"
+        >
+          <div
+            class="px-3 py-2 card-hover d-flex gap-2"
+            [ngClass]="{ active: selectedForm == select }"
+            (click)="toggleActive(select); fillForm(option, select)"
+          >
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="selectedForm == select"
+            />
+            <p class="mb-0 col-9 col-sm-10">
+              {{ select.title || select.name }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-7 col-md-8 px-1 mb-2">
+    <div class="border shadow bg-white overflow-hidden rounded card">
+      <div class="card-header">
+        <h1 class="mb-0 text-center">
+          {{ formHeader.mode }} {{ formHeader.title }}
+        </h1>
+      </div>
+      <div class="card-body">
+        <form
+          action=""
+          [formGroup]="managementForm"
+          *ngFor="let option of options"
+          (ngSubmit)="sendForms(option)"
+        >
+          <div
+            class=""
+            formGroupName="{{ option.formGroup }}"
+            *ngIf="option.active"
+          >
+            <div *ngFor="let form of option.form">
+              <input
+                *ngIf="option.active"
+                type="text"
+                [placeholder]="form.label"
+                formControlName="{{ form.control }}"
+                class="form-control rounded mb-2 py-2"
+                placeholder="Input"
+              />
+            </div>
+            <div class="d-flex flex-end gap-2 justify-content-end">
+              <a
+                color="warn"
+                (click)="deleteOption(selectedForm.id, option)"
+                class="btn btn-block"
+                mat-raised-button
+                *ngIf="selectedForm"
+                >delete</a
+              >
+              <button
+                mat-raised-button
+                class="btn-primary transition"
+                color="primary"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
