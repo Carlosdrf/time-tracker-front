@@ -5,22 +5,19 @@
 }
 .card-hover.active {
   background-color: $primary-color;
-  & h2 {
-    color: white;
-  }
-  & i {
-    color: white;
-  }
   & > i {
     transform: rotate(90deg);
   }
-  & p {
+  & p,
+  span,
+  h2,
+  i {
     color: white;
   }
 }
-// input[type=checkbox]{
-//   width: 16px;
-// }
+.max-height {
+  max-height: 300px;
+}
 .dropdown {
   height: 100%;
   &.active {
