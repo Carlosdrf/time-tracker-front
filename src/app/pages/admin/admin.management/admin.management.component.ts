@@ -78,23 +78,25 @@ export class AdminManagementComponent implements OnInit {
     this.getOptionsInfo();
   }
 
-  setForm(i: number) {
+  handleSelection(i: number, selection: any = null) {
     this.options.forEach((option: any, index: number) => {
-      if (index != i) option.active = false;
-      else {
+      option.select.forEach((select: any) => {
+        if (selection == select) {
+          this.fillForm(option, selection);
+        }
+      });
+
+      if (index != i) {
+        option.active = false;
+        if (!selection) {
+          this.resetForm();
+        }
+      } else {
         option.active = true;
         this.formHeader.title = option.title;
       }
     });
-  }
-  toggleActive(item: any) {
-    this.options.forEach((option: any) => {
-      option.select.forEach((select: any) => {
-        if (select != item) select.active = false;
-      });
-    });
-    item.active = !item.active;
-    this.formHeader.mode = item.active ? 'Edit' : 'Create';
+    this.formHeader.mode = this.selectedForm ? 'Edit' : 'Create';
   }
 
   fillForm(option: any, select: any) {
@@ -144,11 +146,10 @@ export class AdminManagementComponent implements OnInit {
               console.log(item);
               if (item.id == response.id) {
                 item = response;
-                this.selectedForm = response
+                this.selectedForm = response;
               }
               return item;
             });
-            
           },
         });
     }
@@ -161,7 +162,6 @@ export class AdminManagementComponent implements OnInit {
       if (modal) {
         option.method.delete(id).subscribe({
           next: () => {
-            console.log('deleted');
             this.selectedForm = null;
             option.select = option.select.filter(
               (option: any) => option.id != id
@@ -170,5 +170,9 @@ export class AdminManagementComponent implements OnInit {
         });
       }
     });
+  }
+  isMobile() {
+    if (window.innerWidth <= 576) return true;
+    return false;
   }
 }
