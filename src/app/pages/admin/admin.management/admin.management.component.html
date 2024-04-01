@@ -21,9 +21,9 @@
               <span class="ms-1">New</span>
             </button>
           </div>
-          <i class="fa-solid fa-angle-right"></i>
+          <i class="fa-solid fa-angle-right transition"></i>
         </div>
-        <div class="max-height i-flow">
+        <div class="max-height i-flow" [ngClass]="{'scrollbar-thin': firefox}">
           <div
             *ngFor="let select of option.select"
             class="border-bottom transition dropdown overflow-hidden"

@@ -54,6 +54,7 @@ export class AdminManagementComponent implements OnInit {
     mode: 'Create',
     title: 'Positions',
   };
+  firefox: boolean = false;
   selectedForm: any;
   constructor(
     private fb: FormBuilder,
@@ -64,6 +65,9 @@ export class AdminManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+      this.firefox = true;
+    }
     this.options.forEach((option: any) => {
       let formGroup = this.managementForm.get(option.formGroup) as FormGroup;
       for (let control in formGroup.controls) {

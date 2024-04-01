@@ -77,7 +77,13 @@ ul {
 .customer-section-img {
   width: 100%;
 }
-
+// scroll bar
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+.scrollbar-thin{
+  scrollbar-width: thin;
+}
 /** scroll bar in form*/
 .i-flow {
   overflow-y: auto;
@@ -95,6 +101,9 @@ ul {
   background-color: transparent;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
+.i-flow::webkit-scrollbar-button { 
+  display:none;
+ }
 
 .bg-container {
   background-position: center center;

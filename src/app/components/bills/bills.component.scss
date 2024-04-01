@@ -4,7 +4,4 @@
 .max-height {
   max-height: 180px;
   overflow-y: auto;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
