@@ -14,7 +14,7 @@
             <button
               mat-button
               class="ms-2"
-              (click)="resetForm()"
+              (click)="resetForm(true)"
               [title]="'New ' + option.formGroup"
             >
               <i class="fa-solid fa-plus cursor-pointer"></i>
@@ -49,10 +49,9 @@
     </div>
   </div>
   <div
-    class="col-12 col-sm-6 col-md-7 px-1 mb-2 sticky-md-top h-100 z-1 d-sm-block"
+    class="col-12 col-sm-6 col-md-7 px-1 mb-2 sticky-md-top h-100 z-1 d-sm-block d-none"
     [ngClass]="{
-      'd-none': !selectedForm && isMobile(),
-      'position-modal': selectedForm && isMobile()
+      'position-modal': isMobile() && show
     }"
     style="top: 80px"
   >
@@ -66,7 +65,7 @@
         <button
           mat-button
           class="hidden-sm d-sm-none border"
-          (click)="resetForm()"
+          (click)="resetForm(); show = false"
         >
           <i class="fa-solid fa-xmark"></i>
         </button>

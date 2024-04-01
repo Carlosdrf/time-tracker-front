@@ -11,7 +11,7 @@ import { AdminManagementComponent } from './admin.management/admin.management.co
 
 export const routes: Routes = [
   {
-    path: 'dashboard',
+    path: '',
     component: AdminClientDashboardComponent,
     pathMatch: 'full',
   },

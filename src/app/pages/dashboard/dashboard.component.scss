@@ -1,5 +1,9 @@
 @import '../pages.component.scss';
-
+@import '/src/theme/variables.scss';
+.maintenance{
+  font-size: 70px;
+  color: rgba($primary-color, 0.5);
+}
 #menu-off-hours:not(.off-hours){
     transform: scaleY(0);
     transition: all 0.2s ease-in-out;

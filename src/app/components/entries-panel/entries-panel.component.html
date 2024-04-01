@@ -1,5 +1,5 @@
 <div class="col-md-12 col-12">
-  <div class="card mb-4 shadow rounded">
+  <div class="card mb-3 shadow rounded">
     <div
       class="card-header rounded-top d-flex flex-wrap justify-content-between align-items-center"
     >
@@ -15,7 +15,7 @@
       <div class="form-group p-2 col-md-8 col-lg-9">
         <input
           type="text"
-          class="form-control"
+          class="form-control rounded"
           [(ngModel)]="entry.description"
           placeholder="Write a comment (optional)"
         />
@@ -33,17 +33,16 @@
             <button
               *ngIf="entryCheck"
               (click)="endCurrentEntry()"
-              class="btn col-12 rounded btn-danger"
+              class="btn col-12 btn-danger rounded-sm"
             >
               Stop
             </button>
           </div>
           <div class="col-2 col-md-4 d-flex align-items-center">
             <div>
-              <button mat-icon-button id="more-btn">
-                <mat-icon>more_vert</mat-icon>
+              <button mat-icon-button id="more-btn" class="p-0">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
               </button>
-
               <div
                 [ngClass]="{ 'off-hours': offHours }"
                 id="menu-off-hours"

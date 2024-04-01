@@ -42,6 +42,7 @@ export class EntriesService {
     return this.http.post(`${this.API_URI}/entries/add`, entry);
   }
   deleteEntry(id: number) {
+    console.log('entries for delete', id)
     return this.http.delete(`${this.API_URI}/entries/${id}`);
   }
   closeCurrentEntry(entry: any) {

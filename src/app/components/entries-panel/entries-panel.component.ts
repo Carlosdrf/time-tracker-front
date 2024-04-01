@@ -46,7 +46,6 @@ export class EntriesPanelComponent implements OnChanges {
         this.stopTimer();
       }
     }
-    console.log(changes);
   }
   addEntry() {
     const data = {

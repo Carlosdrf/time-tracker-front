@@ -18,13 +18,11 @@ export class notAuthGuard {
       this.authService.verifyAdmin().subscribe(isAdmin =>{
         this.isAdmin = isAdmin
       })
-      // console.log(this.isAdmin)
-      // console.log(localStorage.getItem('role'))
       if(localStorage.getItem('role') !== null && this.loggedIn == true && localStorage.getItem('role') === '2'){
         this.router.navigate(['dashboard'])
         return false;
       }else if(localStorage.getItem('role') !== null && this.loggedIn == true && localStorage.getItem('role') === '1'){
-        this.router.navigate(['admin/dashboard'])
+        this.router.navigate(['admin'])
         return false
       }else if(localStorage.getItem('role') !== null && this.loggedIn == true && localStorage.getItem('role') === '3'){
         this.router.navigate(['client'])

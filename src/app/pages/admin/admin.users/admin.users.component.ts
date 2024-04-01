@@ -43,21 +43,21 @@ export class AdminUsersComponent {
   userToggle() {
     if (this.selectedUser) {
       this.selectedUser = null;
-      // this.appUser.nativeElement.classList.remove('visually-hidden');
+      // this.isSlideIn = true
+      // console.log(this.isSlideIn);
+
       return;
     }
-    // this.appUser.nativeElement.classList.toggle('visually-hidden');
     this.isSlideIn = !this.isSlideIn;
+    console.log(this.isSlideIn);
   }
   setSelectedUser(user: any) {
     this.selectedUser = user;
     if (this.appUser.nativeElement.classList.contains('visually-hidden')) {
-      // this.appUser.nativeElement.classList.remove('visually-hidden');
     }
     if (!this.isSlideIn) this.isSlideIn = true;
   }
   handleSavedUser(user: any) {
-    console.log(user)
     const userIds = this.users.map((user: any) => user.id);
     if (userIds.includes(user.id)) {
       this.users.forEach((oldUser: any, i: number) => {
@@ -75,15 +75,24 @@ export class AdminUsersComponent {
     this.selectedUser = null;
   }
   toggleUserStatus(user: any) {
-    console.log(user);
     user.active = !user.active;
     this.userService.update(user).subscribe({
       next: (value: any) => {
         if (!user.active) {
-          console.log(value);
           this.users = this.users.filter((user: any) => user.id !== value.id);
         }
       },
     });
+  }
+  isMobile() {
+    if (window.innerWidth <= 576) {
+      return true;
+    }
+    return false;
+  }
+  closeFormMobile(show: any) {
+    console.log(show);
+    this.isSlideIn = show;
+    this.selectedUser = null
   }
 }

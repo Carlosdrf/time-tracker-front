@@ -25,7 +25,7 @@ export class EmployeesComponent {
   public users: any = [];
   public employees: any = [];
   public links: any = [
-    { url: '/user/entries', title: 'Entries' },
+    // { url: '/user/entries', title: 'Entries' },
     { url: '/reports', title: 'Reports' },
   ];
 

@@ -75,7 +75,7 @@ export class AuthService {
   }
   userTypeRouting(rol: string) {
     if (rol == '1') {
-      this.routes.navigate(['admin/dashboard']);
+      this.routes.navigate(['admin']);
       return;
     } else if (rol == '2') {
       this.routes.navigate(['dashboard']);

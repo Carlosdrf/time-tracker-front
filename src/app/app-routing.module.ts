@@ -19,7 +19,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: () =>
           import('./pages/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
+            (m) => m.EmployeeDashboardModule
           ),
         canActivate: [UserTypeGuardService],
         data: { allowedUserTypes: [USER_TYPE_ROLE] },
@@ -38,7 +38,7 @@ export const routes: Routes = [
             (m) => m.EmployeesModule
           ),
         canActivate: [UserTypeGuardService],
-        data: { allowedUserTypes: [CLIENT_TYPE_ROLE] },
+        data: { allowedUserTypes: [CLIENT_TYPE_ROLE, USER_TYPE_ROLE] },
       },
       {
         path: 'entries',
@@ -69,15 +69,6 @@ export const routes: Routes = [
         canActivate: [UserTypeGuardService],
         data: { allowedUserTypes: [ADMIN_TYPE_ROLE] },
       },
-      // {
-      //   path: 'user',
-      //   loadChildren: () =>
-      //     import('./pages/admin/admin.entries/admin.entries.module').then(
-      //       (m) => EntriesModule
-      //     ),
-      //   canActivate: [UserTypeGuardService],
-      //   data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
-      // },
       {
         path: 'client',
         loadChildren: () =>

@@ -121,16 +121,16 @@ export class AdminEntriesComponent implements OnInit {
     }
   }
 
-  public getEntryStatus() {
-    const user = {
-      id: this.user.id,
-    };
-    this.entriesService.getUserEntryStatus(user).subscribe((res) => {
-      const status = res as Array<any>;
-      console.log(status);
-      console.log('status');
-    });
-  }
+  // public getEntryStatus() {
+  //   const user = {
+  //     id: this.user.id,
+  //   };
+  //   this.entriesService.getUserEntryStatus(user).subscribe((res) => {
+  //     const status = res as Array<any>;
+  //     console.log(status);
+  //     console.log('status');
+  //   });
+  // }
   updateStart_time(date: Date, event: any, i: number) {
     if (this.regex.test(event.target.value)) {
       if (event.target.value.length == 3) {

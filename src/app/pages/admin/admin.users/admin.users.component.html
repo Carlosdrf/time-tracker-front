@@ -46,13 +46,14 @@
 <div
   class="slide col-sm-7 col-12 position-fixed top-0 end-0 start-sm-0 bottom-0 d-flex justify-content-center align-items-center z-1"
   #appUser
-  [ngClass]="{ 'slide-in': isSlideIn, 'slide-out': !isSlideIn }"
+  [ngClass]="{ 'slide-in': isSlideIn, 'slide-out': !isSlideIn, 'bg-fixed': isMobile() && isSlideIn }"
 >
   <div class="col-9 vh-100 col-sm-10 position-relative">
     <app-user
       [selectedUser]="selectedUser"
       (onSaveSelectedUser)="handleSavedUser($event)"
       (onDeletedUser)="handleDeletedUser($event)"
+      (onMobileCloseForm)="closeFormMobile($event)"
     ></app-user>
   </div>
 </div>

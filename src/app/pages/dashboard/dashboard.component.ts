@@ -10,7 +10,7 @@ import { Entries } from 'src/app/models/Entries';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class ClientDashboardComponent implements OnInit {
+export class EmployeeDashboardComponent implements OnInit {
   @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
   name: any;
   entries: any = [];
@@ -35,12 +35,13 @@ export class ClientDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.name = this.getUserName()
+    this.name = this.getUserName();
     this.getEntries();
     this.socketService.socket?.on('server:start_timer', (data) => {
       if (data.length !== 0) {
         this.currentEntryId = data.id;
         this.start_time = new Date();
+        this.startedEntry = data;
         this.entryCheck = true;
       } else {
         this.entryCheck = false;
@@ -53,18 +54,18 @@ export class ClientDashboardComponent implements OnInit {
       this.getEntries();
     });
   }
-  getUserName(){
-    const name = localStorage.getItem('name')
+  getUserName() {
+    const name = localStorage.getItem('name');
     return name;
   }
   getEntries() {
-    this.entriesService.getEntries().subscribe(({entries}) => {
+    this.entriesService.getEntries().subscribe(({ entries }) => {
       this.entries = entries.filter((entry: any) => entry.status !== 0);
       const startedEntry = entries.filter((entry: any) => entry.status === 0);
       if (startedEntry.length !== 0) {
         this.currentEntryId = startedEntry[0].id;
         this.start_time = startedEntry[0].start_time;
-        this.startedEntry = startedEntry[0]
+        this.startedEntry = startedEntry[0];
         this.entryCheck = true;
       } else {
         this.entryCheck = false;
@@ -88,8 +89,8 @@ export class ClientDashboardComponent implements OnInit {
   addEntry(data: any) {
     this.entriesService.createEntry(data).subscribe((startedEntry: any) => {
       this.currentEntryId = startedEntry.id;
-      console.log(startedEntry)
-      this.startedEntry = startedEntry
+      console.log(startedEntry);
+      this.startedEntry = startedEntry;
       this.start_time = new Date();
       this.entryCheck = true;
       this.message = 'Entry Started Successfully';
@@ -100,14 +101,12 @@ export class ClientDashboardComponent implements OnInit {
   }
   endCurrentEntry(currentEntry: any) {
     this.currentEntryId = currentEntry.id;
-    this.entriesService
-      .closeCurrentEntry(currentEntry)
-      .subscribe((v) => {
-        this.getEntries();
-        this.message = 'Entry Ended Successfully';
-        this.page.setAlert(this.message);
-        this.socketService.socket.emit('client:end_entry', 'mensaje');
-      });
+    this.entriesService.closeCurrentEntry(currentEntry).subscribe((v) => {
+      this.getEntries();
+      this.message = 'Entry Ended Successfully';
+      this.page.setAlert(this.message);
+      this.socketService.socket.emit('client:end_entry', 'mensaje');
+    });
   }
 
   deleteEntry(id: number) {

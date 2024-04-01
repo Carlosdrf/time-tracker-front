@@ -8,6 +8,7 @@ import { Positions } from 'src/app/models/Position.model';
 import { Company } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { PositionsService } from 'src/app/services/positions.service';
+import { PagesComponent } from '../../pages.component';
 
 @Component({
   selector: 'app-admin.management',
@@ -28,7 +29,7 @@ export class AdminManagementComponent implements OnInit {
       // active: ['', [Validators.required]],
     }),
   });
-
+  show: boolean = false;
   public options: any = [
     {
       title: 'Positions',
@@ -58,7 +59,8 @@ export class AdminManagementComponent implements OnInit {
     private fb: FormBuilder,
     private companiesService: CompaniesService,
     private positionService: PositionsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private page: PagesComponent
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +85,7 @@ export class AdminManagementComponent implements OnInit {
       option.select.forEach((select: any) => {
         if (selection == select) {
           this.fillForm(option, selection);
+          this.show = true;
         }
       });
 
@@ -96,6 +99,7 @@ export class AdminManagementComponent implements OnInit {
         this.formHeader.title = option.title;
       }
     });
+
     this.formHeader.mode = this.selectedForm ? 'Edit' : 'Create';
   }
 
@@ -110,10 +114,13 @@ export class AdminManagementComponent implements OnInit {
       this.selectedForm = select;
     }
   }
-  resetForm() {
+  resetForm(open: boolean = false) {
     this.selectedForm = null;
     this.managementForm.reset();
     this.formHeader.mode = 'Create';
+    if (open) {
+      this.show = true;
+    }
   }
   getOptionsInfo() {
     forkJoin([
@@ -151,6 +158,10 @@ export class AdminManagementComponent implements OnInit {
               return item;
             });
           },
+          error: (err: ErrorEvent) => {
+            const { error } = err;
+            this.page.setAlert(error.message);
+          },
         });
     }
   }
@@ -172,7 +183,9 @@ export class AdminManagementComponent implements OnInit {
     });
   }
   isMobile() {
-    if (window.innerWidth <= 576) return true;
+    if (window.innerWidth <= 576) {
+      return true;
+    }
     return false;
   }
 }

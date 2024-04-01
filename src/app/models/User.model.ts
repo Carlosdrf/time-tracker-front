@@ -1,16 +1,16 @@
 export class User {
   constructor(
-    public id: string,
+    public id: string = '',
     public name: string = '',
     public last_name: string = '',
     public profile: any,
     public email: string = '',
     public password: string = '',
     public role: number = 0,
-    public active: number = 0,
     public company: Company,
-    public employee: Employee
-  ) {}
+    public employee: Employee,
+    public active?: number,
+    ) {}
 }
 
 export class Company {
@@ -24,7 +24,7 @@ export class Company {
 export class Employee {
   id?: string;
   position?: string;
-  hourlyRate?: number;
+  hourly_rate?: number;
   daysOfWeek?: string[];
   startTime?: string;
   endTime?: string;

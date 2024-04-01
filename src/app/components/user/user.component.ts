@@ -16,7 +16,7 @@ import {
   FormArray,
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
-import { User } from 'src/app/models/User.model';
+import { Company, Employee, User } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
@@ -24,7 +24,6 @@ import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PositionsService } from 'src/app/services/positions.service';
 import { Positions } from 'src/app/models/Position.model';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-user',
@@ -35,8 +34,19 @@ export class UserComponent implements OnInit, OnChanges {
   @Input() selectedUser: any;
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onMobileCloseForm: EventEmitter<any> = new EventEmitter<any>();
   img: any;
-  newUser!: User;
+  newUser: User = {
+    id: '-1',
+    name: '',
+    last_name: '',
+    email: '',
+    profile: undefined,
+    password: '',
+    role: 0,
+    company: new Company,
+    employee: new Employee
+  }
   loader: Loader = new Loader(false, false, false);
   roleList!: Roles[];
   title: string = 'New User';
@@ -58,6 +68,7 @@ export class UserComponent implements OnInit, OnChanges {
     'Sunday',
   ];
   selectedDaysOfWeek: string[] = [];
+  public show: boolean = false;
 
   constructor(
     private userService: UsersService,
@@ -82,7 +93,7 @@ export class UserComponent implements OnInit, OnChanges {
       employee: this.fb.group({
         id: [''],
         position: [''],
-        hourlyRate: [null, [Validators.required]],
+        hourly_rate: [null, [Validators.required]],
         // daysOfWeek: this.fb.array([]),
         // startTime: [null, [Validators.required]],
         // endTime: [null, [Validators.required]],
@@ -101,12 +112,10 @@ export class UserComponent implements OnInit, OnChanges {
       if (!this.selectedUser) {
         this.title = 'New User';
         this.resetForm();
-        this.userForm.get('role')?.setValue('');
         return;
       }
 
       this.resetForm();
-      this.userForm.reset();
       this.userForm.patchValue(this.selectedUser);
       if (this.selectedUser) {
         this.title = 'Edit User';
@@ -125,6 +134,7 @@ export class UserComponent implements OnInit, OnChanges {
           }
         }
       }
+      this.img = null
       this.newUser = this.selectedUser;
       if (this.userForm.get('company.timezone')?.value == null) {
         this.userForm.get('company.timezone')?.setValue('');
@@ -179,7 +189,9 @@ export class UserComponent implements OnInit, OnChanges {
     return fechaHoraActual;
   }
   resetForm() {
+    this.userForm.reset();
     this.userForm.reset({ password: '', cpassword: '' });
+    this.userForm.get('role')?.setValue('');
   }
 
   handleRole() {
@@ -207,9 +219,9 @@ export class UserComponent implements OnInit, OnChanges {
             this.fb.control('', Validators.required)
           );
         }
-        if (!employeeGroup.get('hourlyRate')) {
+        if (!employeeGroup.get('hourly_rate')) {
           employeeGroup.addControl(
-            'hourlyRate',
+            'hourly_rate',
             this.fb.control(null, Validators.required)
           );
         }
@@ -232,7 +244,6 @@ export class UserComponent implements OnInit, OnChanges {
       } else if (role == this.EMPLOYER_ROLE) {
         for (let controlId in employeeGroup.controls) {
           employeeGroup.removeControl(controlId);
-          console.log(controlId);
         }
         companyGroup.addControl('id', this.fb.control(''));
         companyGroup.addControl('name', this.fb.control(''));
@@ -306,7 +317,7 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public submitUserForm() {
-    console.log(this.userForm.value);
+    // console.log(this.userForm.value);
     if (this.selectedUser) this.newUser.id = this.selectedUser.id;
     else this.newUser.id = '-1';
     this.loader = new Loader(true, true, false);
@@ -323,7 +334,6 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.role = this.userForm.value.role;
         this.newUser.password = this.userForm.value.password;
         this.newUser.profile = this.userForm.value.profile;
-        this.newUser.active = this.selectedUser.active;
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
             this.newUser.company.id = this.userForm.value.company.id;
@@ -343,14 +353,13 @@ export class UserComponent implements OnInit, OnChanges {
           this.newUser.employee.id = this.userForm.value.employee.id;
           this.newUser.employee.position =
             this.userForm.value.employee.position;
-          this.newUser.employee.hourlyRate =
-            this.userForm.value.employee.hourlyRate;
+          this.newUser.employee.hourly_rate =
+            this.userForm.value.employee.hourly_rate;
           this.newUser.employee.daysOfWeek = this.selectedDaysOfWeek;
           this.newUser.employee.startTime =
             this.userForm.value.employee.startTime;
           this.newUser.employee.endTime = this.userForm.value.employee.endTime;
         }
-        console.log(this.newUser);
         this.userService.createUser(this.newUser).subscribe({
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
@@ -389,7 +398,6 @@ export class UserComponent implements OnInit, OnChanges {
       if (value) {
         this.userService.delete(id).subscribe({
           next: (value) => {
-            console.log(value);
             this.onDeletedUser.emit(id);
           },
         });

@@ -1,7 +1,16 @@
 <main class="h-100 d-flex flex-column justify-content-center">
   <div class="rounded shadow text-center card max-h-75 mt-5">
-    <div class="card-header">
+    <div
+      class="card-header d-flex justify-content-between justify-content-sm-between align-items-center"
+    >
       <h1 class="mb-0 text-dark fs-3">{{ title }}</h1>
+      <button
+        mat-button
+        class="hidden-sm d-sm-none border"
+        (click)="resetForm(); onMobileCloseForm.emit(false)"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
     <div class="card-body position-relative i-flow">
       <form
@@ -14,7 +23,7 @@
           <img *ngIf="img" [src]="img" alt="" />
           <i *ngIf="!img" class="fa-regular fa-user"></i>
           <div class="file btn btn-lg btn-primary opacity-75 cursor-pointer">
-            Change Photo
+            Change Photo (soon)
             <input
               type="file"
               name="file"
@@ -103,7 +112,7 @@
           <input
             type="number"
             name="Hourly rate"
-            formControlName="hourlyRate"
+            formControlName="hourly_rate"
             class="form-control p-2 mb-3"
             placeholder="Hourly rate"
             *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"

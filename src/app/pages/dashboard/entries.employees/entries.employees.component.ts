@@ -55,8 +55,9 @@ export class EntriesEmployeesComponent implements OnInit {
     this.name = this.getUserName();
     this.getEntries();
     this.socketService.socket?.on('server:start_timer', (data) => {
-      if (data.length !== 0) {
+      if (data) {
         this.currentEntryId = data.id;
+        this.startedEntry = data;
         this.start_time = new Date();
         this.entryCheck = true;
       } else {
@@ -116,18 +117,18 @@ export class EntriesEmployeesComponent implements OnInit {
   }
   endCurrentEntry(currentEntry: any) {
     this.currentEntryId = currentEntry.id;
-    this.entriesService
-      .closeCurrentEntry(currentEntry)
-      .subscribe((v) => {
-        this.getEntries();
-        this.message = 'Entry Ended Successfully';
-        this.page.setAlert(this.message);
-        this.socketService.socket.emit('client:end_entry', 'mensaje');
-      });
+    console.log(currentEntry);
+    this.entriesService.closeCurrentEntry(currentEntry).subscribe((v) => {
+      this.getEntries();
+      this.message = 'Entry Ended Successfully';
+      this.page.setAlert(this.message);
+      this.socketService.socket.emit('client:end_entry', 'mensaje');
+    });
   }
 
   deleteEntry(id: number) {
     this.entriesService.deleteEntry(id).subscribe((v) => {
+      console.log('getentries');
       this.getEntries();
       this.message = 'Entry deleted!';
       this.page.setAlert(this.message);
