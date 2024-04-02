@@ -13,21 +13,27 @@ export class EntryComponent {
   @Output() onUpdateStartTime: EventEmitter<any> = new EventEmitter<any>();
   @Output() onUpdateEndTime: EventEmitter<any> = new EventEmitter<any>();
   @Output() onUpdateTask: EventEmitter<any> = new EventEmitter<any>();
-  @Output() onDeleteEntry: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onDeleteEntry: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onAuthorizeEntry: EventEmitter<any> = new EventEmitter<any>();
   @Input() entry: any;
-  @Input() suspicious: boolean = false
+  @Input() suspicious: boolean = false;
 
   constructor(private customDate: CustomDatePipe) {}
 
-  updateStart_time(entry: any, event: Event){
-    this.onUpdateStartTime.emit({entry, event})
+  updateStart_time(entry: any, event: Event) {
+    this.onUpdateStartTime.emit({ entry, event });
   }
-  updateEnd_time(entry: any, event: Event){
-    this.onUpdateEndTime.emit({entry, event})
+  updateEnd_time(entry: any, event: Event) {
+    this.onUpdateEndTime.emit({ entry, event });
   }
 
   updateTask(entry: any, event: any) {
-    this.onUpdateTask.emit(entry)
+    this.onUpdateTask.emit(entry);
+  }
+
+  authorize(entry: any) {
+    console.log(entry);
+    this.onAuthorizeEntry.emit(entry);
   }
 
   timeFormat(event: any) {
@@ -75,6 +81,6 @@ export class EntryComponent {
   }
 
   deleteEntry(id: number) {
-    this.onDeleteEntry.emit(id)
+    this.onDeleteEntry.emit(id);
   }
 }

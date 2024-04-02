@@ -18,6 +18,7 @@ import { SharedModule } from '../shared.module';
 export class EntriesComponent implements OnInit {
   @Output() getEntries: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeleteEntry: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onAuthorizeEntry: EventEmitter<any> = new EventEmitter<any>();
   @Input() entries: any;
   @Input() reviewEntries: any = [];
   @Input() loaded?: boolean;
@@ -45,6 +46,9 @@ export class EntriesComponent implements OnInit {
 
   ngOnInit() {
     this.loaded = false;
+    this.reviewEntries.forEach((entry: any) => {
+      console.log(entry.end_time - entry.start_time / 1000);
+    });
   }
 
   deleteEntry(id: number) {
@@ -58,7 +62,17 @@ export class EntriesComponent implements OnInit {
       }
     });
   }
-
+  authorizeEntry(entry:any){
+    const dialog = this.dialog.open(ModalComponent, {
+      data: { subject: 'entry' },
+    });
+    dialog.afterClosed().subscribe((option: boolean) => {
+      if (option) {
+        this.onAuthorizeEntry.emit(entry);
+        console.log('authorize');
+      }
+    });
+  }
   updateTask(entry: any) {
     this.entriesService
       .updateEntryTask(entry.task_id, entry)

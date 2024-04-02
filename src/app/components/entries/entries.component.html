@@ -19,6 +19,7 @@
   <app-entry
     [entry]="entry"
     (onUpdateTask)="updateTask($event)"
+    (onAuthorizeEntry)="authorizeEntry($event)"
     (onUpdateStartTime)="updateStart_time($event)"
     (onUpdateEndTime)="updateEnd_time($event)"
     (onDeleteEntry)="deleteEntry($event)"

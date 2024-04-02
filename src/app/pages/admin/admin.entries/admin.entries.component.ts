@@ -12,7 +12,7 @@ import { EntriesComponent } from 'src/app/components/entries/entries.component';
   templateUrl: './admin.entries.component.html',
   styleUrls: ['./admin.entries.component.scss'],
   standalone: true,
-  imports: [SharedModule, EntriesComponent]
+  imports: [SharedModule, EntriesComponent],
 })
 export class AdminEntriesComponent implements OnInit {
   currentEntryId: string = '';
@@ -63,22 +63,27 @@ export class AdminEntriesComponent implements OnInit {
     user = {
       user_id: this.user.id,
     };
-    // console.log(this.datesRange)
     if (this.datesRange.firstSelect) {
       user.start_time = new Date(this.datesRange.firstSelect);
       user.end_time = new Date(this.datesRange.lastSelect);
     }
 
-    this.entriesService.getAllEntries(user).subscribe(({entries, suspicious}) => {
-      this.reviewEntries = suspicious
-
-      console.log(suspicious)
-      this.entries = entries.filter((item: any) => item.status !== 0);
-      if (entries.length == 0 && this.datesRange.firstSelect) {
-        this.message = 'No logs in the dates selected';
-      }
-      this.loaded = true;
-    });
+    this.entriesService
+      .getAllEntries(user)
+      .subscribe(({ entries, suspicious }) => {
+        this.reviewEntries = suspicious;
+        this.reviewEntries.forEach((entry: any) => {
+          const date1 = new Date(entry.end_time).getTime()
+          const date2 = new Date(entry.start_time).getTime()
+          const diff = Math.floor((date1 - date2) / 1000/ 60 / 60)
+          console.log(diff);
+        });
+        this.entries = entries.filter((item: any) => item.status !== 0);
+        if (entries.length == 0 && this.datesRange.firstSelect) {
+          this.message = 'No logs in the dates selected';
+        }
+        this.loaded = true;
+      });
   }
 
   onClick(event: MouseEvent): void {
@@ -178,7 +183,7 @@ export class AdminEntriesComponent implements OnInit {
         end_time: this.getFormatDate(date, event.target.value),
         date: this.entries[i].date,
       };
-      console.log(data)
+      console.log(data);
       // this.entriesService
       //   .updateEntry(this.entries[i].id, data)
       //   .subscribe((v) => {
