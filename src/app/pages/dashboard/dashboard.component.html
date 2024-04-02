@@ -14,101 +14,51 @@
     ></app-entries-panel>
   </div>
   <div class="d-flex flex-wrap">
-    <div class="col-12 col-md-6 p-1 min-height">
-      <div class="card rounded shadow h-100">
-        <div class="card-body position-relative">
+    <div class="col-12 col-md-6 p-1 min-height" *ngFor="let component of components">
+      <div class="card rounded-1 shadow h-100 overflow-hidden">
+        <div class="card-body position-relative d-flex flex-column p-4">
           <div class="position-absolute start-0 end-0 bottom-0 top-0 z-1">
             <div class="d-flex h-100 justify-content-center align-items-end">
-              <div class="p-2">
-                <i class="fa-regular fa-clock maintenance"></i>
-              </div>
+              <div
+                *ngIf="component.resource"
+                class="p-5 mb-2 bg-container"
+                style="background-image: url(./assets/images/resources/{{component.resource}});"
+              ></div>
             </div>
           </div>
-          <div class="position-relative z-3">
-            <h3>Entries section:</h3>
-            <p>
-              In this section you can see your entries and also clock-in/out
-            </p>
+          <div class="z-3">
+            <h2 class="fs-3">{{ component.title }}:</h2>
+            <p>{{ component.description }}</p>
           </div>
-        </div>
-        <div class="card-header rounded-bottom bg-primary text-center">
-          <a class="text-white text-decoration-none" routerLink="/entries"
-            >See Entries</a
+          <div
+            *ngIf="component.options && component.options.length > 0"
+            class="z-3 my-auto"
           >
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 p-1 min-height">
-      <div class="card rounded shadow h-100">
-        <div class="card-body position-relative">
-          <div class="position-absolute start-0 end-0 bottom-0 top-0 z-1">
-            <div class="d-flex h-100 justify-content-center align-items-end">
-              <div class="p-2">
-                <i class="fa-solid fa-gears maintenance"></i>
-              </div>
-            </div>
-          </div>
-          <div class="position-relative z-3 h-100">
-            <h3>
-              <i class="fa-solid fa-screwdriver-wrench"></i
-              ><span class="ms-2">Working Section:</span>
-            </h3>
-            <div class="d-flex align-items-center h-75">
-              <p class="text-center">
-                This option is in development, coming soon...
-              </p>
+            <div class="d-flex align-items-center justify-content-evenly flex-wrap gap-2">
+              <a
+                color="primary"
+                class="shadow transition fs-5 btn-hover btn btn-primary py-2 px-3"
+                *ngFor="let option of component.options"
+                routerLink="{{ option.path }}"
+                [title]="option.label ? option.label : ''"
+                ><i class="{{ option.icon }}" *ngIf="option.icon"></i
+                ><span class="ms-2">{{ option.title }}</span></a
+              >
             </div>
           </div>
         </div>
-        <div class="card-header rounded-bottom bg-primary text-center">
-          <a class="text-white text-decoration-none" routerLink=""
-            >Unavailable</a
-          >
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 p-1 min-height">
-      <div class="card rounded shadow h-100">
-        <div class="card-body position-relative">
-          <div class="position-absolute start-0 end-0 bottom-0 top-0 z-1">
-            <div class="d-flex h-100 justify-content-center align-items-end">
-              <div class="p-2">
-                <div class="p-5 bg-container"></div>
-              </div>
-            </div>
-          </div>
-          <div class="position-relative z-3">
-            <h3>Customer Service Section:</h3>
-            <p>Here you can talk to an agent or create a ticket</p>
-          </div>
-        </div>
-        <div class="card-header rounded-bottom bg-primary text-center">
+        <div class="card-header p-1 bg-primary text-center fs-4">
           <a
             class="text-white text-decoration-none"
-            routerLink="/employees/customer-service"
-            >Customer Service</a
+            *ngIf="component.path"
+            routerLink="{{ component.path }}"
+            >{{ component.header }}</a
           >
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 p-1 min-height">
-      <div class="card rounded shadow h-100">
-        <div class="card-body position-relative">
-          <div class="position-absolute start-0 end-0 bottom-0 top-0">
-            <div class="d-flex h-100 justify-content-center align-items-end">
-              <div class="p-2">
-                <div class="p-5 bg-container-2"></div>
-              </div>
-            </div>
-          </div>
-          <h3>Blog Section:</h3>
-          <p>Get our last News</p>
-        </div>
-        <div class="card-header rounded-bottom bg-primary text-center">
           <a
             class="text-white text-decoration-none"
-            href="https://i-nimble.com/blog/"
-            >See News</a
+            *ngIf="component.href"
+            href="{{ component.href }}"
+            >{{ component.header }}</a
           >
         </div>
       </div>

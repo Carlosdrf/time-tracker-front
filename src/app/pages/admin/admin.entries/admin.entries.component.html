@@ -43,6 +43,7 @@
 <app-entries
   (getEntries)="getEntries()"
   (onDeleteEntry)="deleteEntry($event)"
+  (onAuthorizeEntry)="authorizeEntry($event)"
   [entries]="entries"
   [reviewEntries]="reviewEntries"
   [loaded]="loaded"

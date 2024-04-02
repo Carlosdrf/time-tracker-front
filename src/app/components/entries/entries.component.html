@@ -6,6 +6,7 @@
   <app-entry
     [entry]="entry"
     [suspicious]="true"
+    (onAuthorizeEntry)="authorizeEntry($event)"
     (onUpdateTask)="updateTask($event)"
     (onUpdateStartTime)="updateStart_time($event)"
     (onUpdateEndTime)="updateEnd_time($event)"
@@ -19,7 +20,6 @@
   <app-entry
     [entry]="entry"
     (onUpdateTask)="updateTask($event)"
-    (onAuthorizeEntry)="authorizeEntry($event)"
     (onUpdateStartTime)="updateStart_time($event)"
     (onUpdateEndTime)="updateEnd_time($event)"
     (onDeleteEntry)="deleteEntry($event)"

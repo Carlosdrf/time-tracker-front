@@ -72,12 +72,6 @@ export class AdminEntriesComponent implements OnInit {
       .getAllEntries(user)
       .subscribe(({ entries, suspicious }) => {
         this.reviewEntries = suspicious;
-        this.reviewEntries.forEach((entry: any) => {
-          const date1 = new Date(entry.end_time).getTime()
-          const date2 = new Date(entry.start_time).getTime()
-          const diff = Math.floor((date1 - date2) / 1000/ 60 / 60)
-          console.log(diff);
-        });
         this.entries = entries.filter((item: any) => item.status !== 0);
         if (entries.length == 0 && this.datesRange.firstSelect) {
           this.message = 'No logs in the dates selected';
@@ -207,9 +201,20 @@ export class AdminEntriesComponent implements OnInit {
       this.message = 'Entry deleted!';
       this.page.setAlert(this.message);
       this.getEntries();
-      // this.getEntryStatus();
     });
   }
+  public authorizeEntry(entry: any) {
+    console.log(entry);
+    this.entriesService.updateEntry(entry.id, entry).subscribe({
+      next: () => {
+        console.log('entry confirmed');
+        this.message = 'Entry confirmed!';
+        this.page.setAlert(this.message);
+        this.getEntries();
+      },
+    });
+  }
+
   public toggleCalendar() {
     this.isActive = !this.isActive;
   }

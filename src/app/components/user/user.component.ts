@@ -317,7 +317,7 @@ export class UserComponent implements OnInit, OnChanges {
   }
 
   public submitUserForm() {
-    // console.log(this.userForm.value);
+    console.log(this.userForm.value);
     if (this.selectedUser) this.newUser.id = this.selectedUser.id;
     else this.newUser.id = '-1';
     this.loader = new Loader(true, true, false);
@@ -350,6 +350,7 @@ export class UserComponent implements OnInit, OnChanges {
           this.userForm.value.employee &&
           this.EMPLOYEE_ROLE == this.userForm.value.role
         ) {
+          console.log(this.userForm.value.employee.id)
           this.newUser.employee.id = this.userForm.value.employee.id;
           this.newUser.employee.position =
             this.userForm.value.employee.position;

@@ -32,8 +32,11 @@ export class EntryComponent {
   }
 
   authorize(entry: any) {
-    console.log(entry);
     this.onAuthorizeEntry.emit(entry);
+  }
+
+  deleteEntry(id: number) {
+    this.onDeleteEntry.emit(id);
   }
 
   timeFormat(event: any) {
@@ -78,9 +81,5 @@ export class EntryComponent {
     } else {
       return false;
     }
-  }
-
-  deleteEntry(id: number) {
-    this.onDeleteEntry.emit(id);
   }
 }

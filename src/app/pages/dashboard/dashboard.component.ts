@@ -11,6 +11,45 @@ import { Entries } from 'src/app/models/Entries';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class EmployeeDashboardComponent implements OnInit {
+  public components: Array<any> = [
+    {
+      href: null,
+      path: '/entries',
+      resource: 'entries-section.png',
+      title: 'Tracker',
+      description: 'You can see your entries',
+      header: 'See your Entries',
+      options: [],
+    },
+    {
+      path: '/reports',
+      href: null,
+      resource: 'reports-section.png',
+      title: 'Report Section',
+      description: 'You can see and download your entries',
+      header: 'Go to Reports',
+      options: [],
+    },
+    {
+      path: '/employees/customer-service',
+      href: null,
+      resource: 'customer-service-section.png',
+      title: 'Customer Service',
+      description: 'Here you can talk to an agent or create a ticket',
+      header: 'Customer Service',
+      options: [],
+    },
+    {
+      component: '',
+      path: null,
+      href: 'https://i-nimble.com/blog/',
+      resource: 'blog-section.png',
+      title: 'Blog Section',
+      description: 'Go to I-nimble blog and get our last News',
+      header: 'See News',
+      options: [],
+    },
+  ];
   @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
   name: any;
   entries: any = [];
@@ -58,6 +97,7 @@ export class EmployeeDashboardComponent implements OnInit {
     const name = localStorage.getItem('name');
     return name;
   }
+
   getEntries() {
     this.entriesService.getEntries().subscribe(({ entries }) => {
       this.entries = entries.filter((entry: any) => entry.status !== 0);
@@ -70,26 +110,13 @@ export class EmployeeDashboardComponent implements OnInit {
       } else {
         this.entryCheck = false;
       }
-
       this.loaded = true;
     });
   }
-  getEntryStatus() {
-    this.entriesService.getEntryCheck().subscribe((res) => {
-      const status = res as Array<any>;
-      if (status.length > 0) {
-        this.currentEntryId = status[0].id;
-        this.start_time = status[0].start_time;
-        this.entryCheck = true;
-      } else {
-        this.entryCheck = false;
-      }
-    });
-  }
+
   addEntry(data: any) {
     this.entriesService.createEntry(data).subscribe((startedEntry: any) => {
       this.currentEntryId = startedEntry.id;
-      console.log(startedEntry);
       this.startedEntry = startedEntry;
       this.start_time = new Date();
       this.entryCheck = true;
@@ -106,14 +133,6 @@ export class EmployeeDashboardComponent implements OnInit {
       this.message = 'Entry Ended Successfully';
       this.page.setAlert(this.message);
       this.socketService.socket.emit('client:end_entry', 'mensaje');
-    });
-  }
-
-  deleteEntry(id: number) {
-    this.entriesService.deleteEntry(id).subscribe((v) => {
-      this.getEntries();
-      this.message = 'Entry deleted!';
-      this.page.setAlert(this.message);
     });
   }
 }

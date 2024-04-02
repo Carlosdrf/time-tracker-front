@@ -64,10 +64,11 @@ export class EntriesComponent implements OnInit {
   }
   authorizeEntry(entry:any){
     const dialog = this.dialog.open(ModalComponent, {
-      data: { subject: 'entry' },
+      data: { subject: 'entry', action: 'confirm' },
     });
     dialog.afterClosed().subscribe((option: boolean) => {
       if (option) {
+        entry.status = 1
         this.onAuthorizeEntry.emit(entry);
         console.log('authorize');
       }

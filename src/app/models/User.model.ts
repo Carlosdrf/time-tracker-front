@@ -22,7 +22,7 @@ export class Company {
 }
 
 export class Employee {
-  id?: string;
+  id: string = '';
   position?: string;
   hourly_rate?: number;
   daysOfWeek?: string[];
