@@ -19,22 +19,22 @@
     </div>
   </div>
   <div
-    class="card-body p-2 row justify-content-center"
+    class="card-body p-2 d-flex justify-content-center flex-wrap"
     [ngClass]="{ 'bg-accent': suspicious }"
   >
     <form
       class="col-sm-12 text-center d-flex flex-wrap"
       [ngClass]="{
-        'col-lg-10 col-md-8': suspicious,
-        'col-lg-11 col-md-10': !suspicious
+        'col-lg-10 col-md-9': suspicious,
+        'col-lg-11 col-md-11': !suspicious
       }"
       action=""
     >
-      <div class="col-lg-2 col-md-3 col-6 px-1">
+      <div class="col-lg-2 col-md-2 col-6 p-1">
         <input
           type="text"
           name="start_time"
-          class="form-control text-center m-1 p-2"
+          class="form-control text-center p-2"
           [ngModel]="entry.start_time | customDate : 'HH:mm'"
           [ngModelOptions]="{ standalone: true }"
           (ngModelChange)="(entry.start_time)"
@@ -43,11 +43,11 @@
           (keydown.enter)="updateStart_time(entry, $event)"
         />
       </div>
-      <div class="col-lg-2 col-md-3 col-6 px-1">
+      <div class="col-lg-2 col-md-2 col-6 p-1">
         <input
           type="text"
           name="end_time"
-          class="form-control text-center m-1 p-2"
+          class="form-control text-center p-2"
           [ngModel]="entry.end_time | customDate : 'HH:mm'"
           [ngModelOptions]="{ standalone: true }"
           (ngModelChange)="(entry.end_time)"
@@ -56,11 +56,11 @@
           (keydown.enter)="updateEnd_time(entry, $event)"
         />
       </div>
-      <div class="col-lg-8 col-md-6 col-12 px-1">
+      <div class="col-lg-8 col-md-8 col-12 p-1">
         <input
           type="text"
           name="task"
-          class="form-control m-1 p-2"
+          class="form-control p-2"
           [(ngModel)]="entry.description"
           (blur)="updateTask(entry, entry.description)"
           placeholder="Add a comment"
@@ -71,20 +71,20 @@
     <div
       class="col-sm-12 col-12 d-flex justify-content-end"
       [ngClass]="{
-        'col-lg-1 col-md-2': !suspicious,
-        'col-lg-2 col-md-4': suspicious
+        'col-lg-1 col-md-1': !suspicious,
+        'col-lg-2 col-md-3': suspicious
       }"
     >
       <div
         (click)="authorize(entry)"
         *ngIf="suspicious"
-        class="d-flex align-items-center justify-content-center col p-2 btn btn-success rounded m-1"
+        class="d-flex align-items-center justify-content-center col btn btn-success rounded m-1"
       >
         <i class="fa-solid fa-check"></i>
       </div>
       <div
         (click)="deleteEntry(entry.id)"
-        class="d-flex align-items-center justify-content-center col p-2 btn btn-danger rounded m-1"
+        class="d-flex align-items-center justify-content-center col btn btn-danger rounded m-1"
       >
         <i class="fa-regular fa-trash-can"></i>
         <!-- <mat-icon>delete</mat-icon> -->

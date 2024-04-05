@@ -24,6 +24,7 @@ import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PositionsService } from 'src/app/services/positions.service';
 import { Positions } from 'src/app/models/Position.model';
+import { TimezoneService } from 'src/app/services/timezone.service';
 
 @Component({
   selector: 'app-user',
@@ -75,6 +76,7 @@ export class UserComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private companiesService: CompaniesService,
     private positionsService: PositionsService,
+    private timezoneService: TimezoneService,
     private dialog: MatDialog
   ) {
     this.userForm = this.fb.group({
@@ -162,10 +164,10 @@ export class UserComponent implements OnInit, OnChanges {
       });
     this.handleRole();
 
-    this.userService.fetchTimezonesApi().subscribe((data: any) => {
+    this.timezoneService.fetchTimezonesApi().subscribe((data: any) => {
       if (data.status === 'OK' && Array.isArray(data.zones)) {
         this.timezones = data.zones.map((timezone: any) => {
-          timezone.fechaActual = this.convertTimezone(timezone);
+          timezone.fechaActual = this.timezoneService.convertTimezone(timezone);
           return timezone;
         });
       } else {
@@ -174,20 +176,6 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
 
-  convertTimezone(timezone: any) {
-    const { countryName, timestamp, gmtOffset, zoneName, countryCode } =
-      timezone;
-    const fechaHoraActual = new Date()
-      .toLocaleTimeString(countryCode, {
-        timeZone: zoneName,
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      })
-      .toUpperCase()
-      .replace('.', '');
-    return fechaHoraActual;
-  }
   resetForm() {
     this.userForm.reset();
     this.userForm.reset({ password: '', cpassword: '' });
@@ -298,16 +286,7 @@ export class UserComponent implements OnInit, OnChanges {
       },
     });
   }
-  public getTimezones() {
-    this.userService.fetchTimezonesApi().subscribe({
-      next: (timezones) => {
-        this.timezones = timezones;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-  }
+
   public getPositions() {
     this.positionsService.get().subscribe({
       next: (positions: Positions[]) => {

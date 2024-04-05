@@ -37,12 +37,12 @@ export class AdminClientDashboardComponent implements OnInit {
     {
       path: '/admin/management',
       href: null,
-      resource: null,
+      resource: 'maintenance-resource.png',
       title: 'Management section',
       description: 'Here you can manage options to work with',
       header: 'Go to Management',
       options: [
-        {title: 'Forms Info', icon: 'fa-solid fa-sliders', path: '/admin/management', label:'Add/modify options used in /users'},
+        {title: 'Form Fields', icon: 'fa-solid fa-sliders', path: '/admin/management', label:'Add/modify options used in /users'},
         {title: 'Notifications (coming soon..)', icon: 'fa-regular fa-comment-dots', path: '/admin/notifications'},
       ]
     },

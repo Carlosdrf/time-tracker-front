@@ -13,7 +13,7 @@
     "test": "ng test",
     "component": "ng g c pages/admin/admin.management",
     "shared": "ng g c components/entry",
-    "service": "ng g s services/positions"
+    "service": "ng g s services/timezone"
   },
   "private": true,
   "dependencies": {

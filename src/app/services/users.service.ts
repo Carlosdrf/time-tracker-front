@@ -37,9 +37,6 @@ export class UsersService {
   getRoles() {
     return this.http.get(`${this.API_URI}/roles`);
   }
-  fetchTimezonesApi() {
-    return this.http.get(`${this.API_URI}/timezones`);
-  }
 
   setUserInformation(user: any) {
     localStorage.setItem('userid', user.id);

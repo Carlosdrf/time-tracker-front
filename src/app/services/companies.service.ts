@@ -15,7 +15,6 @@ export class CompaniesService {
   }
 
   public submit(data: any, id: any = null) {
-    console.log(data);
     if (id) return this.http.put(`${this.API_URI}/${id}`, data);
     return this.http.post(`${this.API_URI}`, data);
   }

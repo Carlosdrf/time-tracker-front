@@ -3,7 +3,7 @@
     <div class="border shadow rounded overflow-hidden cursor-pointer">
       <div *ngFor="let option of options; let i = index" class="transition">
         <div
-          (click)="handleSelection(i)"
+          (click)="handleSelection(i, option)"
           [ngClass]="{ active: option.active }"
           class="d-flex align-items-center card-hover justify-content-between gap-2 p-3 border-top border-bottom"
         >
@@ -23,25 +23,37 @@
           </div>
           <i class="fa-solid fa-angle-right transition"></i>
         </div>
-        <div class="max-height i-flow" [ngClass]="{'scrollbar-thin': firefox}">
+        <div
+          class="max-height i-flow"
+          [ngClass]="{ 'scrollbar-thin': firefox }"
+        >
           <div
-            *ngFor="let select of option.select"
+            *ngFor="let field of option.elements"
             class="border-bottom transition dropdown overflow-hidden"
             [ngClass]="{ active: option.active }"
           >
             <div
               class="px-3 py-2 card-hover d-flex gap-2"
-              [ngClass]="{ active: selectedForm == select }"
-              (click)="handleSelection(i, select)"
+              [ngClass]="{ active: selectedForm == field }"
+              (click)="handleSelection(i, null, field)"
             >
               <input
                 type="checkbox"
                 class="form-check-input"
-                [checked]="selectedForm == select"
+                [checked]="selectedForm == field"
               />
               <p class="mb-0 col-9 col-sm-10">
-                {{ select.title || select.name }}
+                {{ field.title || field.name }}
               </p>
+            </div>
+          </div>
+          <div
+            *ngIf="option.elements.length == 0"
+            class="border-bottom transition dropdown overflow-hidden"
+            [ngClass]="{ active: option.active }"
+          >
+            <div class="px-3 py-2 card-hover d-flex gap-2">
+              <p class="mb-0 col">No elements</p>
             </div>
           </div>
         </div>
@@ -84,7 +96,7 @@
           >
             <div *ngFor="let form of option.form">
               <input
-                *ngIf="option.active"
+                *ngIf="form.type == 'input'"
                 type="text"
                 [placeholder]="
                   form.label == 'Description'
@@ -95,6 +107,17 @@
                 class="form-control rounded mb-2 py-2"
                 placeholder="Input"
               />
+              <select
+                id=""
+                *ngIf="form.type == 'select'"
+                formControlName="{{ form.control }}"
+                class="form-select rounded mb-3 py-2"
+              >
+                <option value="" disabled>Select a {{form.label}}</option>
+                <option [value]="item.id" *ngFor="let item of form.source">
+                  {{ item.name }}
+                </option>
+              </select>
             </div>
             <div class="d-flex flex-end gap-2 justify-content-end">
               <a
