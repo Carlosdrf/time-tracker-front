@@ -5,12 +5,14 @@ export interface Entries {
   end_time?: Date;
   date?: Date;
   description?: string;
+  project_id?: string|null;
+  project?: string;
 }
 
 export class Entry {
   status: any = null;
   timeRef!: any;
   started: string = '';
-  totalHours: string = "";
+  totalHours: string = '';
   start_time: any;
 }

@@ -91,18 +91,7 @@ export class EntriesEmployeesComponent implements OnInit {
       this.loaded = true;
     });
   }
-  getEntryStatus() {
-    this.entriesService.getEntryCheck().subscribe((res) => {
-      const status = res as Array<any>;
-      if (status.length > 0) {
-        this.currentEntryId = status[0].id;
-        this.start_time = status[0].start_time;
-        this.entryCheck = true;
-      } else {
-        this.entryCheck = false;
-      }
-    });
-  }
+  
   addEntry(data: any) {
     this.entriesService.createEntry(data).subscribe((startedEntry: any) => {
       this.currentEntryId = startedEntry.id;
@@ -117,7 +106,6 @@ export class EntriesEmployeesComponent implements OnInit {
   }
   endCurrentEntry(currentEntry: any) {
     this.currentEntryId = currentEntry.id;
-    console.log(currentEntry);
     this.entriesService.closeCurrentEntry(currentEntry).subscribe((v) => {
       this.getEntries();
       this.message = 'Entry Ended Successfully';
@@ -128,7 +116,6 @@ export class EntriesEmployeesComponent implements OnInit {
 
   deleteEntry(id: number) {
     this.entriesService.deleteEntry(id).subscribe((v) => {
-      console.log('getentries');
       this.getEntries();
       this.message = 'Entry deleted!';
       this.page.setAlert(this.message);

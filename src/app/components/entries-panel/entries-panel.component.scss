@@ -1,16 +1,16 @@
-@import '../../pages/pages.component.scss';
+@import "../../pages/pages.component.scss";
 
-#menu-off-hours:not(.off-hours){
+.menu:not(.off-hours) {
   transform: scaleY(0);
   transition: all 0.2s ease-in-out;
   opacity: 0;
 }
 
-#menu-off-hours{
+.menu {
   transition: all 0.3s ease-in-out;
   transform-origin: top;
   overflow: hidden;
-  right: 0;
+  margin-top: 6px;
   opacity: 1;
   display: block;
 }
@@ -27,7 +27,8 @@ ul {
   list-style-type: none;
 }
 
-.spinner ::ng-deep .mat-mdc-progress-spinner mdc-circle, .mat-spinner circle {
+.spinner ::ng-deep .mat-mdc-progress-spinner mdc-circle,
+.mat-spinner circle {
   stroke: #92b46c !important;
 }
 
@@ -54,4 +55,10 @@ ul {
 
 .alert-success {
   background-color: #777;
+}
+.project:hover {
+  background-color: #f5f5f5;
+  &:active {
+    background-color: #e0e0e0;
+  }
 }

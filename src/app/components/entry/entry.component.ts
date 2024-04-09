@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
+import { Entries } from 'src/app/models/Entries';
 
 @Component({
   selector: 'app-entry',
@@ -18,6 +19,20 @@ export class EntryComponent {
   @Input() entry: any;
   @Input() suspicious: boolean = false;
 
+  btnActions: any = [
+    {
+      icon: 'fa-solid fa-check',
+      forReview: true,
+      method: 'authorize',
+      class: 'btn-success',
+    },
+    {
+      icon: 'fa-regular fa-trash-can',
+      forReview: false,
+      method: 'delete',
+      class: 'btn-danger',
+    },
+  ];
   constructor(private customDate: CustomDatePipe) {}
 
   updateStart_time(entry: any, event: Event) {
@@ -26,17 +41,27 @@ export class EntryComponent {
   updateEnd_time(entry: any, event: Event) {
     this.onUpdateEndTime.emit({ entry, event });
   }
-
+  
   updateTask(entry: any, event: any) {
     this.onUpdateTask.emit(entry);
   }
 
+  handleAction(action: string, entry: Entries){
+    switch (action){
+      case 'authorize':
+        this.authorize(entry)
+        break;
+      case 'delete':
+        this.deleteEntry(entry)
+        break;
+    }
+  }
   authorize(entry: any) {
     this.onAuthorizeEntry.emit(entry);
   }
 
-  deleteEntry(id: number) {
-    this.onDeleteEntry.emit(id);
+  deleteEntry(entry: any) {
+    this.onDeleteEntry.emit(entry.id);
   }
 
   timeFormat(event: any) {

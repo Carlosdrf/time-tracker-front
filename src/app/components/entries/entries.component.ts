@@ -46,9 +46,6 @@ export class EntriesComponent implements OnInit {
 
   ngOnInit() {
     this.loaded = false;
-    this.reviewEntries.forEach((entry: any) => {
-      console.log(entry.end_time - entry.start_time / 1000);
-    });
   }
 
   deleteEntry(id: number) {
@@ -58,7 +55,6 @@ export class EntriesComponent implements OnInit {
     dialog.afterClosed().subscribe((option: boolean) => {
       if (option) {
         this.onDeleteEntry.emit(id);
-        console.log('delete');
       }
     });
   }
@@ -70,7 +66,6 @@ export class EntriesComponent implements OnInit {
       if (option) {
         entry.status = 1
         this.onAuthorizeEntry.emit(entry);
-        console.log('authorize');
       }
     });
   }

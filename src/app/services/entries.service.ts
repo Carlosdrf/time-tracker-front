@@ -29,20 +29,12 @@ export class EntriesService {
     return this.http.post<any>(`${this.API_URI}/entries/user`, user_id);
   }
 
-  getEntryCheck() {
-    return this.http.get(`${this.API_URI}/entries/started`);
-  }
-
-  getUserEntryStatus(data: any) {
-    return this.http.post(`${this.API_URI}/entries/users/status`, data);
-  }
   createEntry(entry: any) {
     const jwt = localStorage.getItem('jwt');
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
     return this.http.post(`${this.API_URI}/entries/add`, entry);
   }
   deleteEntry(id: number) {
-    console.log('entries for delete', id)
     return this.http.delete(`${this.API_URI}/entries/${id}`);
   }
   closeCurrentEntry(entry: any) {

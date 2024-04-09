@@ -1,10 +1,10 @@
-<div class="card rounded shadow overflow-hidden">
+<div class="card rounded-1 shadow overflow-hidden">
   <div
-    class="card-header rounded-top"
+    class="card-header rounded-top-1"
     [ngClass]="{ 'bg-primary': !suspicious, 'bg-danger': suspicious }"
   >
     <div class="row align-items-center">
-      <p class="fs-5 text-white col-md-8 mb-0">
+      <p class="fs-5 text-white col-12 col-sm mb-0">
         <ng-template [ngIf]="isToday(entry.start_time)" [ngIfElse]="elseBlock">
           {{ isToday(entry.start_time) }}
         </ng-template>
@@ -13,28 +13,29 @@
           {{ entry.start_time | customDate : "MMM D" }}
         </ng-template>
       </p>
-      <p class="col-md-4 fw-bolder fs-5 mb-0 text-light text-end">
-        Total: {{ getTotalHours(entry.start_time, entry.end_time) }}
-      </p>
+      <span class="text-white col-auto"
+        >Project: {{ entry.project_id ? entry.project : "none" }}</span
+      >
+
+      <div
+        class="col-sm-auto col-12 text-end d-flex gap-2 flex-wrap justify-content-end"
+      >
+        <p class="fw-bolder fs-5 mb-0 text-light text-end">
+          Total: {{ getTotalHours(entry.start_time, entry.end_time) }}
+        </p>
+      </div>
     </div>
   </div>
   <div
     class="card-body p-2 d-flex justify-content-center flex-wrap"
     [ngClass]="{ 'bg-accent': suspicious }"
   >
-    <form
-      class="col-sm-12 text-center d-flex flex-wrap"
-      [ngClass]="{
-        'col-lg-10 col-md-9': suspicious,
-        'col-lg-11 col-md-11': !suspicious
-      }"
-      action=""
-    >
-      <div class="col-lg-2 col-md-2 col-6 p-1">
+    <form class="col-12 col-sm text-center d-flex flex-wrap">
+      <div class="col-lg-1 col-md-2 col-6 p-1">
         <input
           type="text"
           name="start_time"
-          class="form-control text-center p-2"
+          class="form-control text-center p-2 border rounded-2"
           [ngModel]="entry.start_time | customDate : 'HH:mm'"
           [ngModelOptions]="{ standalone: true }"
           (ngModelChange)="(entry.start_time)"
@@ -43,11 +44,11 @@
           (keydown.enter)="updateStart_time(entry, $event)"
         />
       </div>
-      <div class="col-lg-2 col-md-2 col-6 p-1">
+      <div class="col-lg-1 col-md-2 col-6 p-1">
         <input
           type="text"
           name="end_time"
-          class="form-control text-center p-2"
+          class="form-control text-center p-2 border rounded-1"
           [ngModel]="entry.end_time | customDate : 'HH:mm'"
           [ngModelOptions]="{ standalone: true }"
           (ngModelChange)="(entry.end_time)"
@@ -56,11 +57,11 @@
           (keydown.enter)="updateEnd_time(entry, $event)"
         />
       </div>
-      <div class="col-lg-8 col-md-8 col-12 p-1">
+      <div class="col-lg-10 col-md-8 col-12 p-1">
         <input
           type="text"
           name="task"
-          class="form-control p-2"
+          class="form-control p-2 border rounded-1"
           [(ngModel)]="entry.description"
           (blur)="updateTask(entry, entry.description)"
           placeholder="Add a comment"
@@ -68,27 +69,17 @@
         />
       </div>
     </form>
-    <div
-      class="col-sm-12 col-12 d-flex justify-content-end"
-      [ngClass]="{
-        'col-lg-1 col-md-1': !suspicious,
-        'col-lg-2 col-md-3': suspicious
-      }"
-    >
-      <div
-        (click)="authorize(entry)"
-        *ngIf="suspicious"
-        class="d-flex align-items-center justify-content-center col btn btn-success rounded m-1"
-      >
-        <i class="fa-solid fa-check"></i>
-      </div>
-      <div
-        (click)="deleteEntry(entry.id)"
-        class="d-flex align-items-center justify-content-center col btn btn-danger rounded m-1"
-      >
-        <i class="fa-regular fa-trash-can"></i>
-        <!-- <mat-icon>delete</mat-icon> -->
-      </div>
+    <div class="col-12 col-md-auto d-flex justify-content-end">
+      <ng-container *ngFor="let btn of btnActions">
+        <div
+          *ngIf="!btn.forReview || suspicious"
+          class="d-flex align-items-center justify-content-center col btn rounded-1 m-1"
+          [ngClass]="btn.class"
+          (click)="handleAction(btn.method, entry)"
+        >
+          <i [class]="btn.icon"></i>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>

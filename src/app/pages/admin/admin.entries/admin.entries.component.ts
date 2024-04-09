@@ -52,7 +52,6 @@ export class AdminEntriesComponent implements OnInit {
     };
     if (this.user.id) {
       this.getEntries();
-      // this.getEntryStatus();
     } else {
       this.router.navigateByUrl('/admin/dashboard');
     }
@@ -85,25 +84,11 @@ export class AdminEntriesComponent implements OnInit {
       this.isActive = false;
     }
   }
-  getTotalHours(start: Date, end: Date) {
-    const [startformat, endformat] = [new Date(start), new Date(end)];
-    const start_time = startformat.getTime();
-    const end_time = endformat.getTime();
-    const diff = end_time - start_time;
-    const hours = Math.floor(diff / 1000 / 60 / 60);
-    const minutes = Math.floor((diff / 1000 / 60) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-    return `${this.padzero(hours)}:${this.padzero(minutes)}:${this.padzero(
-      seconds
-    )}`;
-  }
 
-  public padzero(num: number): string {
-    return num > 9 ? `${num}` : `0${num}`;
-  }
   public timeFormat(event: any, i: number) {
     event.target.value = event.target.value.replace(/:/g, '');
   }
+
   public isToday(date: Date) {
     const yesterday = this.customDate.transform(
       new Date(Date.now() - 24 * 60 * 60 * 1000),
@@ -120,82 +105,6 @@ export class AdminEntriesComponent implements OnInit {
     }
   }
 
-  // public getEntryStatus() {
-  //   const user = {
-  //     id: this.user.id,
-  //   };
-  //   this.entriesService.getUserEntryStatus(user).subscribe((res) => {
-  //     const status = res as Array<any>;
-  //     console.log(status);
-  //     console.log('status');
-  //   });
-  // }
-  updateStart_time(date: Date, event: any, i: number) {
-    if (this.regex.test(event.target.value)) {
-      if (event.target.value.length == 3) {
-        event.target.value = 0 + event.target.value;
-      }
-      const data = {
-        start_time: this.getFormatDate(date, event.target.value),
-        end_time: this.entries[i].end_time,
-        date: this.entries[i].date,
-      };
-      this.entriesService
-        .updateEntry(this.entries[i].id, data)
-        .subscribe((v) => {
-          this.getEntries();
-        });
-    } else {
-      this.getEntries();
-    }
-  }
-  getFormatDate(date: Date, value: any) {
-    const seconds = this.customDate.transform(date, 'ss');
-    const [newHour, newMinute] = [value.slice(0, 2), value.slice(2)];
-    const newYear = new Date(date).getFullYear();
-    const newMonth = new Date(date).getMonth();
-    const newDay = new Date(date).getDate();
-    const newDate = new Date(
-      newYear,
-      newMonth,
-      newDay,
-      Number(newHour),
-      Number(newMinute),
-      Number(seconds)
-    );
-
-    return newDate;
-  }
-
-  updateEnd_time(date: Date, event: any, i: number) {
-    if (this.regex.test(event.target.value)) {
-      if (event.target.value.length == 3) {
-        event.target.value = 0 + event.target.value;
-      }
-      const data = {
-        start_time: this.entries[i].start_time,
-        end_time: this.getFormatDate(date, event.target.value),
-        date: this.entries[i].date,
-      };
-      console.log(data);
-      // this.entriesService
-      //   .updateEntry(this.entries[i].id, data)
-      //   .subscribe((v) => {
-      //     this.getEntries();
-      //   });
-    } else {
-      this.getEntries();
-    }
-  }
-  public addEntry(data: any) {}
-  public endCurrentEntry(data: any) {}
-  public updateTask(i: number, event: any) {
-    this.entriesService
-      .updateEntry(this.entries[i].id, this.entries[i])
-      .subscribe((v) => {
-        this.getEntries();
-      });
-  }
   public deleteEntry(id: number) {
     this.entriesService.deleteEntry(id).subscribe((v) => {
       this.message = 'Entry deleted!';
@@ -204,10 +113,8 @@ export class AdminEntriesComponent implements OnInit {
     });
   }
   public authorizeEntry(entry: any) {
-    console.log(entry);
     this.entriesService.updateEntry(entry.id, entry).subscribe({
       next: () => {
-        console.log('entry confirmed');
         this.message = 'Entry confirmed!';
         this.page.setAlert(this.message);
         this.getEntries();
