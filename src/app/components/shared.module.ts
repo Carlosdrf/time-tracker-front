@@ -25,6 +25,7 @@ import { BalanceComponent } from './balance/balance.component';
 import { CompaniesService } from '../services/companies.service';
 import { UserComponent } from './user/user.component';
 import { GoBackComponent } from './go-back/go-back.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import { GoBackComponent } from './go-back/go-back.component';
     PaymentHistoryComponent,
     BalanceComponent,
     UserComponent,
-    GoBackComponent
+    GoBackComponent,
+    NotificationsComponent,
     // UserListComponent,
   ],
   exports: [
@@ -78,6 +80,7 @@ import { GoBackComponent } from './go-back/go-back.component';
     GoBackComponent,
     CommonModule,
     UserComponent,
+    NotificationsComponent,
     RouterModule,
   ],
   providers: [CustomDatePipe, CalendarComponent, CompaniesService],

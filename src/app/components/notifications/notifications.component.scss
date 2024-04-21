@@ -1,0 +1,19 @@
+.notification-list {
+    cursor: pointer;
+}
+
+.notification-button {
+    display: none;
+    animation: fadeIn .3s;
+}
+
+.notification-list:hover {
+    .notification-button {
+        display: block;
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }

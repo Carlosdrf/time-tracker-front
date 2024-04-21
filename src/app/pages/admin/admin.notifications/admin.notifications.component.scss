@@ -1,0 +1,33 @@
+.example-additional-selection {
+    opacity: 0.75;
+    font-size: 0.75em;
+  }
+  
+mat-option {
+   z-index: 20000000!important;
+}
+
+
+.slide-in {
+  transform: translateX(0); /* Slide in from the left */
+}
+
+.slide-out {
+  animation: slide-out 0.2s ease-in-out; /* Slide out to the left */
+  visibility: hidden;
+  transform: translate(900px);
+}
+.slide {
+  transition: all 0.2s ease-in-out;
+}
+@keyframes slide-out {
+  from{
+    visibility: visible;
+  }  
+  to{
+    opacity: 0;
+  }
+}
+
+// test
+

@@ -31,3 +31,30 @@
         transition: all 0.3s ease-out;
     }
 }
+
+.dropdown-menu {
+    margin-top: 15px;
+    min-width: 250px;
+    width: 350px;
+    position: absolute;
+    right: 0;
+    left: auto;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    padding: 15px 5px 15px 20px;
+    white-space: normal;
+    border-bottom: 1px solid #d4d4d4;
+    cursor: pointer;
+}
+
+.dropdown-item:active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #000;
+}
+
+.dropdown .nav-link:hover::after {
+    background-color: transparent!important;
+    opacity: 0;
+}

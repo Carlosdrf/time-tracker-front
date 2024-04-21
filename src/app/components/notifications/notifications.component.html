@@ -1,0 +1,47 @@
+<div class="section">
+    <div class="p-1 mb-4">
+     <div *ngIf="users_notifications.length > 0">
+      <h4>Most Recent</h4>
+      <ul>
+        <li class="card card-hover mb-1 rounded shadow d-flex flex-wrap justify-content-between align-items-center p-2 notification-list flex-row"
+            *ngFor="let notification of users_notifications; let i = index">
+          <div class="d-flex flex-grow-1">
+            <span class="p-2">
+              <i class="fa-regular fa-envelope"></i>
+            </span>  
+            <div class="d-flex flex-column p-2">
+              <span class="fw-bold">{{ notification.message }}</span>
+              <span class="small" style="color: #919aa1">{{ notification.createdAt | date:'MMM d, y' }}</span>
+            </div>
+          </div> 
+          <div class="notification-button">
+            <button style="border: none; background-color: transparent; opacity: .5;" (click)="btnNotification(i, true)"><i class="fa-solid fa-x"></i></button>
+        </div>
+        </li>
+      </ul>
+     </div>
+    <div class="p-1" *ngIf="earlierNotifications.length > 0">
+      <h4>Earlier</h4>
+      <ul>
+        <li class="card card-hover mb-1 rounded shadow d-flex flex-wrap justify-content-between align-items-center p-2 notification-list flex-row"
+            *ngFor="let notification of earlierNotifications; let i = index">
+          <div class="d-flex flex-grow-1">
+            <span class="p-2">
+              <i class="fa-regular fa-envelope"></i>
+            </span>  
+            <div class="d-flex flex-column p-2">
+              <span class="fw-bold">{{ notification.message }}</span>
+              <span class="small" style="color: #919aa1">{{ notification.date | date:'MMM d, y' }}</span>
+            </div>
+        </div> 
+        <div class="notification-button">
+            <button style="border: none; background-color: transparent; opacity: .5;" (click)="btnNotification(i, false)"><i class="fa-solid fa-x"></i></button>
+        </div>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="notifications.length === 0">
+        <span>There are not notifications yet</span>
+    </div>
+  </div>
+</div>

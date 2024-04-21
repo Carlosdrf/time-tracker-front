@@ -50,6 +50,15 @@ export const routes: Routes = [
         data: { allowedUserTypes: [USER_TYPE_ROLE, CLIENT_TYPE_ROLE] },
       },
       {
+        path: 'notifications',
+        loadChildren: () =>
+        import('./pages/notifications/notifications.module').then(
+          (m) => m.NotificationsModule
+        ),
+        canActivate: [UserTypeGuardService],
+        data: { allowedUserTypes: [USER_TYPE_ROLE, CLIENT_TYPE_ROLE] },
+      },
+      {
         path: 'login',
         canActivate: [notAuthGuard],
         loadChildren: () =>

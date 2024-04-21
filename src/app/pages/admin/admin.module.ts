@@ -9,6 +9,7 @@ import { AdminUsersComponent } from './admin.users/admin.users.component';
 import { AdminTeamsComponent } from './admin.teams/admin.teams.component';
 import { AdminManagementComponent } from './admin.management/admin.management.component';
 import { ClientCustomerServiceComponent } from '../client/client.customer-service/client.customer-service.component';
+import { AdminNotificationsComponent } from './admin.notifications/admin.notifications.component';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,7 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   { path: 'entries', component: AdminEntriesComponent, pathMatch: 'full' },
+  { path: 'notifications', component: AdminNotificationsComponent, pathMatch: 'full' },
   {
     path: 'payments',
     component: AdminPaymentsComponent,
