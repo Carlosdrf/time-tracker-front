@@ -1,0 +1,154 @@
+<div class="d-flex justify-content-between flex-wrap position-relative">
+  <div class="col-12 col-sm-6 col-md-5 px-1 mb-2">
+    <div class="border shadow rounded overflow-hidden cursor-pointer">
+      <div *ngFor="let option of options; let i = index" class="transition">
+        <div
+          (click)="handleSelection(i, option)"
+          [ngClass]="{ active: option.active }"
+          class="d-flex align-items-center card-hover justify-content-between gap-2 p-3 border-top border-bottom"
+        >
+          <div class="d-flex align-items-center justify-content-between">
+            <h2 [title]="option.label" class="mb-0 fs-5">
+              {{ option.title }}
+            </h2>
+            <button
+              mat-button
+              class="ms-2"
+              (click)="resetForm(true)"
+              [title]="'New ' + option.formGroup"
+            >
+              <i class="fa-solid fa-plus cursor-pointer"></i>
+              <span class="ms-1">New</span>
+            </button>
+          </div>
+          <i class="fa-solid fa-angle-right transition"></i>
+        </div>
+        <div
+          class="max-height i-flow"
+          [ngClass]="{ 'scrollbar-thin': firefox }"
+        >
+          <div
+            *ngFor="let field of option.elements"
+            class="border-bottom transition dropdown overflow-hidden"
+            [ngClass]="{ active: option.active }"
+          >
+            <div
+              class="px-3 py-2 card-hover d-flex gap-2"
+              [ngClass]="{ active: selectedForm == field }"
+              (click)="handleSelection(i, null, field)"
+            >
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="selectedForm == field"
+              />
+              <p class="mb-0 col-9 col-sm-10">
+                {{ field.title || field.name }}
+              </p>
+            </div>
+          </div>
+          <div
+            *ngIf="option.elements.length == 0"
+            class="border-bottom transition dropdown overflow-hidden"
+            [ngClass]="{ active: option.active }"
+          >
+            <div class="px-3 py-2 card-hover d-flex gap-2">
+              <p class="mb-0 col">No elements</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="col-12 col-sm-6 col-md-7 px-1 mb-2 sticky-md-top h-100 z-1 d-sm-block d-none"
+    [ngClass]="{
+      'position-modal': isMobile() && show
+    }"
+    style="top: 80px"
+  >
+    <div class="border shadow bg-white overflow-hidden rounded card">
+      <div
+        class="card-header d-flex justify-content-sm-center justify-content-between align-items-center"
+      >
+        <h1 class="mb-0 text-center fs-4">
+          {{ formHeader.mode }} {{ formHeader.title }}
+        </h1>
+        <button
+          mat-button
+          class="hidden-sm d-sm-none border"
+          (click)="resetForm(); show = false"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="card-body">
+        <form
+        action=""
+        [formGroup]="managementForm"
+        *ngFor="let option of options"
+        (ngSubmit)="sendForms(option)"
+      >
+        <div
+          class=""
+          formGroupName="{{ option.formGroup }}"
+          *ngIf="option.active"
+        >
+          <div *ngFor="let form of option.form">
+            <input
+              *ngIf="form.type == 'input'"
+              type="text"
+              [placeholder]="
+                form.label == 'Description'
+                  ? 'Short ' + form.label + ' (optional)'
+                  : form.label
+              "
+              formControlName="{{ form.control }}"
+              class="form-control rounded mb-2 py-2"
+              placeholder="Input"
+            />
+            <select
+              id=""
+              *ngIf="form.type == 'select'"
+              formControlName="{{ form.control }}"
+              class="form-select rounded mb-3 py-2"
+            >
+              <option value="" disabled>Select a {{form.label}}</option>
+              <option [value]="item.id" *ngFor="let item of form.source">
+                {{ item.name }}
+              </option>
+            </select>
+             <div class="mb-3 text-start" *ngIf="form.type == 'select'">
+                <mat-form-field class="col-12">
+                  <mat-label>Select Team Members</mat-label>
+                  <mat-select multiple [formControl]="selectedOptions" (selectionChange)="onEmployeeSelectionChange($event.value)" >
+                    <mat-option *ngFor="let item of employees" [value]="item.user.id">
+                      {{ item.user.name }} {{ item.user.last_name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+          </div>
+          <div class="d-flex flex-end gap-2 justify-content-end">
+            <a
+              color="warn"
+              (click)="deleteOption(selectedForm.id, option)"
+              class="btn btn-block"
+              mat-raised-button
+              *ngIf="selectedForm"
+              >delete</a
+            >
+            <button
+              mat-raised-button
+              class="btn-primary transition"
+              color="primary"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
