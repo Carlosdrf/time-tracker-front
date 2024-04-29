@@ -17,6 +17,7 @@
                 <!-- client dashboard -->
                 <a class="nav-link" routerLink="client" *ngIf="authenticated == true && userType == '3'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
                 <a class="nav-link" routerLink="reports" *ngIf="authenticated" (click)="isActive = false" routerLinkActive="active">Reports</a>
+                <a class="nav-link" routerLink="client/projects" *ngIf="authenticated == true && userType == '3'" (click)="isActive = false" routerLinkActive="active">Projects</a>
                 <a class="nav-link" routerLink="login" *ngIf="!authenticated" (click)="isActive = false" routerLinkActive="active">Login</a>
                 <a class="nav-link" routerLink="logout" *ngIf="authenticated" (click)="isActive = false; closeSession()" routerLinkActive="active">Log Out</a>
             </div>

@@ -6,6 +6,7 @@ import { ClientDashboardComponent } from './client.dashboard/dashboard.component
 import { PaymentsComponent } from './payments/payments.component';
 import { ClientBalanceComponent } from './client.balance/client.balance.component';
 import { ClientCustomerServiceComponent } from './client.customer-service/client.customer-service.component';
+import { ClientProjectsComponent } from './client.projects/client.projects.component';
 
 export const routes: Routes = [
   { path: '', component: ClientDashboardComponent, pathMatch: 'full' },
@@ -14,6 +15,11 @@ export const routes: Routes = [
   {
     path: 'customer-service',
     component: ClientCustomerServiceComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'projects',
+    component: ClientProjectsComponent,
     pathMatch: 'full',
   },
 ];
