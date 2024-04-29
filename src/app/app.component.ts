@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { local } from 'd3';
 
 @Component({
   selector: 'app-root',

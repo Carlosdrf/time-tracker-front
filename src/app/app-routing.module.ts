@@ -4,6 +4,7 @@ import { PagesComponent } from './pages/pages.component';
 import { AuthGuard } from './services/guards/auth-guard.service';
 import { notAuthGuard } from './services/guards/notAuth-guard.service';
 import { UserTypeGuardService } from './services/guards/user-type-guard.service';
+import { RegisterComponent } from './pages/register/register.component';
 
 const ADMIN_TYPE_ROLE = '1';
 const USER_TYPE_ROLE = '2';
@@ -76,9 +77,14 @@ export const routes: Routes = [
         canActivate: [UserTypeGuardService],
         data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
       },
-      { path: '**', redirectTo: 'login' },
     ],
   },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    pathMatch: 'full',
+  },
+  { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({

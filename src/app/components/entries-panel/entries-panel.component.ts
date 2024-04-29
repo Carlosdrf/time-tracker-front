@@ -30,12 +30,13 @@ export class EntriesPanelComponent implements OnChanges {
     start_time: new Date(),
     end_time: new Date(),
     project_id: '',
-    project: ''
+    project: '',
   };
   showProjects: boolean = false;
   showMoreOption: boolean = false;
   currentTime: any;
   timer: string = '00:00:00';
+  loading: boolean = false;
 
   projects: any = [];
 
@@ -45,14 +46,9 @@ export class EntriesPanelComponent implements OnChanges {
   ) {}
 
   ngOnInit() {
-    // console.log(navigator)
     this.getName();
     document.addEventListener('click', this.toggleMenu.bind(this));
-    this.projectService.get().subscribe({
-      next: (projects: Project[]) => {
-        this.projects = projects
-      },
-    });
+    this.getProjects();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -61,12 +57,20 @@ export class EntriesPanelComponent implements OnChanges {
       if (!this.entryCheck) this.stopTimer();
     }
   }
+  getProjects() {
+    this.projectService.get().subscribe({
+      next: (projects: Project[]) => {
+        this.projects = projects;
+      },
+    });
+  }
   addEntry() {
+    this.loading = true;
     const data = {
       description: this.entry.description,
       status: this.entry.status,
       start_time: new Date().toUTCString(),
-      project_id: this.entry.project_id
+      project_id: this.entry.project_id,
     };
     this.start_entry.emit(data);
   }
@@ -104,8 +108,8 @@ export class EntriesPanelComponent implements OnChanges {
     this.timer = '00:00:00';
     clearInterval(this.currentTime);
   }
-  public setProject(project: Project){
-    this.entry.project_id = project.id
-    this.entry.project = project.name
+  public setProject(project: Project) {
+    this.entry.project_id = project.id;
+    this.entry.project = project.name;
   }
 }

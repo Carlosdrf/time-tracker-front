@@ -11,8 +11,8 @@
     "build": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "component": "ng g c pages/admin/admin.management",
-    "shared": "ng g c components/entry",
+    "component": "ng g c pages/register",
+    "shared": "ng g c components/web-nav",
     "service": "ng g s services/timezone"
   },
   "private": true,

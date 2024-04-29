@@ -23,7 +23,7 @@ export class AdminClientDashboardComponent implements OnInit {
       path: '/admin/teams',
       resource: 'empleados-section.png',
       title: 'Teams',
-      description: 'You can either manage Users or see Tracking dashboard',
+      description: 'You can either manage Users Info or Tracking their Time',
       header: 'See Team Members',
       options: [
         {
@@ -39,7 +39,7 @@ export class AdminClientDashboardComponent implements OnInit {
       href: null,
       resource: 'maintenance-resource.png',
       title: 'Management section',
-      description: 'Here you can manage options to work with',
+      description: 'Here you can create/edit positions, companies and projects associations',
       header: 'Go to Management',
       options: [
         {title: 'Form Fields', icon: 'fa-solid fa-sliders', path: '/admin/management', label:'Add/modify options used in /users'},

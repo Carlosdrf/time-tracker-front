@@ -42,7 +42,4 @@ export class NavigationComponent implements OnInit {
       this.isActive = false;
     }
   }
-  resetUserReport() {
-    this.userService.resetUser();
-  }
 }

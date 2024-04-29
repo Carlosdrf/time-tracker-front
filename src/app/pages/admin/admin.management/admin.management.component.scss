@@ -1,5 +1,5 @@
 @import "/src/theme/variables.scss";
-.position-modal{
+.position-modal {
   position: fixed;
   left: 0;
   right: 0;
@@ -11,6 +11,7 @@
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 .card-hover:hover > i {
   transition: all 0.2s ease-in;
   transform: translateX(5px);

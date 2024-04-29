@@ -1,10 +1,8 @@
 <app-navigation></app-navigation>
-<main>
-  <router-outlet></router-outlet>
-</main>
+<router-outlet></router-outlet>
 <div
   id="alert"
-  class="alert-container"
+  class="alert-container z-2"
   [ngClass]="{ 'alert-active': onAlert == true }"
 >
   <div class="alert alert-success rounded d-flex align-items-center">

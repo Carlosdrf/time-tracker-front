@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { SharedModule } from 'src/app/components/shared.module';
-import { Positions } from 'src/app/models/Position.model';
 import { Company } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { PositionsService } from 'src/app/services/positions.service';
 import { PagesComponent } from '../../pages.component';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { TimezoneService } from 'src/app/services/timezone.service';
+import { Project } from 'src/app/models/Project.model';
 
 @Component({
   selector: 'app-admin.management',
@@ -35,6 +35,7 @@ export class AdminManagementComponent implements OnInit {
       name: ['', [Validators.required]],
       description: [''],
       company_id: ['', [Validators.required]],
+      employees: this.fb.array([]),
     }),
   });
   show: boolean = false;
@@ -46,6 +47,18 @@ export class AdminManagementComponent implements OnInit {
   };
   firefox: boolean = false;
   selectedForm: any;
+  isAllSelected: boolean = false;
+  public newOptions: any = {
+    positions: {
+      title: 'Positions',
+    },
+    companies: {
+      title: 'Companies',
+    },
+    projects: {
+      title: 'Projects',
+    },
+  };
 
   public options: any = [
     {
@@ -54,8 +67,8 @@ export class AdminManagementComponent implements OnInit {
       active: true,
       formGroup: 'position',
       form: [
-        { name: 'title', type: 'input' },
-        { name: 'description', type: 'input' },
+        { name: 'title', type: 'text' },
+        { name: 'description', type: 'text' },
       ],
       elements: [],
       method: this.positionService,
@@ -66,8 +79,8 @@ export class AdminManagementComponent implements OnInit {
       active: false,
       formGroup: 'company',
       form: [
-        { name: 'name', type: 'input' },
-        { name: 'description', type: 'input' },
+        { name: 'name', type: 'text' },
+        { name: 'description', type: 'text' },
         { name: 'timezone', type: 'select', source: this.timezones },
       ],
       elements: [],
@@ -79,12 +92,18 @@ export class AdminManagementComponent implements OnInit {
       active: false,
       formGroup: 'project',
       form: [
-        { name: 'name', type: 'input' },
-        { name: 'description', type: 'input' },
-        { name: 'company_id', type: 'select', source: this.companies },
+        { name: 'name', type: 'text' },
+        { name: 'description', type: 'text' },
+        {
+          name: 'company_id',
+          type: 'select',
+          source: [],
+        },
+        { name: 'employees', source: [], type: 'checkbox' },
       ],
       elements: [],
       method: this.projectService,
+      filterBy: [],
     },
   ];
 
@@ -99,6 +118,10 @@ export class AdminManagementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // for (let control in this.newOptions) {
+    //   console.log(control);
+    //   console.log(this.newOptions[control]);
+    // }
     if (window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
       this.firefox = true;
     }
@@ -106,14 +129,26 @@ export class AdminManagementComponent implements OnInit {
     this.getOptionsInfo();
     this.getTimezones();
 
+    this.managementForm
+      .get('project')
+      ?.get('company_id')
+      ?.valueChanges.subscribe((company: any) => {
+        this.isAllSelected = false;
+        if (company) {
+          console.log('company changed');
+          this.getEmployees(company);
+        } else {
+          (
+            this.managementForm.get('project')?.get('employees') as FormArray
+          ).clear();
+        }
+      });
+
     this.options.forEach((option: any) => {
       let formGroup = this.managementForm.get(option.formGroup) as FormGroup;
       option.form.forEach((form: any) => {
         for (let control in formGroup.controls) {
           if (form.name == control) {
-            form[control] = this.managementForm
-              .get(option.formGroup)
-              ?.get(control)?.value;
             form.label =
               control.slice(0, 1).toUpperCase() +
               control.slice(1).replace('_id', '');
@@ -122,6 +157,78 @@ export class AdminManagementComponent implements OnInit {
         }
       });
     });
+  }
+
+  selectAll(option: any, form: any, target: any) {
+    const checkboxes = this.managementForm
+      .get(option.formGroup)
+      ?.get(form.control) as FormArray;
+    // checkboxes.clear();
+
+    checkboxes.value.forEach((employee: any, i: number) => {
+      checkboxes.get(`${i}`)?.patchValue({
+        id: employee.id,
+        checked: target.checked,
+        user_id: employee.user_id,
+        name: `${employee.name}`,
+      });
+    });
+    this.isAllSelected = !this.isAllSelected;
+  }
+  handleFilter(target: any, option: any) {
+    this.resetForm()
+    this.projectService.get().subscribe({
+      next: (projects: Project[]) => {
+        option.elements = target.value == '-1' ? projects : projects.filter(
+          (project: Project) => project.company_id == target.value
+        );
+      },
+    });
+  }
+  getEmployees(id: string) {
+    this.companiesService.getEmployees(id).subscribe({
+      next: (employees: any) => {
+        this.options.forEach((option: any) => {
+          option.form.forEach((form: any) => {
+            if (form.name == 'employees') {
+              const employeeArray = this.managementForm
+                .get(option.formGroup)
+                ?.get(form.control) as FormArray;
+              employeeArray.clear();
+              let assignedUsers: any = [];
+              if (this.selectedForm && this.selectedForm.users) {
+                assignedUsers = this.selectedForm.users
+                  .map((user: any) => user.id)
+                  .flat();
+              }
+              employees.forEach((employee: any) => {
+                employeeArray.push(
+                  this.fb.group({
+                    id: employee.id,
+                    checked:
+                      this.selectedForm &&
+                      this.selectedForm.users &&
+                      assignedUsers.indexOf(employee.user_id) != '-1'
+                        ? true
+                        : false,
+                    user_id: employee.user_id,
+                    name: `${employee.user.name} ${employee.user.last_name}`,
+                  })
+                );
+              });
+            }
+          });
+        });
+      },
+    });
+  }
+
+  toggleSelectEmployee(i: number, option: any, form: any, target: any) {
+    this.managementForm
+      .get(option.formGroup)
+      ?.get(form.control)
+      ?.get(`${i}`)
+      ?.patchValue({ checked: target.checked });
   }
   getTimezones() {
     this.timezoneService.fetchTimezonesApi().subscribe((data: any) => {
@@ -150,6 +257,7 @@ export class AdminManagementComponent implements OnInit {
           option.form.forEach((element: any) => {
             if (element.name == 'company_id') element.source = this.companies;
           });
+          if (option.filterBy) option.filterBy = this.companies;
         });
       },
     });
@@ -229,9 +337,10 @@ export class AdminManagementComponent implements OnInit {
         )
         .subscribe({
           next: (response: any) => {
+            console.log(response);
             if (!this.selectedForm) {
               option.elements.push(response);
-              // this.selectedForm = response;
+
               this.resetForm();
               return;
             }
@@ -248,8 +357,8 @@ export class AdminManagementComponent implements OnInit {
             this.page.setAlert(error.message);
           },
         });
-    }else{
-      this.page.setAlert("Fill the required fields")
+    } else {
+      this.page.setAlert('Fill the required fields');
     }
   }
   deleteOption(id: number, option: any) {

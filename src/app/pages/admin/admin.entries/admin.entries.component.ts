@@ -6,6 +6,8 @@ import { CustomDatePipe } from '../../../services/custom-date.pipe';
 import { PagesComponent } from '../../pages.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { EntriesComponent } from 'src/app/components/entries/entries.component';
+import { UsersService } from 'src/app/services/users.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-reports',
@@ -26,7 +28,7 @@ export class AdminEntriesComponent implements OnInit {
   };
   reviewEntries: any = [];
   entries: any;
-  user: any;
+  user: any = { id: null, name: null};
   entryCheck: any;
   updateDate: Date = new Date();
   loaded!: boolean;
@@ -37,24 +39,23 @@ export class AdminEntriesComponent implements OnInit {
 
   constructor(
     private customDate: CustomDatePipe,
+    private userService: UsersService,
     private entriesService: EntriesService,
     private router: Router,
-    private page: PagesComponent
+    private page: PagesComponent,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.loaded = false;
-    document.addEventListener('click', this.onClick.bind(this));
-
-    this.user = {
-      id: localStorage.getItem('userid'),
-      name: localStorage.getItem('user_name'),
-    };
+    this.user = this.userService.selectedUser
     if (this.user.id) {
       this.getEntries();
     } else {
-      this.router.navigateByUrl('/admin/dashboard');
+      this.location.back();
     }
+
+    this.loaded = false;
+    document.addEventListener('click', this.onClick.bind(this));
   }
 
   getEntries() {
