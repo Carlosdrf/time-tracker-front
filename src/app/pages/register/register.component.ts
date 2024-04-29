@@ -5,9 +5,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/components/shared.module';
 import { WebNavComponent } from 'src/app/components/web-nav/web-nav.component';
 import { CompaniesService } from 'src/app/services/companies.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -17,14 +19,20 @@ import { CompaniesService } from 'src/app/services/companies.service';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {
+  constructor(
+    private fb: FormBuilder,
+    private companieService: CompaniesService,
+    private router: Router
+  ) {}
   register: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
     company: ['', [Validators.required]],
-    email: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required]],
     positions: ['', [Validators.required]],
     tasks_description: [''],
   });
+  formStatus: any = { isInvalid: false, message: '' };
   fields = [
     {
       label: 'Your name',
@@ -58,20 +66,39 @@ export class RegisterComponent implements OnInit {
       control: 'tasks_description',
     },
   ];
-  constructor(
-    private fb: FormBuilder,
-    private companieService: CompaniesService
-  ) {}
 
   ngOnInit(): void {}
 
   handleSubmit() {
+    this.formStatus.isInvalid = false;
     if (this.register.valid) {
-      console.log(this.register);
-      console.log(this.register.value);
       this.companieService.createPosibleCompany(this.register.value).subscribe({
-        next: (response: any) => {},
+        next: (response: any) => {
+          console.log(response);
+          this.formStatus.message = 'Your information was sent succesfully';
+          // this.router.navigateByUrl(`${environment.baseWP}/blank`);
+          window.location.href = `${environment.baseWP}/blank`
+        },
+        error: (e) => {
+          this.formStatus = {
+            isInvalid: true,
+            message: "There's been an error, try again later..",
+          };
+        },
       });
+    } else {
+      this.formStatus = {
+        isInvalid: true,
+        message: 'Please fill the required Fields.',
+      };
     }
+    setTimeout(() => {
+      this.resetStatus();
+    }, 5000);
+  }
+
+  resetStatus() {
+    this.formStatus.isInvalid = false;
+    this.formStatus.message = null;
   }
 }
