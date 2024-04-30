@@ -7,14 +7,14 @@ export class User {
     public email: string = '',
     public password: string = '',
     public role: number = 0,
-    public company: Company,
-    public employee: Employee,
+    public company?: Company | null,
+    public employee?: Employee | null,
     public active?: number,
     ) {}
 }
 
 export class Company {
-  id?: string;
+  id: string = '';
   name?: string;
   description?: string;
   timezone?: string;

@@ -10,6 +10,7 @@ import { Observable } from 'rxjs/internal/Observable';
 export class CompaniesService {
   constructor(private http: HttpClient) {}
   API_URI = environment.apiUrl + '/companies';
+
   public getCompanies(): Observable<Company[]> {
     return this.http.get<Company[]>(this.API_URI);
   }
@@ -21,5 +22,13 @@ export class CompaniesService {
 
   public delete(id: number) {
     return this.http.delete(`${this.API_URI}/${id}`);
+  }
+
+  public getEmployees(company_id: string) {
+    return this.http.get(`${this.API_URI}/${company_id}/employees`);
+  }
+
+  public createPosibleCompany(body: any) {
+    return this.http.post(`${this.API_URI}/create/possible`, body);
   }
 }

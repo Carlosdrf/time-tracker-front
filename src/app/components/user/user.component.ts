@@ -45,9 +45,9 @@ export class UserComponent implements OnInit, OnChanges {
     profile: undefined,
     password: '',
     role: 0,
-    company: new Company,
-    employee: new Employee
-  }
+    company: new Company(),
+    employee: new Employee(),
+  };
   loader: Loader = new Loader(false, false, false);
   roleList!: Roles[];
   title: string = 'New User';
@@ -94,8 +94,8 @@ export class UserComponent implements OnInit, OnChanges {
       }),
       employee: this.fb.group({
         id: [''],
-        position: [''],
-        hourly_rate: [null, [Validators.required]],
+        position: ['', [Validators.required]],
+        hourly_rate: [''],
         // daysOfWeek: this.fb.array([]),
         // startTime: [null, [Validators.required]],
         // endTime: [null, [Validators.required]],
@@ -136,7 +136,7 @@ export class UserComponent implements OnInit, OnChanges {
           }
         }
       }
-      this.img = null
+      this.img = null;
       this.newUser = this.selectedUser;
       if (this.userForm.get('company.timezone')?.value == null) {
         this.userForm.get('company.timezone')?.setValue('');
@@ -295,8 +295,16 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
 
+  setUserCompany(target: any) {
+    const company = this.companies.find(
+      (company: any) => company.id == target.value
+    );
+    console.log(company);
+    this.userForm
+      .get('company')
+      ?.patchValue({ name: company.name, description: company.description });
+  }
   public submitUserForm() {
-    console.log(this.userForm.value);
     if (this.selectedUser) this.newUser.id = this.selectedUser.id;
     else this.newUser.id = '-1';
     this.loader = new Loader(true, true, false);
@@ -315,6 +323,7 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.profile = this.userForm.value.profile;
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
+            this.newUser.company = new Company();
             this.newUser.company.id = this.userForm.value.company.id;
             this.newUser.company.name = this.userForm.value.company.name;
             this.newUser.company.timezone =
@@ -329,8 +338,10 @@ export class UserComponent implements OnInit, OnChanges {
           this.userForm.value.employee &&
           this.EMPLOYEE_ROLE == this.userForm.value.role
         ) {
-          console.log(this.userForm.value.employee.id)
-          this.newUser.employee.id = this.userForm.value.employee.id;
+          this.newUser.employee = new Employee();
+          this.newUser.employee.id = this.userForm.value.employee.id
+            ? this.userForm.value.employee.id
+            : '';
           this.newUser.employee.position =
             this.userForm.value.employee.position;
           this.newUser.employee.hourly_rate =

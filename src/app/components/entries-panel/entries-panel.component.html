@@ -6,7 +6,7 @@
       <div class="col-12 col-sm-auto">
         <h1 class="mb-0 title fs-5">Hello there {{ getName() }}!</h1>
       </div>
-      <div class="position-relative col-12 col-sm-auto text-end">
+      <div class="position-relative col-12 col-sm-auto text-end" *ngIf="projects.length > 0">
         <button
           class="cursor-pointer p-1 project options-btn btn"
           id="project-options"

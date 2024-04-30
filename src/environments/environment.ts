@@ -3,4 +3,6 @@ export const environment = {
   apiUrl: 'http://localhost:3000/api',
   socket: 'http://localhost:3000',
   url: 'https://localhost:4200/app-timer',
+  baseWP: 'https://i-nimble.com'
+
 };

@@ -1,0 +1,46 @@
+<app-web-nav></app-web-nav>
+<div class="d-flex justify-content-center mt-4">
+  <form
+    [formGroup]="register"
+    class="border rounded-5 shadow p-4 text-center"
+    (submit)="handleSubmit()"
+  >
+    <h1 class="fs-3 mb-4">
+      Sign your <span class="primary-color">Company</span> up with us
+    </h1>
+    <div *ngFor="let field of fields; let i = index" class="mb-4 d-flex gap-2">
+      <div class="px-3 d-flex align-items-center rounded-circle bg-dark">
+        <span class="rounded-circle text-white fs-3 montserrat-custom-font">{{
+          i + 1
+        }}</span>
+      </div>
+      <input
+        *ngIf="field.type == 'text'"
+        type="text"
+        class="w-10s0 form-control border rounded-5"
+        placeholder="{{ field.label }}"
+        formControlName="{{ field.control }}"
+      />
+      <select
+        *ngIf="field.type == 'select'"
+        name="{{ field.label }}"
+        id=""
+        class="form-select border rounded-5"
+        formControlName="{{ field.control }}"
+      >
+        <option value="" disabled>{{ field.label }}</option>
+        <option *ngFor="let option of field.options" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+      <!-- <textarea name="" id="" cols="30" rows="10"></textarea> -->
+    </div>
+    <div *ngIf="formStatus.isInvalid || formStatus.message">
+      <p [ngClass]="{'text-danger': formStatus.isInvalid}">{{formStatus.message}}</p>
+    </div>
+
+    <button mat-raised-button color="primary" class="rounded-5 p-4">
+      Send
+    </button>
+  </form>
+</div>

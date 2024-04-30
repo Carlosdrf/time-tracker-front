@@ -28,24 +28,31 @@
           [ngClass]="{ 'scrollbar-thin': firefox }"
         >
           <div
-            *ngFor="let field of option.elements"
             class="border-bottom transition dropdown overflow-hidden"
             [ngClass]="{ active: option.active }"
           >
-            <div
-              class="px-3 py-2 card-hover d-flex gap-2"
-              [ngClass]="{ active: selectedForm == field }"
-              (click)="handleSelection(i, null, field)"
-            >
-              <input
-                type="checkbox"
-                class="form-check-input"
-                [checked]="selectedForm == field"
-              />
-              <p class="mb-0 col-9 col-sm-10">
-                {{ field.title || field.name }}
-              </p>
-            </div>
+            <select class="px-3 py-2 form-select" *ngIf="option.filterBy" (change)="handleFilter($event.target, option)">
+              <option value="" disabled selected>Filter By</option>
+              <option value="-1">All</option>
+              <option [value]="item.id" *ngFor="let item of option.filterBy">{{item.name}}</option>
+            </select>
+
+            <ng-container *ngFor="let field of option.elements">
+              <div
+                class="px-3 py-2 card-hover d-flex gap-2"
+                [ngClass]="{ active: selectedForm == field }"
+                (click)="handleSelection(i, null, field)"
+              >
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  [checked]="selectedForm == field"
+                />
+                <p class="mb-0 col-9 col-sm-10">
+                  {{ field.title || field.name }}
+                </p>
+              </div>
+            </ng-container>
           </div>
           <div
             *ngIf="option.elements.length == 0"
@@ -61,7 +68,7 @@
     </div>
   </div>
   <div
-    class="col-12 col-sm-6 col-md-7 px-1 mb-2 sticky-md-top h-100 z-1 d-sm-block d-none"
+    class="col-12 col-sm-6 col-md-7 px-1 mb-2 sticky-md-top z-1 d-sm-block d-none"
     [ngClass]="{
       'position-modal': isMobile() && show
     }"
@@ -82,7 +89,11 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="card-body">
+      <div
+        class="card-body i-flow"
+        style="max-height: 400px"
+        [ngClass]="{ 'scrollbar-thin': firefox }"
+      >
         <form
           action=""
           [formGroup]="managementForm"
@@ -96,8 +107,8 @@
           >
             <div *ngFor="let form of option.form">
               <input
-                *ngIf="form.type == 'input'"
-                type="text"
+                *ngIf="form.type == 'text'"
+                type="{{ form.type }}"
                 [placeholder]="
                   form.label == 'Description'
                     ? 'Short ' + form.label + ' (optional)'
@@ -113,11 +124,54 @@
                 formControlName="{{ form.control }}"
                 class="form-select rounded mb-3 py-2"
               >
-                <option value="" disabled>Select a {{form.label}}</option>
+                <option value="" disabled>Select a {{ form.label }}</option>
                 <option [value]="item.id" *ngFor="let item of form.source">
                   {{ item.name }}
                 </option>
               </select>
+              <ng-container
+                formArrayName="{{ form.control }}"
+                *ngIf="
+                  form.type == 'checkbox' &&
+                  managementForm.get(option.formGroup)?.get(form.control)?.value
+                    .length > 0
+                "
+              >
+                <h2 class="fs-5">Assign project to:</h2>
+                <div class="d-flex gap-2">
+                  <input
+                    [type]="form.type"
+                    id="All"
+                    value="-1"
+                    (click)="selectAll(option, form, $event.target)"
+                    [checked]="isAllSelected"
+                  />
+                  <label for="All">Select all</label>
+                </div>
+                <div
+                  *ngFor="
+                    let employee of managementForm
+                      .get(option.formGroup)
+                      ?.get(form.control)?.value;
+                    let i = index
+                  "
+                  class="d-flex gap-2"
+                >
+                  <input
+                    (click)="
+                      toggleSelectEmployee(i, option, form, $event.target)
+                    "
+                    type="{{ form.type }}"
+                    [id]="employee.id"
+                    class="form-check rounded mb-2 py-2"
+                    placeholder="Input"
+                    [checked]="employee.checked ? 'checked' : ''"
+                  />
+                  <label for="{{ employee.id }}"
+                    >{{ employee.name }} {{ employee.last_name }}</label
+                  >
+                </div>
+              </ng-container>
             </div>
             <div class="d-flex flex-end gap-2 justify-content-end">
               <a

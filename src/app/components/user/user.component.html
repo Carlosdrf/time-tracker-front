@@ -165,24 +165,33 @@
           *ngIf="userForm.get('role')!.value == EMPLOYER_ROLE"
         >
           <div class="d-flex align-items-center mb-3 gap-2">
-            <input
+            <select
               name="name"
-              formControlName="name"
+              formControlName="id"
               id=""
-              class="form-control p-2"
+              class="form-select p-2"
               placeholder="Type the company name..."
-            />
+              (change)="setUserCompany($event.target)"
+            >
+              <option value="" disabled>Select a company</option>
+              <option
+                value="{{ company.id }}"
+                *ngFor="let company of companies"
+              >
+                {{ company.name }}
+              </option>
+            </select>
             <a mat-button class="col border">
               <i class="fa-solid fa-plus"></i>
             </a>
           </div>
-          <input
+          <!-- <input
             type="text"
             name="description"
             formControlName="description"
             class="form-control p-2 mb-3"
             placeholder="Company description..."
-          />
+          /> -->
           <select
             name="timezone"
             formControlName="timezone"
@@ -224,5 +233,4 @@
       </form>
     </div>
   </div>
-  <div></div>
 </main>

@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { CalendarComponent } from 'src/app/components/calendar/calendar.component';
 import { UserOptionsComponent } from 'src/app/components/user-options/user-options.component';
 import { SharedModule } from 'src/app/components/shared.module';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-reports',
@@ -39,9 +40,10 @@ export class ReportsComponent implements OnInit {
 
   // chart bottom
   constructor(
-    public EntriesService: EntriesService,
+    private EntriesService: EntriesService,
+    private userService: UsersService,
     public customDate: CustomDatePipe,
-    public reportsService: ReportsService,
+    private reportsService: ReportsService,
     private elementRef: ElementRef
   ) {}
 
@@ -50,11 +52,11 @@ export class ReportsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.defaultWeek();
-    this.user = {
-      id: localStorage.getItem('userid'),
-      name: localStorage.getItem('user_name'),
-    };
+    // console.log(this.userService.selectedUser);
+    this.user = this.userService.selectedUser ? this.userService.selectedUser : null;
+
     this.getEntries();
+
     document.addEventListener('click', this.onClick.bind(this));
     this.canvas = document.getElementById('myChart') as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d');
@@ -130,15 +132,12 @@ export class ReportsComponent implements OnInit {
   }
 
   filterByUser(user: any) {
+    console.log(user);
     this.selectedUser = user;
     this.user = user;
-    localStorage.setItem('userid', user.id);
-    localStorage.setItem('user_name', user.name);
     if (user.id == 0) {
       this.user.id = null;
       this.user.name = null;
-      localStorage.removeItem('userid');
-      localStorage.removeItem('user_name');
     }
     this.getEntries();
   }
@@ -153,19 +152,18 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    if (this.user.id) {
-      this.reportsService
-        .getRange(this.datesRange, this.user)
-        .subscribe((v) => {
-          this.entries = v;
-          this.arrangeEntries();
-        });
-    } else {
-      this.reportsService.getRange(this.datesRange).subscribe((v) => {
-        this.entries = v;
-        this.arrangeEntries();
-      });
-    }
+    // console.log(this.user)
+    // if (this.user.id) {
+    this.reportsService.getRange(this.datesRange, this.user).subscribe((v) => {
+      this.entries = v;
+      this.arrangeEntries();
+    });
+    // } else {
+    // this.reportsService.getRange(this.datesRange).subscribe((v) => {
+    //   this.entries = v;
+    //   this.arrangeEntries();
+    // });
+    // }
   }
 
   downloadReport() {

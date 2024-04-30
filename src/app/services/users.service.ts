@@ -7,12 +7,11 @@ import { environment } from 'src/environments/environment';
 })
 export class UsersService {
   constructor(private http: HttpClient) {}
-  userSelection: any;
+  selectedUser: any = {id: null, name: ''};
   private API_URI = environment.apiUrl;
 
   getUsers(body: any) {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-
     return this.http.post<any>(`${this.API_URI}/users`, body, { headers });
   }
   createUser(userData: any) {
@@ -39,16 +38,12 @@ export class UsersService {
   }
 
   setUserInformation(user: any) {
-    localStorage.setItem('userid', user.id);
-    localStorage.setItem('user_name', user.name);
-    this.userSelection = user;
+    this.selectedUser = user;
   }
   getSelectedUser() {
-    return this.userSelection;
+    return this.selectedUser;
   }
   resetUser() {
-    localStorage.removeItem('userid');
-    localStorage.removeItem('user_name');
-    this.userSelection = null;
+    // this.selectedUser = null;
   }
 }

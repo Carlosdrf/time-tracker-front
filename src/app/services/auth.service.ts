@@ -85,7 +85,8 @@ export class AuthService {
       return;
     }
   }
-  geTokenAccess() {}
-  refreshToken() {}
-  setAccessToken() {}
+
+  getLoggedInUser(){
+    return this.http.get(`${this.API_URI}/auth/loggedIn`)
+  }
 }
