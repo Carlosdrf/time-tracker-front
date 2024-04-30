@@ -19,9 +19,9 @@
         Your Reports:
       </h5>
       <a
-        routerLink="/user/entries"
+        routerLink="/admin/entries"
         *ngIf="
-          user !== null &&
+          user.id !== null &&
           role === '1' &&
           user.company == null &&
           selectedUser
@@ -31,7 +31,7 @@
       >
     </div>
   </div>
-  <div class="p-2 card-body">
+  <div class="py-2 px-1 card-body">
     <div
       class="d-flex flex-wrap justify-content-between align-items-center gap-1"
     >
@@ -39,7 +39,8 @@
       <div>
         <app-user-options
           (onSelectUserId)="filterByUser($event)"
-          *ngIf="role !== '2'"
+          (onSelectProjectId)="filterByProject($event)"
+          (onGetEntries)="getEntries()"
         ></app-user-options>
       </div>
       <div class="">

@@ -11,7 +11,14 @@ export class ProjectsService {
   constructor(private http: HttpClient) {}
   API_URI: string = `${environment.apiUrl}/projects`;
 
-  public get(): Observable<Project[]> {
+  public get(userId: string = '0', type: string = ''): Observable<Project[]> {
+    if (type && userId != '0') {
+      let body = {
+        type,
+        userId,
+      };
+      return this.http.post<Project[]>(`${this.API_URI}/${type}`, body);
+    }
     return this.http.get<Project[]>(`${this.API_URI}`);
   }
 

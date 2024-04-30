@@ -12,9 +12,10 @@ export class ReportsService {
 
   private API_URI: string = `${environment.apiUrl}/reports`;
 
-  getReport(data: any, user_id: any = '') {
+  getReport(data: any, user: any = null, project: any = null) {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    const info = this.toBeSent(data, user_id);
+    const info = this.toBeSent(data, user, project);
+    console.log('info: ', info);
     return this.http.post(`${this.API_URI}`, info, {
       headers,
       responseType: 'blob',
@@ -23,18 +24,18 @@ export class ReportsService {
 
   getRange(data: any, user: any = null) {
     this.userService.selectedUser = user;
-    console.log(user)
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
     const info = this.toBeSent(data, user);
     return this.http.post(`${this.API_URI}/entries`, info, { headers });
   }
-  toBeSent(data: any, user: any) {
-    let info;
-    if (!user) {
+  toBeSent(data: any, user: any, project: any = null) {
+    let info = {};
+    if (!user.id) {
       info = {
         firstSelect: data.firstSelect,
         lastSelect: data.lastSelect,
         timezone: new Date().getTimezoneOffset(),
+        project: project && project.id != '0' ? project.id : null,
       };
     } else {
       info = {
@@ -43,6 +44,7 @@ export class ReportsService {
         user_id: user.id,
         role: user.role,
         timezone: new Date().getTimezoneOffset(),
+        project: project && project.id != '0' ? project.id : null,
       };
     }
     return info;

@@ -21,7 +21,9 @@ import { UsersService } from 'src/app/services/users.service';
 })
 export class ReportsComponent implements OnInit {
   selectedUser: any;
+  selectedProject: any;
   entries: any = [];
+  filteredEntries: any = [];
   isActive: boolean = false;
   datesSelection: any;
   datesRange: any = {};
@@ -30,6 +32,7 @@ export class ReportsComponent implements OnInit {
   role = localStorage.getItem('role');
   params!: string;
   user: any = { id: null, name: null, company: null };
+  projectId: string = '';
   // chart init
   single: any;
   chart: any;
@@ -48,13 +51,15 @@ export class ReportsComponent implements OnInit {
   ) {}
 
   ngOnChanges(change: SimpleChanges) {
-    console.log(this.calendarHead);
+    // console.log(this.calendarHead);
   }
   ngOnInit(): void {
     this.defaultWeek();
-    // console.log(this.userService.selectedUser);
-    this.user = this.userService.selectedUser ? this.userService.selectedUser : null;
+    this.user = this.userService.selectedUser
+      ? this.userService.selectedUser
+      : null;
 
+    this.filteredEntries = [];
     this.getEntries();
 
     document.addEventListener('click', this.onClick.bind(this));
@@ -132,15 +137,18 @@ export class ReportsComponent implements OnInit {
   }
 
   filterByUser(user: any) {
-    console.log(user);
     this.selectedUser = user;
     this.user = user;
     if (user.id == 0) {
       this.user.id = null;
-      this.user.name = null;
+      this.user.name = '';
     }
-    this.getEntries();
   }
+
+  filterByProject(project: any) {
+    this.selectedProject = project;
+  }
+
   toggleCalendar() {
     this.isActive = !this.isActive;
   }
@@ -152,28 +160,36 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    // console.log(this.user)
-    // if (this.user.id) {
-    this.reportsService.getRange(this.datesRange, this.user).subscribe((v) => {
-      this.entries = v;
-      this.arrangeEntries();
-    });
-    // } else {
-    // this.reportsService.getRange(this.datesRange).subscribe((v) => {
-    //   this.entries = v;
-    //   this.arrangeEntries();
-    // });
-    // }
+    this.reportsService
+      .getRange(this.datesRange, this.user)
+      .subscribe((v) => {
+        this.entries = v;
+        let filteredEntries = this.entries;
+        if (
+          this.selectedProject &&
+          this.selectedProject.id !== '0' &&
+          this.selectedProject.id !== null
+        ) {
+          filteredEntries = filteredEntries.filter(
+            (entry: any) => entry.project_id === this.selectedProject.id
+          );
+        }
+
+        this.arrangeEntries(filteredEntries);
+      });
   }
 
   downloadReport() {
     if (this.user.id) {
       this.reportsService
-        .getReport(this.datesRange, this.user)
+        .getReport(this.datesRange, this.user, this.selectedProject)
         .subscribe((v) => {
           let filename;
-          const [name, lastname] = this.user.name.split(' ');
-          filename = `I-nimble_Report_${name}_${lastname}_${moment(
+          let display_name;
+          if (this.user.last_name)
+            display_name = `${this.user.name}_${this.user.last_name}`;
+          else display_name = this.user.name;
+          filename = `I-nimble_Report_${display_name}_${moment(
             new Date(this.datesRange.firstSelect)
           ).format('DD-MM-YYYY')}_${moment(
             new Date(this.datesRange.lastSelect)
@@ -182,7 +198,7 @@ export class ReportsComponent implements OnInit {
           filesaver.saveAs(v, filename);
         });
     } else {
-      this.reportsService.getReport(this.datesRange).subscribe((v) => {
+      this.reportsService.getReport(this.datesRange, this.user, this.selectedProject).subscribe((v) => {
         let filename;
         filename = `I-nimble_${moment(
           new Date(this.datesRange.firstSelect)
@@ -246,8 +262,8 @@ export class ReportsComponent implements OnInit {
     this.datesSelection = dates;
   }
 
-  arrangeEntries() {
-    const entries = this.entries;
+  arrangeEntries(entries: any = []) {
+    // const entries = this.entries;
     const totalentries = [];
     const totalhoursperday = entries.reduce((acc: any, curr: any) => {
       const date = moment(curr.start_time).format('YYYY-MM-DD');
