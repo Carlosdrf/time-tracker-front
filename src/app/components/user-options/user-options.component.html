@@ -1,5 +1,5 @@
 <div class="d-flex flex-wrap align-items-center gap-1 mx-1">
-  <div class="form-group " *ngIf="role !== '2'">
+  <div class="form-group col-sm-4 col-12" *ngIf="role !== '2'">
     <select
       [(ngModel)]="select"
       class="form-select py-1"
@@ -8,20 +8,7 @@
       <option value="" disabled>Select a user</option>
       <option value="0" *ngIf="!byClient">All</option>
       <option *ngFor="let user of users" [value]="user.id">
-        {{handleDisplay(user)}}
-      </option>
-    </select>
-  </div>
-  <div class="form-group">
-    <select
-      [(ngModel)]="selectProject"
-      class="form-select py-1"
-      (change)="selectProjectId($event)"
-    >
-      <option value="" disabled>Select a Project</option>
-      <option value="0">All</option>
-      <option *ngFor="let project of projectsList" [value]="project.id">
-        {{ project.name }}
+        {{ handleDisplay(user) }}
       </option>
     </select>
   </div>
@@ -33,6 +20,19 @@
       class="form-check-input"
       (change)="toggleCheck()"
     />
-    <label for="client" class="form-check-label">Filter by clients?</label>
+    <label for="client" class="form-check-label">By clients?</label>
+  </div>
+  <div class="form-group col-sm-4 col-12">
+    <select
+      [(ngModel)]="selectProject"
+      class="form-select py-1"
+      (change)="selectProjectId($event)"
+    >
+      <option value="" disabled>By Project</option>
+      <option value="0">All</option>
+      <option *ngFor="let project of projectsList" [value]="project.id">
+        {{ project.name }}
+      </option>
+    </select>
   </div>
 </div>

@@ -165,9 +165,9 @@ export class ReportsComponent implements OnInit {
       this.entries = v;
       let filteredEntries = this.entries;
   
-      if (this.user.id && this.user.id != null) {
-        filteredEntries = filteredEntries.filter((entry: any) => entry.user_id === this.user.id);
-      }
+      // if (this.user.id && this.user.id != null) {
+      //   filteredEntries = filteredEntries.filter((entry: any) => entry.user_id === this.user.id);
+      // }
   
       if (this.selectedProject && this.selectedProject.id !== '0' && this.selectedProject.id !== null) {
         filteredEntries = filteredEntries.filter((entry: any) => entry.project_id === this.selectedProject.id);
