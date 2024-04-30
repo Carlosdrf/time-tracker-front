@@ -39,7 +39,7 @@
       <div>
         <app-user-options
           (onSelectUserId)="filterByUser($event)"
-          *ngIf="role !== '2'"
+          (onSelectProjectId)="filterByProject($event)"
         ></app-user-options>
       </div>
       <div class="">

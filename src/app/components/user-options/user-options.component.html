@@ -12,6 +12,19 @@
       </option>
     </select>
   </div>
+  <div class="form-group">
+    <select
+      [(ngModel)]="selectProject"
+      class="form-select py-1"
+      (change)="selectProjectId($event)"
+    >
+      <option value="" disabled>Select a Project</option>
+      <option value="0">All</option>
+      <option *ngFor="let project of projectsList" [value]="project.id">
+        {{ project.name }}
+      </option>
+    </select>
+  </div>
   <div class="form-check mx-2" *ngIf="role == '1'">
     <input
       type="checkbox"
