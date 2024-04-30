@@ -15,14 +15,17 @@ import { ProjectsService } from 'src/app/services/projects.service';
 export class UserOptionsComponent implements OnInit {
   @Output() onSelectUserId: EventEmitter<any> = new EventEmitter<any>();
   @Output() onSelectProjectId: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onGetEntries: EventEmitter<any> = new EventEmitter<any>();
   users: any;
   companies: Company[] = [];
+  type: string = 'user';
   usersList: any;
   select: string = '';
   projectsList: any;
-  selectProject: string = '';
+  selectProject: string = '-1';
   byClient: boolean = false;
   role = localStorage.getItem('role');
+  selected: boolean = true;
   constructor(
     private userService: UsersService,
     private companiesService: CompaniesService,
@@ -66,11 +69,14 @@ export class UserOptionsComponent implements OnInit {
       },
     });
   }
-  getProjects() {
-    this.projectService.get().subscribe({
+  getProjects(userId: string = '0') {
+    this.handleType();
+    this.projectService.get(userId, this.type).subscribe({
       next: (projects: any) => {
-        this.projectsList = projects.filter((project: any) => project.active == 1);
-      }
+        this.projectsList = projects.filter(
+          (project: any) => project.active == 1
+        );
+      },
     });
   }
   getCompanies() {
@@ -82,29 +88,54 @@ export class UserOptionsComponent implements OnInit {
   }
   toggleCheck() {
     this.byClient = !this.byClient;
+    this.handleType();
     this.select = '';
-    if (this.byClient) this.users = this.companies;
-    else this.users = this.usersList.filter((user: any) => user.role == 2);
+    this.selectProject = '-1';
+
+    if (this.byClient) {
+      this.selected = false;
+      this.users = this.companies;
+    } else {
+      this.getProjects();
+      this.selected = true;
+      this.users = this.usersList.filter((user: any) => user.role == 2);
+    }
+    this.onSelectUserId.emit({ id: '0' });
+    return this.onGetEntries.emit();
+  }
+
+  handleType() {
+    this.type = this.byClient ? 'company' : 'user';
   }
 
   selectUserId(event: Event) {
     let user;
     const userId = (event.target as HTMLInputElement).value;
-    
-   if(userId && userId != null) {
-    if (userId == '0') return this.onSelectUserId.emit({ id: userId });
-    user = this.users.find((user: any) => user.id == userId);
-    this.onSelectUserId.emit(user);
-   }
+    this.selectProject = '-1';
+    this.getProjects(userId);
+
+    this.selected = true;
+    this.onSelectProjectId.emit({ id: '0' });
+    if (userId == '0') {
+      this.onSelectUserId.emit({ id: userId });
+    } else {
+      user = this.users.find((user: any) => user.id == userId);
+      this.onSelectUserId.emit(user);
+    }
+
+    this.onGetEntries.emit();
   }
+
   selectProjectId(event: Event) {
     let project;
     const projectId = (event.target as HTMLInputElement).value;
-  
-    if (projectId && projectId != null) {
-      if (projectId == '0') return this.onSelectProjectId.emit({ id: projectId });  
+
+    if (!projectId || projectId == '0')
+      this.onSelectProjectId.emit({ id: '0' });
+    else {
       project = this.projectsList.find((p: any) => p.id == projectId);
       this.onSelectProjectId.emit(project);
     }
+    this.onGetEntries.emit();
   }
 }

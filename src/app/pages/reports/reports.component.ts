@@ -32,6 +32,7 @@ export class ReportsComponent implements OnInit {
   role = localStorage.getItem('role');
   params!: string;
   user: any = { id: null, name: null, company: null };
+  projectId: string = '';
   // chart init
   single: any;
   chart: any;
@@ -54,10 +55,11 @@ export class ReportsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.defaultWeek();
-    // console.log(this.userService.selectedUser);
-    this.user = this.userService.selectedUser ? this.userService.selectedUser : null;
+    this.user = this.userService.selectedUser
+      ? this.userService.selectedUser
+      : null;
 
-    this.filteredEntries = []
+    this.filteredEntries = [];
     this.getEntries();
 
     document.addEventListener('click', this.onClick.bind(this));
@@ -135,19 +137,16 @@ export class ReportsComponent implements OnInit {
   }
 
   filterByUser(user: any) {
-    // console.log(user);
     this.selectedUser = user;
     this.user = user;
     if (user.id == 0) {
       this.user.id = null;
-      this.user.name = null;
+      this.user.name = '';
     }
-    this.getEntries();
   }
 
   filterByProject(project: any) {
     this.selectedProject = project;
-    this.getEntries();
   }
 
   toggleCalendar() {
@@ -161,30 +160,36 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    this.reportsService.getRange(this.datesRange, this.user).subscribe((v) => {
-      this.entries = v;
-      let filteredEntries = this.entries;
-  
-      // if (this.user.id && this.user.id != null) {
-      //   filteredEntries = filteredEntries.filter((entry: any) => entry.user_id === this.user.id);
-      // }
-  
-      if (this.selectedProject && this.selectedProject.id !== '0' && this.selectedProject.id !== null) {
-        filteredEntries = filteredEntries.filter((entry: any) => entry.project_id === this.selectedProject.id);
-      }
-  
-      this.arrangeEntries(filteredEntries);
-    });
+    this.reportsService
+      .getRange(this.datesRange, this.user)
+      .subscribe((v) => {
+        this.entries = v;
+        let filteredEntries = this.entries;
+        if (
+          this.selectedProject &&
+          this.selectedProject.id !== '0' &&
+          this.selectedProject.id !== null
+        ) {
+          filteredEntries = filteredEntries.filter(
+            (entry: any) => entry.project_id === this.selectedProject.id
+          );
+        }
+
+        this.arrangeEntries(filteredEntries);
+      });
   }
 
   downloadReport() {
     if (this.user.id) {
       this.reportsService
-        .getReport(this.datesRange, this.user)
+        .getReport(this.datesRange, this.user, this.selectedProject)
         .subscribe((v) => {
           let filename;
-          const [name, lastname] = this.user.name.split(' ');
-          filename = `I-nimble_Report_${name}_${lastname}_${moment(
+          let display_name;
+          if (this.user.last_name)
+            display_name = `${this.user.name}_${this.user.last_name}`;
+          else display_name = this.user.name;
+          filename = `I-nimble_Report_${display_name}_${moment(
             new Date(this.datesRange.firstSelect)
           ).format('DD-MM-YYYY')}_${moment(
             new Date(this.datesRange.lastSelect)
@@ -193,7 +198,7 @@ export class ReportsComponent implements OnInit {
           filesaver.saveAs(v, filename);
         });
     } else {
-      this.reportsService.getReport(this.datesRange).subscribe((v) => {
+      this.reportsService.getReport(this.datesRange, this.user, this.selectedProject).subscribe((v) => {
         let filename;
         filename = `I-nimble_${moment(
           new Date(this.datesRange.firstSelect)
