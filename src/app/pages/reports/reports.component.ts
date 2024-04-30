@@ -21,7 +21,9 @@ import { UsersService } from 'src/app/services/users.service';
 })
 export class ReportsComponent implements OnInit {
   selectedUser: any;
+  selectedProject: any;
   entries: any = [];
+  filteredEntries: any = [];
   isActive: boolean = false;
   datesSelection: any;
   datesRange: any = {};
@@ -48,13 +50,14 @@ export class ReportsComponent implements OnInit {
   ) {}
 
   ngOnChanges(change: SimpleChanges) {
-    console.log(this.calendarHead);
+    // console.log(this.calendarHead);
   }
   ngOnInit(): void {
     this.defaultWeek();
     // console.log(this.userService.selectedUser);
     this.user = this.userService.selectedUser ? this.userService.selectedUser : null;
 
+    this.filteredEntries = []
     this.getEntries();
 
     document.addEventListener('click', this.onClick.bind(this));
@@ -132,7 +135,7 @@ export class ReportsComponent implements OnInit {
   }
 
   filterByUser(user: any) {
-    console.log(user);
+    // console.log(user);
     this.selectedUser = user;
     this.user = user;
     if (user.id == 0) {
@@ -141,6 +144,12 @@ export class ReportsComponent implements OnInit {
     }
     this.getEntries();
   }
+
+  filterByProject(project: any) {
+    this.selectedProject = project;
+    this.getEntries();
+  }
+
   toggleCalendar() {
     this.isActive = !this.isActive;
   }
@@ -152,18 +161,20 @@ export class ReportsComponent implements OnInit {
   }
 
   getEntries() {
-    // console.log(this.user)
-    // if (this.user.id) {
     this.reportsService.getRange(this.datesRange, this.user).subscribe((v) => {
       this.entries = v;
-      this.arrangeEntries();
+      let filteredEntries = this.entries;
+  
+      // if (this.user.id && this.user.id != null) {
+      //   filteredEntries = filteredEntries.filter((entry: any) => entry.user_id === this.user.id);
+      // }
+  
+      if (this.selectedProject && this.selectedProject.id !== '0' && this.selectedProject.id !== null) {
+        filteredEntries = filteredEntries.filter((entry: any) => entry.project_id === this.selectedProject.id);
+      }
+  
+      this.arrangeEntries(filteredEntries);
     });
-    // } else {
-    // this.reportsService.getRange(this.datesRange).subscribe((v) => {
-    //   this.entries = v;
-    //   this.arrangeEntries();
-    // });
-    // }
   }
 
   downloadReport() {
@@ -246,8 +257,8 @@ export class ReportsComponent implements OnInit {
     this.datesSelection = dates;
   }
 
-  arrangeEntries() {
-    const entries = this.entries;
+  arrangeEntries(entries: any = []) {
+    // const entries = this.entries;
     const totalentries = [];
     const totalhoursperday = entries.reduce((acc: any, curr: any) => {
       const date = moment(curr.start_time).format('YYYY-MM-DD');

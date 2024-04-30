@@ -3,6 +3,7 @@ import { SharedModule } from '../shared.module';
 import { UsersService } from 'src/app/services/users.service';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { Company } from 'src/app/models/User.model';
+import { ProjectsService } from 'src/app/services/projects.service';
 
 @Component({
   selector: 'app-user-options',
@@ -13,15 +14,19 @@ import { Company } from 'src/app/models/User.model';
 })
 export class UserOptionsComponent implements OnInit {
   @Output() onSelectUserId: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onSelectProjectId: EventEmitter<any> = new EventEmitter<any>();
   users: any;
   companies: Company[] = [];
   usersList: any;
   select: string = '';
+  projectsList: any;
+  selectProject: string = '';
   byClient: boolean = false;
   role = localStorage.getItem('role');
   constructor(
     private userService: UsersService,
-    private companiesService: CompaniesService
+    private companiesService: CompaniesService,
+    private projectService: ProjectsService
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +37,7 @@ export class UserOptionsComponent implements OnInit {
     if (this.role == '3') {
       this.getEmployees();
     }
+    this.getProjects();
   }
   handleDisplay(user: any) {
     if (this.byClient) {
@@ -60,6 +66,13 @@ export class UserOptionsComponent implements OnInit {
       },
     });
   }
+  getProjects() {
+    this.projectService.get().subscribe({
+      next: (projects: any) => {
+        this.projectsList = projects.filter((project: any) => project.active == 1);
+      }
+    });
+  }
   getCompanies() {
     this.companiesService.getCompanies().subscribe({
       next: (companies: Company[]) => {
@@ -78,9 +91,20 @@ export class UserOptionsComponent implements OnInit {
     let user;
     const userId = (event.target as HTMLInputElement).value;
     
+   if(userId && userId != null) {
     if (userId == '0') return this.onSelectUserId.emit({ id: userId });
     user = this.users.find((user: any) => user.id == userId);
-    console.log(user)
     this.onSelectUserId.emit(user);
+   }
+  }
+  selectProjectId(event: Event) {
+    let project;
+    const projectId = (event.target as HTMLInputElement).value;
+  
+    if (projectId && projectId != null) {
+      if (projectId == '0') return this.onSelectProjectId.emit({ id: projectId });  
+      project = this.projectsList.find((p: any) => p.id == projectId);
+      this.onSelectProjectId.emit(project);
+    }
   }
 }
