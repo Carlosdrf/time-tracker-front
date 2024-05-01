@@ -12,7 +12,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "component": "ng g c pages/register",
-    "shared": "ng g c components/web-nav",
+    "shared": "ng g c components/form-dialog",
     "service": "ng g s services/timezone"
   },
   "private": true,

@@ -6,12 +6,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // import { EntriesService } from "../services/entries.service";
 import { CustomDatePipe } from '../services/custom-date.pipe';
-// import { Entries } from '../models/Entries';
 
 import { NavigationComponent } from './navigation/navigation.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { EntriesComponent } from './entries/entries.component';
@@ -32,8 +32,6 @@ import { GoBackComponent } from './go-back/go-back.component';
     ReactiveFormsModule,
     RouterModule,
     CommonModule,
-    // CalendarComponent
-    // CustomDatePipe
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
@@ -45,7 +43,6 @@ import { GoBackComponent } from './go-back/go-back.component';
     NavigationComponent,
     CalendarComponent,
     CustomDatePipe,
-    // EntriesComponent,
     EntriesPanelComponent,
     BillsComponent,
     StripeComponent,
@@ -54,8 +51,7 @@ import { GoBackComponent } from './go-back/go-back.component';
     PaymentHistoryComponent,
     BalanceComponent,
     UserComponent,
-    GoBackComponent
-    // UserListComponent,
+    GoBackComponent,
   ],
   exports: [
     // EntriesComponent,

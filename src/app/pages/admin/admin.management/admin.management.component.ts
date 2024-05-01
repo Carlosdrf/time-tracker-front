@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
-import { ModalComponent } from 'src/app/components/modal/modal.component';
+import { ModalComponent } from 'src/app/components/confirmation-modal/modal.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { Company } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
@@ -176,12 +176,15 @@ export class AdminManagementComponent implements OnInit {
     this.isAllSelected = !this.isAllSelected;
   }
   handleFilter(target: any, option: any) {
-    this.resetForm()
+    this.resetForm();
     this.projectService.get().subscribe({
       next: (projects: Project[]) => {
-        option.elements = target.value == '-1' ? projects : projects.filter(
-          (project: Project) => project.company_id == target.value
-        );
+        option.elements =
+          target.value == '-1'
+            ? projects
+            : projects.filter(
+                (project: Project) => project.company_id == target.value
+              );
       },
     });
   }

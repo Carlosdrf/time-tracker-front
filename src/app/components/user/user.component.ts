@@ -20,11 +20,12 @@ import { Company, Employee, User } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
-import { ModalComponent } from '../modal/modal.component';
+import { ModalComponent } from '../confirmation-modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PositionsService } from 'src/app/services/positions.service';
 import { Positions } from 'src/app/models/Position.model';
 import { TimezoneService } from 'src/app/services/timezone.service';
+import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 
 @Component({
   selector: 'app-user',
@@ -88,9 +89,9 @@ export class UserComponent implements OnInit, OnChanges {
       password: [''],
       cpassword: [''],
       company: this.fb.group({
-        id: [''],
-        name: [null, [Validators.required]],
-        timezone: [''],
+        id: ['', [Validators.required]],
+        // name: [null, [Validators.required]],
+        // timezone: [''],
       }),
       employee: this.fb.group({
         id: [''],
@@ -138,9 +139,9 @@ export class UserComponent implements OnInit, OnChanges {
       }
       this.img = null;
       this.newUser = this.selectedUser;
-      if (this.userForm.get('company.timezone')?.value == null) {
-        this.userForm.get('company.timezone')?.setValue('');
-      }
+      // if (this.userForm.get('company.id')?.value == null) {
+      //   this.userForm.get('company.id')?.setValue('');
+      // }
     }
   }
 
@@ -234,11 +235,11 @@ export class UserComponent implements OnInit, OnChanges {
           employeeGroup.removeControl(controlId);
         }
         companyGroup.addControl('id', this.fb.control(''));
-        companyGroup.addControl('name', this.fb.control(''));
-        companyGroup.addControl('description', this.fb.control(''));
-        companyGroup.addControl('timezone', this.fb.control(''));
+        // companyGroup.addControl('name', this.fb.control(''));
+        // companyGroup.addControl('description', this.fb.control(''));
+        // companyGroup.addControl('timezone', this.fb.control(''));
         if (!this.selectedUser) {
-          companyGroup.get('timezone')?.setValue('');
+          companyGroup.get('id')?.setValue('');
         }
       }
     });
@@ -395,6 +396,15 @@ export class UserComponent implements OnInit, OnChanges {
       }
     });
   }
+
+  createFormField() {
+    const dialog = this.dialog.open(FormDialogComponent);
+
+    dialog.afterClosed().subscribe((value: any) => {
+      console.log(value);
+    });
+  }
+
   onFileSelected(event: any) {
     const img = event.target.files[0];
     if (img) {

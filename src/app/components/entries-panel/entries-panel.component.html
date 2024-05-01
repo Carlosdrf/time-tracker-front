@@ -6,11 +6,11 @@
       <div class="col-12 col-sm-auto">
         <h1 class="mb-0 title fs-5">Hello there {{ getName() }}!</h1>
       </div>
-      <div class="position-relative col-12 col-sm-auto text-end" *ngIf="projects.length > 0">
-        <button
-          class="cursor-pointer p-1 project options-btn btn"
-          id="project-options"
-        >
+      <div
+        class="position-relative col-12 col-sm-auto text-end"
+        *ngIf="projects.length > 0"
+      >
+        <button class="p-1 project options-btn btn" id="project-options">
           <i class="fa-solid fa-bars-progress"></i>
           <span class="ms-1">{{
             entry.project_id ? entry.project : "select project"
@@ -22,7 +22,7 @@
           class="menu rounded dropdown-menu position-absolute end-0 p-0"
         >
           <div class="card-hover" *ngFor="let project of projects">
-            <li class="p-2" (click)="setProject(project)">
+            <li class="p-2 cursor-pointer" (click)="setProject(project)">
               {{ project.name }}
             </li>
           </div>

@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Create a Company Express!</h2>
+<mat-dialog-content>
+  <div class="d-flex flex-column">
+    <ng-container *ngFor="let form of companyForm">
+      <mat-form-field *ngIf="form.type == 'text'">
+        <mat-label>{{ form.label }}</mat-label>
+        <input matInput [(ngModel)]="form.value" />
+      </mat-form-field>
+      <mat-form-field *ngIf="form.type == 'select'">
+        <mat-label>{{ form.label }}</mat-label>
+        <input matInput [(ngModel)]="form.value" [matAutocomplete]="auto" (ngModelChange)="search(form.value)"/>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let timezone of timezones"
+            value="{{ timezone.zoneName }}:{{ timezone.countryCode }}"
+            >{{ timezone.fechaActual }} {{ timezone.zoneName }}</mat-option
+          >
+        </mat-autocomplete>
+      </mat-form-field>
+    </ng-container>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="d-flex flex-end">
+  <button
+    mat-button
+    class="ms-2 rounded shadow px-4 py-1 btn btn-primary"
+    [mat-dialog-close]="true"
+  >
+    Yes
+  </button>
+  <button
+    mat-button
+    class="ms-2 rounded shadow px-4 py-1 btn btn-danger"
+    [mat-dialog-close]="false"
+  >
+    No
+  </button>
+</mat-dialog-actions>

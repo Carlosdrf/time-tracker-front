@@ -1,15 +1,21 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormArray,
+  FormControl,
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
-import { ModalComponent } from 'src/app/components/modal/modal.component';
+import { ModalComponent } from 'src/app/components/confirmation-modal/modal.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { Company } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { PagesComponent } from '../../pages.component';
 import { ProjectsService } from 'src/app/services/projects.service';
-import {MatSelectModule} from '@angular/material/select';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { UsersService } from 'src/app/services/users.service';
 import { MatSelect } from '@angular/material/select';
 
@@ -29,7 +35,7 @@ export class ClientProjectsComponent implements OnInit {
       name: ['', [Validators.required]],
       description: [''],
       company_id: ['', [Validators.required]],
-      employees: this.fb.array(this.selectedEmployees)
+      employees: this.fb.array(this.selectedEmployees),
     }),
   });
   show: boolean = false;
@@ -53,7 +59,7 @@ export class ClientProjectsComponent implements OnInit {
         { name: 'name', type: 'input' },
         { name: 'description', type: 'input' },
         { name: 'company_id', type: 'select', source: this.companies },
-        { employees: this.selectedEmployees }
+        { employees: this.selectedEmployees },
       ],
       elements: [],
       method: this.projectService,
@@ -66,7 +72,7 @@ export class ClientProjectsComponent implements OnInit {
     private projectService: ProjectsService,
     private userService: UsersService,
     private dialog: MatDialog,
-    private page: PagesComponent,
+    private page: PagesComponent
   ) {}
 
   ngOnInit() {
@@ -149,9 +155,11 @@ export class ClientProjectsComponent implements OnInit {
     }
     if (this.selectedForm != select) {
       this.managementForm.get(option.formGroup)?.patchValue(select);
-      
+
       this.selectedForm = select;
-      this.selectedEmployees = this.selectedForm.users.map((item:any) => item.id);
+      this.selectedEmployees = this.selectedForm.users.map(
+        (item: any) => item.id
+      );
       this.selectedOptions.setValue(this.selectedEmployees);
     }
   }
@@ -170,9 +178,7 @@ export class ClientProjectsComponent implements OnInit {
     }
   }
   getOptionsInfo() {
-    forkJoin([
-      this.projectService.get(),
-    ]).subscribe({
+    forkJoin([this.projectService.get()]).subscribe({
       next: (selectsInfo) => {
         this.options.forEach((option: any, i: number) => {
           option.elements = selectsInfo[i];
@@ -183,29 +189,34 @@ export class ClientProjectsComponent implements OnInit {
 
   sendForms(option: any) {
     if (this.managementForm.get(option.formGroup)?.valid) {
-      const formValue = this.managementForm.get(option.formGroup)?.value
-      const selectedEmployees = this.selectedEmployees.filter(employee => employee.checked);
-      const deselectedEmployees = this.selectedEmployees.filter(employee => !employee.checked);
-      formValue.employees = selectedEmployees.map(employee => ({
-        user_id: employee.user_id,
-        checked: true
-      })).concat(deselectedEmployees.map(employee => ({
-        user_id: employee.user_id,
-        checked: false
-      })));
+      const formValue = this.managementForm.get(option.formGroup)?.value;
+      const selectedEmployees = this.selectedEmployees.filter(
+        (employee) => employee.checked
+      );
+      const deselectedEmployees = this.selectedEmployees.filter(
+        (employee) => !employee.checked
+      );
+      formValue.employees = selectedEmployees
+        .map((employee) => ({
+          user_id: employee.user_id,
+          checked: true,
+        }))
+        .concat(
+          deselectedEmployees.map((employee) => ({
+            user_id: employee.user_id,
+            checked: false,
+          }))
+        );
       option.method
-        .submit(
-          formValue,
-          this.selectedForm ? this.selectedForm.id : null
-        )
+        .submit(formValue, this.selectedForm ? this.selectedForm.id : null)
         .subscribe({
           next: (response: any) => {
             if (!this.selectedForm) {
               option.elements.push(response);
-              this.page.setAlert("Project Created Successfully");
+              this.page.setAlert('Project Created Successfully');
               this.resetForm();
               return;
-            } 
+            }
             option.elements = option.elements.map((item: any) => {
               if (item.id == response.id) {
                 item = response;
@@ -219,15 +230,15 @@ export class ClientProjectsComponent implements OnInit {
             this.page.setAlert(error.message);
           },
         });
-    }else{
-      this.page.setAlert("Fill the required fields")
+    } else {
+      this.page.setAlert('Fill the required fields');
     }
   }
 
   onEmployeeSelectionChange(selectedEmployeeIds: number[]): void {
-    this.selectedEmployees = this.employees.map((item:any) => ({
+    this.selectedEmployees = this.employees.map((item: any) => ({
       user_id: item.user.id,
-      checked: selectedEmployeeIds.includes(item.user.id)
+      checked: selectedEmployeeIds.includes(item.user.id),
     }));
   }
   deleteOption(id: number, option: any) {
