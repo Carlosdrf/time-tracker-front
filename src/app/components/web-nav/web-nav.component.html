@@ -27,8 +27,6 @@
           class="nav-link"
           *ngFor="let link of links"
           [href]="'https://i-nimble.com/' + link.href"
-          (click)="isActive = false"
-          routerLinkActive="active"
           >{{ link.title }}</a
         >
       </div>

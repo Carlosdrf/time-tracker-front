@@ -118,10 +118,6 @@ export class AdminManagementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // for (let control in this.newOptions) {
-    //   console.log(control);
-    //   console.log(this.newOptions[control]);
-    // }
     if (window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
       this.firefox = true;
     }
@@ -135,7 +131,6 @@ export class AdminManagementComponent implements OnInit {
       ?.valueChanges.subscribe((company: any) => {
         this.isAllSelected = false;
         if (company) {
-          console.log('company changed');
           this.getEmployees(company);
         } else {
           (
@@ -340,7 +335,7 @@ export class AdminManagementComponent implements OnInit {
         )
         .subscribe({
           next: (response: any) => {
-            console.log(response);
+            this.page.setAlert('Saved Successfully!');
             if (!this.selectedForm) {
               option.elements.push(response);
 
@@ -376,6 +371,10 @@ export class AdminManagementComponent implements OnInit {
             option.elements = option.elements.filter(
               (option: any) => option.id != id
             );
+          },
+          error: (err: ErrorEvent) => {
+            const { error } = err;
+            this.page.setAlert(error.message);
           },
         });
       }

@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { AuthService } from "../services/auth.service";
-
-// import { EntriesService } from "../services/entries.service";
 import { CustomDatePipe } from '../services/custom-date.pipe';
 
 import { NavigationComponent } from './navigation/navigation.component';

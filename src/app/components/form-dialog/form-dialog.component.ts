@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AsyncPipe } from '@angular/common';
@@ -9,6 +15,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { CommonModule } from '@angular/common';
+import { Timezone } from 'src/app/models/Timezone.model';
 
 @Component({
   selector: 'app-form-dialog',
@@ -22,26 +29,38 @@ import { CommonModule } from '@angular/common';
     MatSelectModule,
     MatAutocompleteModule,
     AsyncPipe,
+    ReactiveFormsModule,
   ],
   templateUrl: './form-dialog.component.html',
   styleUrl: './form-dialog.component.scss',
 })
 export class FormDialogComponent implements OnInit {
-  public companyForm = [
+  companyForm: FormGroup;
+  constructor(
+    private timezoneService: TimezoneService,
+    private fb: FormBuilder
+  ) {
+    this.companyForm = this.fb.group({
+      name: ['', [Validators.required]],
+      description: [''],
+      timezone: ['', [Validators.required]],
+    });
+  }
+  public companyFields = [
     {
-      title: 'Name',
+      control: 'name',
       label: 'Company Name',
       type: 'text',
       value: '',
     },
     {
-      title: 'Description',
+      control: 'description',
       label: 'Short description (optional)',
       type: 'text',
       value: '',
     },
     {
-      title: 'Timezone',
+      control: 'timezone',
       label: 'Select a timezone',
       type: 'select',
       value: '',
@@ -49,10 +68,21 @@ export class FormDialogComponent implements OnInit {
   ];
   timezones: any = [];
   timezoneList = [];
-  constructor(private timezoneService: TimezoneService) {}
+  validForm: boolean = false;
   ngOnInit(): void {
     this.getTimezones();
+    this.companyForm.valueChanges.subscribe({
+      next: (form: any) => {
+        const validTimezone = this.timezoneList.filter(
+          (timezone: Timezone) =>
+            `${timezone.zoneName}:${timezone.countryCode}` == form.timezone
+        );
+        if (this.companyForm.valid && validTimezone.length > 0)
+          this.validForm = this.companyForm.valid;
+      },
+    });
   }
+
   private getTimezones() {
     this.timezoneService.fetchTimezonesApi().subscribe({
       next: (data: any) => {

@@ -11,6 +11,22 @@ import { Entries } from 'src/app/models/Entries';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class EmployeeDashboardComponent implements OnInit {
+  @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
+  entriesAlert: string = '';
+  name: any;
+  entries: any = [];
+  loaded!: boolean;
+  entryCheck: boolean = false;
+  currentEntryId: number = 0;
+  timer: any = '00:00:00';
+  message: any;
+  start_time: any;
+  startedEntry: Entries = {
+    status: 0,
+    description: '',
+    start_time: new Date(),
+    end_time: new Date(),
+  };
   public components: Array<any> = [
     {
       href: null,
@@ -19,6 +35,7 @@ export class EmployeeDashboardComponent implements OnInit {
       title: 'Tracker',
       description: 'You can see your entries',
       header: 'See your Entries',
+      alert: true,
       options: [],
     },
     {
@@ -50,22 +67,6 @@ export class EmployeeDashboardComponent implements OnInit {
       options: [],
     },
   ];
-  @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
-  name: any;
-  entries: any = [];
-  loaded!: boolean;
-  entryCheck: boolean = false;
-  currentEntryId: number = 0;
-  timer: any = '00:00:00';
-  message: any;
-  start_time: any;
-  startedEntry: Entries = {
-    status: 0,
-    description: '',
-    start_time: new Date(),
-    end_time: new Date(),
-  };
-
   constructor(
     private socketService: WebSocketService,
     private entriesService: EntriesService,
@@ -99,7 +100,10 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   getEntries() {
-    this.entriesService.getEntries().subscribe(({ entries }) => {
+    this.entriesService.getEntries().subscribe(({ entries, suspicious }) => {
+      if (suspicious.length > 0)
+        this.entriesAlert =
+          'You have some entries for review, you should talk to HR';
       this.entries = entries.filter((entry: any) => entry.status !== 0);
       const startedEntry = entries.filter((entry: any) => entry.status === 0);
       if (startedEntry.length !== 0) {
@@ -134,5 +138,17 @@ export class EmployeeDashboardComponent implements OnInit {
       this.page.setAlert(this.message);
       this.socketService.socket.emit('client:end_entry', 'mensaje');
     });
+  }
+
+  displayAlert(component: any) {
+    switch (component.title) {
+      case 'Tracker':
+        return this.entriesAlert;
+        break;
+      default:
+        return '';
+        break;
+    }
+
   }
 }

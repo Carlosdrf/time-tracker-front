@@ -300,7 +300,6 @@ export class UserComponent implements OnInit, OnChanges {
     const company = this.companies.find(
       (company: any) => company.id == target.value
     );
-    console.log(company);
     this.userForm
       .get('company')
       ?.patchValue({ name: company.name, description: company.description });
@@ -400,8 +399,14 @@ export class UserComponent implements OnInit, OnChanges {
   createFormField() {
     const dialog = this.dialog.open(FormDialogComponent);
 
-    dialog.afterClosed().subscribe((value: any) => {
-      console.log(value);
+    dialog.afterClosed().subscribe((company: any) => {
+      if (company) {
+        this.companiesService.submit(company).subscribe({
+          next: (response: any) => {
+            this.companies.push(response);
+          },
+        });
+      }
     });
   }
 

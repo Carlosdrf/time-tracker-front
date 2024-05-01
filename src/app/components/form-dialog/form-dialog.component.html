@@ -1,14 +1,19 @@
 <h2 mat-dialog-title>Create a Company Express!</h2>
 <mat-dialog-content>
-  <div class="d-flex flex-column">
-    <ng-container *ngFor="let form of companyForm">
+  <div class="d-flex flex-column" [formGroup]="companyForm">
+    <ng-container *ngFor="let form of companyFields">
       <mat-form-field *ngIf="form.type == 'text'">
         <mat-label>{{ form.label }}</mat-label>
-        <input matInput [(ngModel)]="form.value" />
+        <input matInput formControlName="{{ form.control }}" />
       </mat-form-field>
       <mat-form-field *ngIf="form.type == 'select'">
         <mat-label>{{ form.label }}</mat-label>
-        <input matInput [(ngModel)]="form.value" [matAutocomplete]="auto" (ngModelChange)="search(form.value)"/>
+        <input
+          matInput
+          formControlName="{{ form.control }}"
+          [matAutocomplete]="auto"
+          (keyup)="search(companyForm.get(form.control)?.value)"
+        />
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option
             *ngFor="let timezone of timezones"
@@ -24,7 +29,8 @@
   <button
     mat-button
     class="ms-2 rounded shadow px-4 py-1 btn btn-primary"
-    [mat-dialog-close]="true"
+    [mat-dialog-close]="companyForm.value"
+    [disabled]="!validForm"
   >
     Yes
   </button>
@@ -33,6 +39,6 @@
     class="ms-2 rounded shadow px-4 py-1 btn btn-danger"
     [mat-dialog-close]="false"
   >
-    No
+    Cancel
   </button>
 </mat-dialog-actions>
