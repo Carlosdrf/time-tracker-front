@@ -26,6 +26,7 @@ export class RegisterComponent implements OnInit {
   ) {}
   register: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
+    lastname: ['', [Validators.required]],
     company: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required]],
@@ -38,6 +39,11 @@ export class RegisterComponent implements OnInit {
       label: 'Your name',
       type: 'text',
       control: 'name',
+    },
+    {
+      label: 'Your lastname',
+      type: 'text',
+      control: 'lastname',
     },
     {
       label: 'Company Name',
@@ -77,7 +83,7 @@ export class RegisterComponent implements OnInit {
           console.log(response);
           this.formStatus.message = 'Your information was sent succesfully';
           // this.router.navigateByUrl(`${environment.baseWP}/blank`);
-          window.location.href = `${environment.baseWP}/blank`
+          // window.location.href = `${environment.baseWP}/blank`
         },
         error: (e) => {
           this.formStatus = {
