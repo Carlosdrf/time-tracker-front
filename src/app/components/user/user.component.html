@@ -63,6 +63,7 @@
             type="password"
             class="form-control p-2 mb-3"
             formControlName="password"
+            (change)="handlePasswordValidity()"
             placeholder="Password"
           />
           <input

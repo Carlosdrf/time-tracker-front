@@ -43,13 +43,9 @@ export class AdminUsersComponent {
   userToggle() {
     if (this.selectedUser) {
       this.selectedUser = null;
-      // this.isSlideIn = true
-      // console.log(this.isSlideIn);
-
       return;
     }
     this.isSlideIn = !this.isSlideIn;
-    console.log(this.isSlideIn);
   }
   setSelectedUser(user: any) {
     this.selectedUser = user;
@@ -91,8 +87,7 @@ export class AdminUsersComponent {
     return false;
   }
   closeFormMobile(show: any) {
-    console.log(show);
     this.isSlideIn = show;
-    this.selectedUser = null
+    this.selectedUser = null;
   }
 }

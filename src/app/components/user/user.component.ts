@@ -112,13 +112,12 @@ export class UserComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedUser']) {
+      this.resetForm();
       if (!this.selectedUser) {
         this.title = 'New User';
-        this.resetForm();
         return;
       }
 
-      this.resetForm();
       this.userForm.patchValue(this.selectedUser);
       if (this.selectedUser) {
         this.title = 'Edit User';
@@ -138,7 +137,8 @@ export class UserComponent implements OnInit, OnChanges {
         }
       }
       this.img = null;
-      this.newUser = this.selectedUser;
+      this.handlePasswordValidity();
+      // this.newUser = this.selectedUser;
       // if (this.userForm.get('company.id')?.value == null) {
       //   this.userForm.get('company.id')?.setValue('');
       // }
@@ -164,7 +164,6 @@ export class UserComponent implements OnInit, OnChanges {
         });
       });
     this.handleRole();
-
     this.timezoneService.fetchTimezonesApi().subscribe((data: any) => {
       if (data.status === 'OK' && Array.isArray(data.zones)) {
         this.timezones = data.zones.map((timezone: any) => {
@@ -182,7 +181,17 @@ export class UserComponent implements OnInit, OnChanges {
     this.userForm.reset({ password: '', cpassword: '' });
     this.userForm.get('role')?.setValue('');
   }
+  handlePasswordValidity() {
+    const password = this.userForm.get('password');
 
+    if (this.selectedUser && password?.value == '') {
+      password?.clearValidators();
+    } else {
+      password?.setValidators([Validators.required, Validators.minLength(8)]);
+    }
+
+    password?.updateValueAndValidity();
+  }
   handleRole() {
     this.userForm.get('role')!.valueChanges.subscribe((role: string) => {
       const companyGroup = this.userForm.get('company') as FormGroup;
@@ -226,7 +235,6 @@ export class UserComponent implements OnInit, OnChanges {
         }
         employeeGroup.addControl('id', this.fb.control(''));
         if (!this.selectedUser) {
-          this.userForm.get('password')?.setValidators(Validators.required);
           this.userForm.get('employee')?.get('id')?.setValue('');
           this.userForm.get('employee')?.get('position')?.setValue('');
         }
@@ -304,15 +312,17 @@ export class UserComponent implements OnInit, OnChanges {
       .get('company')
       ?.patchValue({ name: company.name, description: company.description });
   }
+
   public submitUserForm() {
-    if (this.selectedUser) this.newUser.id = this.selectedUser.id;
-    else this.newUser.id = '-1';
-    this.loader = new Loader(true, true, false);
+    this.loader = new Loader(true, false, false);
     if (
       this.userForm.valid &&
       this.userForm.value.role !== 'Select a role' &&
       this.userForm.value.company.id !== 'Select a company'
     ) {
+      if (this.selectedUser) {
+        this.newUser.id = this.selectedUser.id;
+      } else this.newUser.id = '-1';
       if (this.userForm.value.password === this.userForm.value.cpassword) {
         this.message = '';
         this.newUser.name = this.userForm.value.name;
@@ -354,31 +364,22 @@ export class UserComponent implements OnInit, OnChanges {
         this.userService.createUser(this.newUser).subscribe({
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
-            this.loader = new Loader(false, true, true);
-            this.resetLoader();
+            this.loader = new Loader(true, true, false);
           },
           error: (err) => {
-            this.loader = new Loader(false, true, false);
+            this.loader = new Loader(true, false, true);
             this.message = err.error.message;
-            this.resetLoader();
           },
         });
       } else {
-        this.loader = new Loader(false, true, false);
-        this.resetLoader();
+        this.loader = new Loader(true, false, true);
+        // this.resetLoader();
         this.message = 'Confirm password error';
       }
     } else {
-      this.loader = new Loader(false, true, false);
-      this.resetLoader();
+      this.loader = new Loader(true, false, true);
       this.message = 'All fields must be filled';
     }
-  }
-  public resetLoader() {
-    setTimeout(() => {
-      this.loader = new Loader(false, false, false);
-      this.message = '';
-    }, 3000);
   }
 
   public deleteUser(id: string) {
