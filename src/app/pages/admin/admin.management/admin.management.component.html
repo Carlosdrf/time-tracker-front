@@ -31,10 +31,16 @@
             class="border-bottom transition dropdown overflow-hidden"
             [ngClass]="{ active: option.active }"
           >
-            <select class="px-3 py-2 form-select" *ngIf="option.filterBy" (change)="handleFilter($event.target, option)">
+            <select
+              class="px-3 py-2 form-select"
+              *ngIf="option.filterBy"
+              (change)="handleFilter($event.target, option)"
+            >
               <option value="" disabled selected>Filter By</option>
               <option value="-1">All</option>
-              <option [value]="item.id" *ngFor="let item of option.filterBy">{{item.name}}</option>
+              <option [value]="item.id" *ngFor="let item of option.filterBy">
+                {{ item.name }}
+              </option>
             </select>
 
             <ng-container *ngFor="let field of option.elements">
@@ -144,6 +150,7 @@
                     id="All"
                     value="-1"
                     (click)="selectAll(option, form, $event.target)"
+                    class="form-check-input mb-2 py-2"
                     [checked]="isAllSelected"
                   />
                   <label for="All">Select all</label>
@@ -163,11 +170,11 @@
                     "
                     type="{{ form.type }}"
                     [id]="employee.id"
-                    class="form-check rounded mb-2 py-2"
+                    class="form-check-input rounded-1 mb-2 py-2"
                     placeholder="Input"
                     [checked]="employee.checked ? 'checked' : ''"
                   />
-                  <label for="{{ employee.id }}"
+                  <label for="{{ employee.id }}" class="form-check-label"
                     >{{ employee.name }} {{ employee.last_name }}</label
                   >
                 </div>

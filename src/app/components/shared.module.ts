@@ -2,16 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { AuthService } from "../services/auth.service";
-
-// import { EntriesService } from "../services/entries.service";
 import { CustomDatePipe } from '../services/custom-date.pipe';
-// import { Entries } from '../models/Entries';
 
 import { NavigationComponent } from './navigation/navigation.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { EntriesComponent } from './entries/entries.component';
@@ -33,12 +32,13 @@ import { NotificationsComponent } from './notifications/notifications.component'
     ReactiveFormsModule,
     RouterModule,
     CommonModule,
-    // CalendarComponent
-    // CustomDatePipe
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
     // MatRippleModule,
     // MatNativeDateModule
   ],
@@ -46,7 +46,6 @@ import { NotificationsComponent } from './notifications/notifications.component'
     NavigationComponent,
     CalendarComponent,
     CustomDatePipe,
-    // EntriesComponent,
     EntriesPanelComponent,
     BillsComponent,
     StripeComponent,
@@ -71,6 +70,9 @@ import { NotificationsComponent } from './notifications/notifications.component'
     MatIconModule,
     MatButtonModule,
     StripeComponent,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
     EmployeesComponent,
     MatCardModule,
     BillsComponent,

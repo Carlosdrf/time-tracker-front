@@ -1,8 +1,7 @@
 @import '../../../styles.scss';
 .status-icon {
-  height: 44px !important;
-  font-size: 44px;
-  width: 44px;
+  height: 100% !important;
+  width: 100%;
 }
 .check-icon {
   color: $primary-color;

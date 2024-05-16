@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Company } from '../models/User.model';
 import { Observable } from 'rxjs/internal/Observable';
+import { PossibleClient } from '../models/Client';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,8 @@ export class CompaniesService {
     return this.http.get(`${this.API_URI}/${company_id}/employees`);
   }
 
-  public createPosibleCompany(body: any) {
+  public createPosibleCompany(body: PossibleClient) {
+    console.log(body)
     return this.http.post(`${this.API_URI}/create/possible`, body);
   }
 }

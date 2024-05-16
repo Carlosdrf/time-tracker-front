@@ -3,7 +3,7 @@ import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { EntriesService } from '../../services/entries.service';
 import { Entries } from '../../models/Entries';
 import { PagesComponent } from '../../pages/pages.component';
-import { ModalComponent } from '../modal/modal.component';
+import { ModalComponent } from '../confirmation-modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EntryComponent } from '../entry/entry.component';
 import { SharedModule } from '../shared.module';
@@ -58,13 +58,13 @@ export class EntriesComponent implements OnInit {
       }
     });
   }
-  authorizeEntry(entry:any){
+  authorizeEntry(entry: any) {
     const dialog = this.dialog.open(ModalComponent, {
       data: { subject: 'entry', action: 'confirm' },
     });
     dialog.afterClosed().subscribe((option: boolean) => {
       if (option) {
-        entry.status = 1
+        entry.status = 1;
         this.onAuthorizeEntry.emit(entry);
       }
     });

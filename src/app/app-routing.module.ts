@@ -84,7 +84,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/client/client.module').then((m) => m.ClientModule),
         canActivate: [UserTypeGuardService],
-        data: { allowedUserTypes: [CLIENT_TYPE_ROLE, ADMIN_TYPE_ROLE] },
+        data: { allowedUserTypes: [CLIENT_TYPE_ROLE] },
       },
     ],
   },

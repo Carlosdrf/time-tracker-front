@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Loader } from 'src/app/app.models';
 import { SharedModule } from 'src/app/components/shared.module';
 import { WebNavComponent } from 'src/app/components/web-nav/web-nav.component';
 import { CompaniesService } from 'src/app/services/companies.service';
@@ -26,18 +27,25 @@ export class RegisterComponent implements OnInit {
   ) {}
   register: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
+    lastname: ['', [Validators.required]],
     company: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required]],
     positions: ['', [Validators.required]],
     tasks_description: [''],
   });
+  loader: Loader = new Loader(false, false, false);
   formStatus: any = { isInvalid: false, message: '' };
   fields = [
     {
       label: 'Your name',
       type: 'text',
       control: 'name',
+    },
+    {
+      label: 'Your lastname',
+      type: 'text',
+      control: 'lastname',
     },
     {
       label: 'Company Name',
@@ -70,14 +78,15 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {}
 
   handleSubmit() {
+    this.loader = new Loader(true, false, false)
     this.formStatus.isInvalid = false;
     if (this.register.valid) {
       this.companieService.createPosibleCompany(this.register.value).subscribe({
         next: (response: any) => {
-          console.log(response);
           this.formStatus.message = 'Your information was sent succesfully';
           // this.router.navigateByUrl(`${environment.baseWP}/blank`);
           window.location.href = `${environment.baseWP}/blank`
+          this.loader.complete = true
         },
         error: (e) => {
           this.formStatus = {
@@ -91,10 +100,11 @@ export class RegisterComponent implements OnInit {
         isInvalid: true,
         message: 'Please fill the required Fields.',
       };
+      this.loader.error = true
     }
     setTimeout(() => {
       this.resetStatus();
-    }, 5000);
+    }, 3000);
   }
 
   resetStatus() {

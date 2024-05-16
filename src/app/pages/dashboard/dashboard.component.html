@@ -24,7 +24,8 @@
           </div>
           <div class="z-3">
             <h2 class="fs-3">{{ component.title }}:</h2>
-            <p>{{ component.description }}</p>
+            <p [ngClass]="{'mb-3': component.alert }">{{ component.description }}</p>
+            <p class="text-danger" *ngIf="component.alert">{{displayAlert(component)}}</p>
           </div>
           <div
             *ngIf="component.options && component.options.length > 0"

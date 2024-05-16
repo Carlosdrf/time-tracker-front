@@ -5,7 +5,7 @@
     class="border rounded-5 shadow p-4 text-center"
     (submit)="handleSubmit()"
   >
-    <h1 class="fs-3 mb-4">
+    <h1 class="fs-3 mb-4 px-3">
       Sign your <span class="primary-color">Company</span> up with us
     </h1>
     <div *ngFor="let field of fields; let i = index" class="mb-4 d-flex gap-2">
@@ -35,12 +35,21 @@
       </select>
       <!-- <textarea name="" id="" cols="30" rows="10"></textarea> -->
     </div>
-    <div *ngIf="formStatus.isInvalid || formStatus.message">
-      <p [ngClass]="{'text-danger': formStatus.isInvalid}">{{formStatus.message}}</p>
+    <div class="position-relative mb-2">
+      <button mat-raised-button color="primary" class="rounded-5 p-4">
+        Send
+      </button>
+      <app-loader
+        class="position-absolute start-0 bottom-0 top-0"
+        [loader]="loader"
+        [diameter]="48"
+      ></app-loader>
     </div>
-
-    <button mat-raised-button color="primary" class="rounded-5 p-4">
-      Send
-    </button>
+    <p
+      [ngClass]="{ 'text-danger': formStatus.isInvalid }"
+      *ngIf="formStatus.isInvalid || formStatus.message"
+    >
+      {{ formStatus.message }}
+    </p>
   </form>
 </div>
