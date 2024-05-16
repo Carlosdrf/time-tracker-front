@@ -1,59 +1,78 @@
-import { Component, OnInit } from '@angular/core';
-import { CustomDatePipe } from '../../../services/custom-date.pipe';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 import { SharedModule } from 'src/app/components/shared.module';
-import { TimerComponent } from 'src/app/components/timer/timer.component';
-import { SearchComponent } from 'src/app/components/search/search.component';
 import { UsersService } from 'src/app/services/users.service';
-import { userRoles } from 'src/app/app.models';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatInputModule} from '@angular/material/input';
-import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE} from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NotificationsService } from 'src/app/services/notifications.service';
+import { PagesComponent } from '../../pages.component';
+import { forkJoin } from 'rxjs';
+import { EntriesService } from 'src/app/services/entries.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin-notifications.',
   standalone: true,
-  // imports: [UserListComponent, SharedModule, TimerComponent, SearchComponent,],
-  // standalone: true,
-  imports: [UserListComponent, SharedModule, MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatDatepickerModule],
+  imports: [SharedModule, MatFormFieldModule, MatSelectModule, MatCheckboxModule],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-US' }],
   templateUrl: './admin.notifications.component.html',
   styleUrls: ['./admin.notifications.component.scss'],
 })
 export class AdminNotificationsComponent implements OnInit {
+  @ViewChild('clientCheckbox', { static: false }) checkboxRef!: ElementRef<HTMLInputElement>;
+  reviewEntries: any = [];
+  entries: any;
+  user: any = { id: null, name: null};
+  usersIds: any;
+  datesRange: any = { firstSelect: '', lastSelect: '' };
+  calendarHead: any;
+  message: string = '';
   notificationForm!: FormGroup;
   panelColor = new FormControl('red');
-  selectedUsers = new FormControl();
+  selectedOptions = new FormControl();
+  selectedUsers: any[] = [];
+  users: any[] = [];
+  firefox: boolean = false;
   public isSlideIn: boolean = false;
   public isCreateLater: boolean = false;
-  notification = {
-    message: '',
-    selectedUsers: '',
-    date: null,
-    time: null
-  }
+  selectedForm: any;
+  selectAll: boolean = false;
+
+  public options: any = [
+    {
+      title: 'Your Notifications',
+      active: true,
+      elements: [],
+      method: null
+    },
+    {
+      title: 'Notifications',
+      active: false,
+      elements: [],
+      method: this.notificationService,
+    },
+  ];
 
   constructor(
     private userService: UsersService,
-    private fb: FormBuilder
+    private notificationService : NotificationsService,
+    private entriesService: EntriesService,
+    private page: PagesComponent,
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.notificationForm = this.fb.group({
       message: ['', [Validators.required]],
       selectedUsers: [''],
-      date: [null],
-      time: [null]
     });
   }
-
-  users = new FormControl('');
   usersList: any[] = [];
 
   ngOnInit(): void {
     this.getUsers();
+    this.getOptionsInfo()
   }
 
   getUsers() {
@@ -61,9 +80,11 @@ export class AdminNotificationsComponent implements OnInit {
     this.userService.getUsers(body).subscribe({
       next: (users) => {
         this.usersList = users.filter((user:any)=> user.active == 1);
+        this.reviewEntries = users.filter((user:any)=> user.review);
         this.usersList = this.usersList.filter(
-          (user: any) => user.role === 2 && user.active == 1
+          (user: any) => (user.role === 2 || user.role === 3) && user.active == 1
         );
+        this.usersIds = users.map((user: any) => user.id);
       },
       error: (err) => {},
     });
@@ -77,17 +98,127 @@ export class AdminNotificationsComponent implements OnInit {
     this.isCreateLater = !this.isCreateLater;
   }
 
-  submitNotificationForm() {
-    console.log('click')
-    this.notification = {
-      message: this.notificationForm.value.message,
-      selectedUsers: this.notificationForm.value.selectedUsers,
-      date: this.notificationForm.value.date,
-      time: this.notificationForm.value.time
+  handleSelection(
+    i: number,
+    selectedOption: any = null,
+    selection: any = null
+  ) {
+    if (selectedOption && !selectedOption.active) {
+      this.resetForm();
     }
+    this.options.forEach((option: any, index: number) => {
+      option.elements.forEach((element: any) => {
+        if (selection == element) {
+        }
+      });
 
-    console.log(this.notification)
+      if (index != i) {
+        option.active = false;
+      } else {
+        option.active = true;
+      }
+    });
+
+  }
+
+  handleFilter(target: any, option: any) {
+    this.resetForm()
+    this.notificationService.get().subscribe({
+      next: (notifications: any[]) => {
+        option.elements = target.value == '-1' ? notifications : notifications.filter(
+          (project: any[]) => notifications == target.value
+        );
+      },
+    });
+  }
+
+  submit() {
+    const formValue = this.notificationForm.value
+    const selectedEmployees = this.selectedUsers.filter((user:any) => user.checked);
+    const deselectedEmployees = this.selectedUsers.filter((user:any) => !user.checked);
+    formValue.selectedUsers = selectedEmployees.map((user:any) => ({
+      user_id: user.user_id,
+      checked: true
+    })).concat(deselectedEmployees.map((user:any) => ({
+      user_id: user.user_id,
+      checked: false
+    })));
+    
+    if (formValue && formValue.message != '') {
+      this.notificationService.submit(formValue,
+        this.selectedForm ? this.selectedForm.id : null
+      )
+        .subscribe({
+          next: (response: any) => {
+              this.page.setAlert("Notification Created Successfully");
+              this.resetForm();
+              return; 
+          },
+          error: (err: ErrorEvent) => {
+            const { error } = err;
+            this.page.setAlert(error.message);
+          },
+        });
+    }else{
+      this.page.setAlert("Fill the required fields")
+    }
+    this.getOptionsInfo()
+  }
+
+  resetForm(open: boolean = false) {
+    this.selectedForm = null;
+    this.selectedOptions.reset();
+    this.notificationForm.reset()
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox') as HTMLInputElement;
+    selectAllCheckbox.checked = false;
+  }
+
+  toggleSelectAll(): void {
+    if (this.selectAll) {
+      this.selectAll = false;
+      this.selectedOptions.reset(); 
+      this.selectedUsers = this.usersList.map((item: any) => ({
+        user_id: item.id,
+        checked: false 
+      }));
+    } else {
+      this.selectAll = true;
+      const allUserIds = this.usersList.map((user: any) => user.id);
+      this.selectedOptions.setValue(allUserIds);
+      this.selectedUsers = this.usersList.map((item: any) => ({
+        user_id: item.id,
+        checked: true
+      }));
+    }
+  }
+
+  onUsersSelectionChange(selectedUsersIds: number[]): void {
+      this.selectedUsers = this.usersList.map((item: any) => ({
+        user_id: item.id,
+        checked: selectedUsersIds.includes(item.id)
+      }));
+  }
+
+  getOptionsInfo() {
+    forkJoin([
+      this.notificationService.get(),
+      this.notificationService.get(),
+    ]).subscribe({
+      next: (selectsInfo) => {
+        this.options.forEach((option: any, i: number) => {
+          if (i === 0) {
+            option.elements = this.reviewEntries.map((user: any) => {
+              return { message: `Entries For Review: ${user.name} ${user.last_name}`, id: user.id, name: user.name };
+            });
+          } else {
+            option.elements = selectsInfo[i];
+          }
+        });
+      },
+    });
+  }
+
+  setReportInfo(user: any) {
+    this.userService.setUserInformation(user);
   }
 }
- 
- 

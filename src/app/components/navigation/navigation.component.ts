@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { UsersService } from 'src/app/services/users.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
-import { Notification } from '../../models/Notifications';
+import { EntriesService } from 'src/app/services/entries.service';
 
 @Component({
   selector: 'app-navigation',
@@ -14,13 +14,15 @@ export class NavigationComponent implements OnInit {
   isAdmin: boolean = false;
   userType: any;
   isActive: boolean = false;
-  notifications: Notification[] = [];
+  notifications: any[] = [];
   recentNotifications: any[] = [];
+  reviewEntries: any = [];
   constructor(
     private userService: UsersService,
     private authService: AuthService,
     private element: ElementRef,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private entriesService: EntriesService,
   ) {
     this.authService.isLoggedIn().subscribe((isLogged) => {
       this.authenticated = isLogged;
@@ -32,14 +34,33 @@ export class NavigationComponent implements OnInit {
     this.authService.getUserType().subscribe((role) => {
       this.userType = role;
     });
-    this.notificationsService.getNotifications().subscribe((notifications) => {
-      this.notifications = notifications;
-      this.filterRecentNotifications();
-    });
-  }
-  private filterRecentNotifications() {
-    // this.notifications.sort((a, b) => b.date.getTime() - a.date.getTime());
-    // this.recentNotifications = this.notifications.slice(0, 3);
+    const role = localStorage.getItem('role');
+    if (role != '1') {
+    this.notificationsService.get().subscribe(notifications => {
+      this.notifications = notifications.filter((notification:any) => {
+        return notification.active == 1;
+      }).slice(0, 4); 
+      
+      this.notifications.sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      });
+    } else {
+      let body = {};
+      this.userService.getUsers(body).subscribe({
+        next: (users) => {
+          this.reviewEntries = users.filter((user: any) => user.review);
+          this.reviewEntries = this.reviewEntries.map((user: any) => {
+            return {
+              message: `Entries For Review: ${user.name} ${user.last_name}`,
+              id: user.id,
+              name: user.name
+            };
+          })
+          .slice(0, 4); 
+        }
+      });
+    }
   }
   public get currentType() {
     return this.authService.userType$;
