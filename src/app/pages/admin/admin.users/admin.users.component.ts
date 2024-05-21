@@ -2,13 +2,14 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SearchComponent } from 'src/app/components/search/search.component';
 import { SharedModule } from 'src/app/components/shared.module';
+import { UserFormComponent } from 'src/app/components/user-form/user-form.component';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-admin.users',
   standalone: true,
-  imports: [SearchComponent, UserListComponent, SharedModule],
+  imports: [SearchComponent, UserListComponent, UserFormComponent, SharedModule],
   templateUrl: './admin.users.component.html',
   styleUrl: './admin.users.component.scss',
 })

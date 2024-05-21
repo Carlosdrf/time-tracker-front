@@ -1,0 +1,264 @@
+<main class="h-100 d-flex flex-column justify-content-center">
+  <div class="rounded shadow text-center card max-h-75 mt-5">
+    <div
+      class="card-header d-flex justify-content-between justify-content-sm-between align-items-center"
+    >
+      <h1 class="mb-0 text-dark fs-3">{{ title }}</h1>
+      <button
+        mat-button
+        class="hidden-sm d-sm-none border"
+        (click)="resetForm(); onMobileCloseForm.emit(false)"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="card-body position-relative i-flow">
+      <form
+        action=""
+        class="p-1 mb-2"
+        [formGroup]="userForm"
+        (ngSubmit)="submitUserForm()"
+      >
+        <section class="mb-3">
+          <div class="profile-img mb-3 mx-auto bg-accent">
+            <img *ngIf="img" [src]="img" alt="" />
+            <i *ngIf="!img" class="fa-regular fa-user"></i>
+            <div class="file btn btn-lg btn-primary opacity-75 cursor-pointer">
+              Change Photo (soon)
+              <input
+                type="file"
+                name="file"
+                (change)="onFileSelected($event)"
+                accept="image/*"
+              />
+            </div>
+          </div>
+          <div class="form-group row justify-content-between">
+            <div class="col-12 col-md-6 mb-3">
+              <input
+                type="text"
+                formControlName="name"
+                class="form-control p-2"
+                placeholder="Name"
+              />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <input
+                type="text"
+                formControlName="last_name"
+                class="form-control p-2"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <input
+              type="email"
+              class="form-control p-2"
+              formControlName="email"
+              placeholder="Email Address"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <input
+              type="password"
+              class="form-control p-2 mb-3"
+              formControlName="password"
+              (change)="handlePasswordValidity()"
+              placeholder="Password"
+            />
+            <input
+              type="password"
+              class="form-control p-2 mb-3"
+              formControlName="cpassword"
+              placeholder="Confirm Password"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <select
+              class="form-select p-2"
+              formControlName="role"
+              name="role_select"
+              id=""
+            >
+              <option value="" disabled>Select a Role</option>
+              <option value="{{ role.id }}" *ngFor="let role of roleList">
+                {{ role.name }}
+              </option>
+            </select>
+          </div>
+          <div
+            class="form-group"
+            formGroupName="employee"
+            *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"
+          >
+            <select
+              name="employee"
+              formControlName="id"
+              id=""
+              class="form-select p-2 mb-3"
+            >
+              <option value="" disabled>Select a company</option>
+              <option
+                value="{{ company.id }}"
+                *ngFor="let company of companies"
+              >
+                {{ company.name }}
+              </option>
+            </select>
+            <select
+              name="position"
+              formControlName="position"
+              class="form-select p-2 mb-3"
+            >
+              <option value="" disabled>Select a position</option>
+              <option [value]="position.id" *ngFor="let position of positions">
+                {{ position.title }}
+              </option>
+            </select>
+            <input
+              type="number"
+              name="Hourly rate"
+              formControlName="hourly_rate"
+              class="form-control p-2 mb-3"
+              placeholder="Hourly rate"
+            />
+            <a
+              mat-raised-button
+              color="primary"
+              class="btn btn-primary btn-block btn-hover transition"
+              (click)="createFormField('schedule')"
+              >Add schedules</a
+            >
+            <!-- <div class="d-flex col-12">
+            <mat-form-field
+              class="flex"
+              *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"
+            >
+              <mat-label>Schedules</mat-label>
+              <mat-select formControlName="daysOfWeek" multiple>
+                <mat-option *ngFor="let day of daysOfWeekOptions">
+                  {{ day }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+            <button mat-fab color="primary" aria-label="add button">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div> -->
+
+            <!-- <div
+            class="d-flex col-12 gap-2"
+            *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"
+          >
+            <div class="col-6">
+              <label for="start-time" class="form-label">Start time</label>
+              <input
+                type="time"
+                id="start-time"
+                formControlName="startTime"
+                class="form-control p-2 mb-3"
+              />
+            </div>
+            <div class="col-6">
+              <label for="end-time" class="form-label">End time</label>
+              <input
+                type="time"
+                id="end-time"
+                formControlName="endTime"
+                class="form-control p-2 mb-3"
+              />
+            </div>
+          </div> -->
+
+            <!-- <div
+            class="d-flex flex-wrap gap-3 mb-2"
+            *ngIf="userForm.get('role')!.value == EMPLOYEE_ROLE"
+          >
+            <div
+              class="form-check"
+              *ngFor="let day of daysOfWeekOptions; let i = index"
+              formArrayName="daysOfWeek"
+            >
+              <input
+                type="checkbox"
+                [formControlName]="i"
+                [value]="day"
+                class="form-check-input"
+              />
+              <label class="form-check-label">{{ day }}</label>
+            </div>
+          </div> -->
+          </div>
+          <div
+            class="form-group"
+            formGroupName="company"
+            *ngIf="userForm.get('role')!.value == EMPLOYER_ROLE"
+          >
+            <div class="d-flex align-items-center mb-3 gap-2">
+              <select
+                name="name"
+                formControlName="id"
+                id=""
+                class="form-select p-2"
+                (change)="setUserCompany($event.target)"
+              >
+                <option value="" disabled>Select a company</option>
+                <option
+                  value="{{ company.id }}"
+                  *ngFor="let company of companies"
+                >
+                  {{ company.name }}
+                </option>
+              </select>
+              <a
+                mat-button
+                class="col border"
+                (click)="createFormField('company')"
+              >
+                <i class="fa-solid fa-plus"></i>
+              </a>
+            </div>
+            <!-- <select
+            name="timezone"
+            formControlName="timezone"
+            class="form-select p-2 mb-3"
+          >
+            <option value="" disabled>Select a timezone</option>
+            <option
+              value="{{ timezone.zoneName }}:{{ timezone.countryCode }}"
+              *ngFor="let timezone of timezones"
+            >
+              {{ timezone.fechaActual }}
+              {{ timezone.zoneName }}
+            </option>
+          </select> -->
+          </div>
+        </section>
+        <div
+          class="d-flex position-relative justify-content-between align-items-center"
+        >
+          <app-loader [loader]="loader" [message]="message"></app-loader>
+          <div>
+            <a
+              color="warn"
+              mat-raised-button
+              class="btn btn-block rounded px-4"
+              (click)="deleteUser(selectedUser.id)"
+              *ngIf="selectedUser"
+            >
+              Delete
+            </a>
+            <button
+              color="primary"
+              mat-raised-button
+              class="btn btn-primary btn-block btn-hover transition rounded px-4 ms-2"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

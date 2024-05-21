@@ -1,86 +1,129 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { AsyncPipe } from '@angular/common';
-
-import { MatInputModule } from '@angular/material/input';
+  Component,
+  Inject,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TimezoneService } from 'src/app/services/timezone.service';
-import { CommonModule } from '@angular/common';
 import { Timezone } from 'src/app/models/Timezone.model';
+import { SharedModule } from '../shared.module';
 
 @Component({
   selector: 'app-form-dialog',
   standalone: true,
-  imports: [
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    CommonModule,
-    MatSelectModule,
-    MatAutocompleteModule,
-    AsyncPipe,
-    ReactiveFormsModule,
-  ],
+  imports: [SharedModule],
   templateUrl: './form-dialog.component.html',
   styleUrl: './form-dialog.component.scss',
 })
-export class FormDialogComponent implements OnInit {
-  companyForm: FormGroup;
+export class FormDialogComponent implements OnInit, OnChanges {
+  dialogForm: FormGroup;
+
   constructor(
     private timezoneService: TimezoneService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: { type: string }
   ) {
-    this.companyForm = this.fb.group({
-      name: ['', [Validators.required]],
-      description: [''],
-      timezone: ['', [Validators.required]],
+    this.dialogForm = this.fb.group({
+      company: this.fb.group({
+        name: ['', [Validators.required]],
+        description: [''],
+        timezone: ['', [Validators.required]],
+      }),
+      schedule: this.fb.group({
+        days: this.fb.array([this.fb.control('')]),
+        startTime: ['', [Validators.required]],
+        endTime: ['', [Validators.required]],
+      }),
     });
   }
-  public companyFields = [
-    {
-      control: 'name',
-      label: 'Company Name',
-      type: 'text',
-      value: '',
-    },
-    {
-      control: 'description',
-      label: 'Short description (optional)',
-      type: 'text',
-      value: '',
-    },
-    {
-      control: 'timezone',
-      label: 'Select a timezone',
-      type: 'select',
-      value: '',
-    },
-  ];
+  public companyFields: any = [];
   timezones: any = [];
   timezoneList = [];
   validForm: boolean = false;
+  daysOfWeekOptions: string[] = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
   ngOnInit(): void {
+    console.log(this.companyFields);
+
     this.getTimezones();
-    this.companyForm.valueChanges.subscribe({
+
+    this.dialogForm.valueChanges.subscribe({
       next: (form: any) => {
-        const validTimezone = this.timezoneList.filter(
-          (timezone: Timezone) =>
-            `${timezone.zoneName}:${timezone.countryCode}` == form.timezone
-        );
-        if (this.companyForm.valid && validTimezone.length > 0)
-          this.validForm = this.companyForm.valid;
+        if (this.data.type == 'company') {
+          const validTimezone = this.timezoneList.filter(
+            (timezone: Timezone) =>
+              `${timezone.zoneName}:${timezone.countryCode}` == form.timezone
+          );
+          if (this.dialogForm.valid && validTimezone.length > 0)
+            this.validForm = this.dialogForm.valid;
+        } else {
+          if (this.dialogForm.get(this.data.type)?.valid) {
+            this.validForm = true;
+          }
+          console.log(this.dialogForm.get(this.data.type)?.valid);
+        }
       },
     });
+
+    if (this.data.type == 'company') {
+      this.companyFields = [
+        {
+          control: 'name',
+          label: 'Company Name',
+          type: 'text',
+          value: '',
+        },
+        {
+          control: 'description',
+          label: 'Short description (optional)',
+          type: 'text',
+          value: '',
+        },
+        {
+          control: 'timezone',
+          label: 'Select a timezone',
+          type: 'autocomplete',
+          value: '',
+          source: 'timezones',
+        },
+      ];
+    } else {
+      this.companyFields = [
+        {
+          control: 'days',
+          label: 'Select days',
+          type: 'select',
+          value: '',
+          source: 'daysOfWeekOptions',
+        },
+        {
+          control: 'startTime',
+          label: 'Start Time',
+          type: 'time',
+          value: '',
+        },
+        {
+          control: 'endTime',
+          label: 'End Time',
+          type: 'time',
+          value: '',
+        },
+      ];
+    }
   }
 
   private getTimezones() {

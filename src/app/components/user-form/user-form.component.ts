@@ -26,13 +26,16 @@ import { PositionsService } from 'src/app/services/positions.service';
 import { Positions } from 'src/app/models/Position.model';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { SharedModule } from '../shared.module';
 
 @Component({
   selector: 'app-user',
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss'],
+  standalone: true,
+  imports: [SharedModule],
+  templateUrl: './user-form.component.html',
+  styleUrls: ['./user-form.component.scss'],
 })
-export class UserComponent implements OnInit, OnChanges {
+export class UserFormComponent implements OnInit, OnChanges {
   @Input() selectedUser: any;
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
@@ -397,17 +400,30 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
 
-  createFormField() {
-    const dialog = this.dialog.open(FormDialogComponent);
+  createFormField(type: string) {
+    let modal;
+    switch (type) {
+      case 'schedule':
+        modal = FormDialogComponent;
+        break;
+      case 'company':
+      default:
+        modal = FormDialogComponent;
+        break;
+    }
+    console.log(type);
+    const dialog = this.dialog.open(modal, { data: { type } });
 
-    dialog.afterClosed().subscribe((company: any) => {
-      if (company) {
-        this.companiesService.submit(company).subscribe({
+    dialog.afterClosed().subscribe((result: boolean | any) => {
+      console.log(result[type]);
+      if (type == 'company' && result) {
+        this.companiesService.submit(result).subscribe({
           next: (response: any) => {
             this.companies.push(response);
           },
         });
       }
+      console.log(result);
     });
   }
 

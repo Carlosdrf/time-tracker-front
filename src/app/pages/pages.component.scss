@@ -81,7 +81,7 @@ ul {
 .scrollbar-hidden {
   scrollbar-width: none;
 }
-.scrollbar-thin{
+.scrollbar-thin {
   scrollbar-width: thin;
 }
 /** scroll bar in form*/
@@ -101,9 +101,9 @@ ul {
   background-color: transparent;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
-.i-flow::webkit-scrollbar-button { 
-  display:none;
- }
+.i-flow::webkit-scrollbar-button {
+  display: none;
+}
 
 .bg-container {
   background-position: center center;
@@ -129,4 +129,8 @@ ul {
 .cursor-pointer {
   cursor: pointer !important;
   cursor: hand;
+}
+
+.timepicker-overlay {
+  z-index: 10000 !important;
 }

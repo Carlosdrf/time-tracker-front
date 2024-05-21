@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomDatePipe } from '../services/custom-date.pipe';
@@ -13,7 +13,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { EntriesComponent } from './entries/entries.component';
 import { EntriesPanelComponent } from './entries-panel/entries-panel.component';
 import { BillsComponent } from './bills/bills.component';
 import { StripeComponent } from './stripe/stripe.component';
@@ -22,8 +21,11 @@ import { LoaderComponent } from './loader/loader.component';
 import { PaymentHistoryComponent } from './payment-history/payment-history.component';
 import { BalanceComponent } from './balance/balance.component';
 import { CompaniesService } from '../services/companies.service';
-import { UserComponent } from './user/user.component';
+import { UserFormComponent } from './user-form/user-form.component';
 import { GoBackComponent } from './go-back/go-back.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   imports: [
@@ -38,8 +40,9 @@ import { GoBackComponent } from './go-back/go-back.component';
     MatSelectModule,
     MatInputModule,
     MatFormFieldModule,
-    // MatRippleModule,
-    // MatNativeDateModule
+    MatAutocompleteModule,
+    AsyncPipe,
+    NgxMaterialTimepickerModule,
   ],
   declarations: [
     NavigationComponent,
@@ -52,11 +55,9 @@ import { GoBackComponent } from './go-back/go-back.component';
     LoaderComponent,
     PaymentHistoryComponent,
     BalanceComponent,
-    UserComponent,
     GoBackComponent,
   ],
   exports: [
-    // EntriesComponent,
     EntriesPanelComponent,
     NavigationComponent,
     CalendarComponent,
@@ -78,8 +79,11 @@ import { GoBackComponent } from './go-back/go-back.component';
     BalanceComponent,
     GoBackComponent,
     CommonModule,
-    UserComponent,
     RouterModule,
+    MatDialogModule,
+    MatAutocompleteModule,
+    AsyncPipe,
+    NgxMaterialTimepickerModule,
   ],
   providers: [CustomDatePipe, CalendarComponent, CompaniesService],
 })
