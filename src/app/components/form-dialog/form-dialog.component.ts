@@ -6,7 +6,13 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { Timezone } from 'src/app/models/Timezone.model';
 import { SharedModule } from '../shared.module';
@@ -18,8 +24,9 @@ import { SharedModule } from '../shared.module';
   templateUrl: './form-dialog.component.html',
   styleUrl: './form-dialog.component.scss',
 })
-export class FormDialogComponent implements OnInit, OnChanges {
+export class FormDialogComponent implements OnInit {
   dialogForm: FormGroup;
+  endTimeError: string = '';
 
   constructor(
     private timezoneService: TimezoneService,
@@ -33,9 +40,9 @@ export class FormDialogComponent implements OnInit, OnChanges {
         timezone: ['', [Validators.required]],
       }),
       schedule: this.fb.group({
-        days: this.fb.array([this.fb.control('')]),
-        startTime: ['', [Validators.required]],
-        endTime: ['', [Validators.required]],
+        days: [[], [Validators.required]],
+        start_time: ['', [Validators.required]],
+        end_time: ['', [Validators.required]],
       }),
     });
   }
@@ -43,22 +50,17 @@ export class FormDialogComponent implements OnInit, OnChanges {
   timezones: any = [];
   timezoneList = [];
   validForm: boolean = false;
-  daysOfWeekOptions: string[] = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
+  daysOfWeekOptions: Array<any> = [
+    { id: 1, name: 'Monday' },
+    { id: 2, name: 'Tuesday' },
+    { id: 3, name: 'Wednesday' },
+    { id: 4, name: 'Thursday' },
+    { id: 5, name: 'Friday' },
+    { id: 6, name: 'Saturday' },
+    { id: 7, name: 'Sunday' },
   ];
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
   ngOnInit(): void {
-    console.log(this.companyFields);
-
     this.getTimezones();
 
     this.dialogForm.valueChanges.subscribe({
@@ -74,7 +76,29 @@ export class FormDialogComponent implements OnInit, OnChanges {
           if (this.dialogForm.get(this.data.type)?.valid) {
             this.validForm = true;
           }
-          console.log(this.dialogForm.get(this.data.type)?.valid);
+        }
+        if (
+          this.data.type == 'schedule' &&
+          this.dialogForm.get(this.data.type)?.get('end_time')?.value
+        ) {
+          if (this.dialogForm.get(this.data.type)?.get('start_time')?.value) {
+            const start_time = this.dialogForm
+              .get(this.data.type)
+              ?.get('start_time')?.value;
+            const end_time = this.dialogForm
+              .get(this.data.type)
+              ?.get('end_time')?.value;
+
+            if (
+              this.convertTimeValuesIntoDates(start_time) >=
+              this.convertTimeValuesIntoDates(end_time)
+            ) {
+              this.endTimeError = 'End time must be greater than start time';
+              this.dialogForm.get(this.data.type)?.get('end_time')?.reset();
+            } else {
+              this.endTimeError = '';
+            }
+          }
         }
       },
     });
@@ -111,13 +135,13 @@ export class FormDialogComponent implements OnInit, OnChanges {
           source: 'daysOfWeekOptions',
         },
         {
-          control: 'startTime',
+          control: 'start_time',
           label: 'Start Time',
           type: 'time',
           value: '',
         },
         {
-          control: 'endTime',
+          control: 'end_time',
           label: 'End Time',
           type: 'time',
           value: '',
@@ -148,5 +172,29 @@ export class FormDialogComponent implements OnInit, OnChanges {
     this.timezones = this.timezoneList.filter((timezone: any) =>
       timezone.zoneName.toLowerCase().includes(filter)
     );
+  }
+
+  public onDayChange(days: any, field: string): void {
+    const values = this.daysOfWeekOptions.filter(
+      (dayOfWeek: any) => days.indexOf(dayOfWeek.id) > -1
+    );
+    const dayField = this.getField(field);
+    dayField.setValue(values);
+  }
+
+  private getField(field: string) {
+    return this.dialogForm.get(this.data.type)?.get(field) as FormControl;
+  }
+
+  convertTimeValuesIntoDates(timeValue: string): Number {
+    const [time, modifier] = timeValue.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (modifier.toLowerCase() == 'pm' && hours !== 12) {
+      hours += 12;
+    } else if (modifier.toLowerCase() == 'am' && hours === 12) {
+      hours = 0;
+    }
+    const date = new Date().setHours(hours, minutes, 0, 0);
+    return date;
   }
 }

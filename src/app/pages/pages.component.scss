@@ -131,6 +131,7 @@ ul {
   cursor: hand;
 }
 
-.timepicker-overlay {
+.timepicker-overlay,
+.timepicker-backdrop-overlay {
   z-index: 10000 !important;
 }

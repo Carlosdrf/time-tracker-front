@@ -9,8 +9,8 @@ export class User {
     public role: number = 0,
     public company?: Company | null,
     public employee?: Employee | null,
-    public active?: number,
-    ) {}
+    public active?: number
+  ) {}
 }
 
 export class Company {
@@ -25,7 +25,11 @@ export class Employee {
   id: string = '';
   position?: string;
   hourly_rate?: number;
-  daysOfWeek?: string[];
-  startTime?: string;
-  endTime?: string;
+  schedule!: Array<Schedule>;
+}
+
+export interface Schedule {
+  days: string[];
+  startTime: string;
+  endTime: string;
 }

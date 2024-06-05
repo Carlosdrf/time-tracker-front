@@ -27,6 +27,7 @@ import { Positions } from 'src/app/models/Position.model';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { SharedModule } from '../shared.module';
+import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
 
 @Component({
   selector: 'app-user',
@@ -63,15 +64,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   EMPLOYEE_ROLE = '2';
   EMPLOYER_ROLE = '3';
   timezones!: any;
-  daysOfWeekOptions: string[] = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
+
   selectedDaysOfWeek: string[] = [];
   public show: boolean = false;
 
@@ -81,6 +74,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     private companiesService: CompaniesService,
     private positionsService: PositionsService,
     private timezoneService: TimezoneService,
+    private customDate: CustomDatePipe,
     private dialog: MatDialog
   ) {
     this.userForm = this.fb.group({
@@ -93,24 +87,14 @@ export class UserFormComponent implements OnInit, OnChanges {
       cpassword: [''],
       company: this.fb.group({
         id: ['', [Validators.required]],
-        // name: [null, [Validators.required]],
-        // timezone: [''],
       }),
       employee: this.fb.group({
         id: [''],
         position: ['', [Validators.required]],
         hourly_rate: [''],
-        // daysOfWeek: this.fb.array([]),
-        // startTime: [null, [Validators.required]],
-        // endTime: [null, [Validators.required]],
+        schedule: [[]],
       }),
     });
-    // const daysOfWeekFormArray = this.userForm.get(
-    //   'employee.daysOfWeek'
-    // ) as FormArray;
-    // this.daysOfWeekOptions.forEach(() => {
-    //   daysOfWeekFormArray.push(new FormControl(false));
-    // });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -226,17 +210,9 @@ export class UserFormComponent implements OnInit, OnChanges {
             this.fb.control(null, Validators.required)
           );
         }
-        if (!employeeGroup.get('daysOfWeek')) {
-          employeeGroup.addControl('daysOfWeek', this.fb.array([]));
-        }
-        this.addDaysOfWeekOptions();
-        if (!employeeGroup.get('startTime')) {
-          employeeGroup.addControl('startTime', this.fb.control(null));
-        }
-        if (!employeeGroup.get('endTime')) {
-          employeeGroup.addControl('endTime', this.fb.control(null));
-        }
         employeeGroup.addControl('id', this.fb.control(''));
+        employeeGroup.addControl('schedule', this.fb.control(null));
+
         if (!this.selectedUser) {
           this.userForm.get('employee')?.get('id')?.setValue('');
           this.userForm.get('employee')?.get('position')?.setValue('');
@@ -246,44 +222,13 @@ export class UserFormComponent implements OnInit, OnChanges {
           employeeGroup.removeControl(controlId);
         }
         companyGroup.addControl('id', this.fb.control(''));
-        // companyGroup.addControl('name', this.fb.control(''));
-        // companyGroup.addControl('description', this.fb.control(''));
-        // companyGroup.addControl('timezone', this.fb.control(''));
         if (!this.selectedUser) {
           companyGroup.get('id')?.setValue('');
         }
       }
     });
   }
-  public addDaysOfWeekOptions() {
-    const daysOfWeekArray = this.userForm.get(
-      'employee.daysOfWeek'
-    ) as FormArray;
-    const daysOfWeekOptions = [
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-      'sunday',
-    ];
 
-    daysOfWeekOptions.forEach((day) => {
-      const control = new FormControl(false);
-      daysOfWeekArray.push(control);
-    });
-
-    daysOfWeekArray.valueChanges.subscribe((selectedValues) => {
-      const selectedDaysOfWeek: string[] = [];
-      selectedValues.forEach((value: any, index: any) => {
-        if (value) {
-          selectedDaysOfWeek.push(daysOfWeekOptions[index]);
-        }
-      });
-      this.selectedDaysOfWeek = selectedDaysOfWeek;
-    });
-  }
   public getRoles() {
     this.userService.getRoles().subscribe({
       next: (roles: any) => {
@@ -318,6 +263,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   public submitUserForm() {
     this.loader = new Loader(true, false, false);
+    console.log(this.userForm.value);
     if (
       this.userForm.valid &&
       this.userForm.value.role !== 'Select a role' &&
@@ -359,11 +305,10 @@ export class UserFormComponent implements OnInit, OnChanges {
             this.userForm.value.employee.position;
           this.newUser.employee.hourly_rate =
             this.userForm.value.employee.hourly_rate;
-          this.newUser.employee.daysOfWeek = this.selectedDaysOfWeek;
-          this.newUser.employee.startTime =
-            this.userForm.value.employee.startTime;
-          this.newUser.employee.endTime = this.userForm.value.employee.endTime;
+          this.newUser.employee.schedule =
+            this.userForm.value.employee.schedule;
         }
+        console.log(this.newUser);
         this.userService.createUser(this.newUser).subscribe({
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
@@ -401,32 +346,90 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   createFormField(type: string) {
-    let modal;
-    switch (type) {
-      case 'schedule':
-        modal = FormDialogComponent;
-        break;
-      case 'company':
-      default:
-        modal = FormDialogComponent;
-        break;
-    }
-    console.log(type);
-    const dialog = this.dialog.open(modal, { data: { type } });
+    const dialog = this.dialog.open(FormDialogComponent, { data: { type } });
 
     dialog.afterClosed().subscribe((result: boolean | any) => {
-      console.log(result[type]);
-      if (type == 'company' && result) {
-        this.companiesService.submit(result).subscribe({
-          next: (response: any) => {
-            this.companies.push(response);
-          },
-        });
+      if (result) {
+        if (type == 'company') {
+          this.companiesService.submit(result).subscribe({
+            next: (response: any) => {
+              this.companies.push(response);
+            },
+          });
+          return;
+        }
+
+        if (this.userForm.get('employee')?.get('schedule')?.value != null) {
+          const daysArray: Array<{id: string; name: string}> = result[type].days;
+          console.log(daysArray)
+          const schedule = this.userForm
+            .get('employee')
+            ?.get(type)
+            ?.value.map((schedule: any) => {
+              return schedule.days;
+            })
+            .flat();
+            console.log(schedule)
+          // result[type].days = daysArray.filter(
+          //   (day: string) => schedule.indexOf(day.name) == -1
+          // );
+        }
+
+        if (result[type].days.length > 0) {
+          let scheduleArray = this.scheduleField.value || [];
+          scheduleArray.push(result[type]);
+          this.userForm.get('employee')?.get(type)?.setValue(scheduleArray);
+        }
       }
-      console.log(result);
     });
   }
 
+  checkSelectedDays(): boolean {
+    let count = 0;
+
+    if (this.scheduleField && this.scheduleField.value) {
+      console.log(this.scheduleField.value);
+      this.scheduleField?.value.forEach((schedule: any) => {
+        count = schedule.days.length + count;
+      });
+      if (count < 7) return false;
+      return true;
+    }
+    return false;
+  }
+
+  private get scheduleField() {
+    return this.userForm.get('employee')?.get('schedule') as FormControl;
+  }
+
+  displaySchedulesDays(days: any): String {
+    return days
+      .map((day: any) => day.name || day.day)
+      .toString()
+      .replaceAll(',', ', ');
+  }
+  displayScheduleTimes(timeStr: string) {
+    let modifier;
+    let hours, minutes;
+
+    if (timeStr.includes(' ')) {
+      return timeStr;
+    } else {
+      [hours, minutes] = timeStr.split(':', 2).map(Number);
+      if (hours >= 12) {
+        hours = hours == 12 ? hours : hours - 12;
+        modifier = 'PM';
+      } else if (hours == 0) {
+        hours = 12;
+        modifier = 'AM';
+      } else if (hours < 12 && hours > 0) {
+        modifier = 'AM';
+      }
+      return `${this.customDate.padzero(hours)}:${this.customDate.padzero(
+        minutes
+      )} ${modifier}`;
+    }
+  }
   onFileSelected(event: any) {
     const img = event.target.files[0];
     if (img) {
