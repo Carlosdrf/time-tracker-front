@@ -18,11 +18,11 @@ export class UserOptionsComponent implements OnInit {
   @Output() onGetEntries: EventEmitter<any> = new EventEmitter<any>();
   users: any;
   companies: Company[] = [];
-  type: string = 'user';
   usersList: any;
   select: string = '';
   projectsList: any;
   selectProject: string = '-1';
+  type: string = 'user';
   byClient: boolean = false;
   role = localStorage.getItem('role');
   selected: boolean = true;
@@ -49,6 +49,7 @@ export class UserOptionsComponent implements OnInit {
       return user.name + ' ' + user.last_name;
     }
   }
+  
   getUsers() {
     let body = {};
     this.userService.getUsers(body).subscribe({
@@ -61,6 +62,7 @@ export class UserOptionsComponent implements OnInit {
       error: (err) => {},
     });
   }
+
   getEmployees() {
     this.userService.getEmployees().subscribe({
       next: (employees: any) => {
@@ -69,6 +71,7 @@ export class UserOptionsComponent implements OnInit {
       },
     });
   }
+
   getProjects(userId: string = '0') {
     this.handleType();
     this.projectService.get(userId, this.type).subscribe({

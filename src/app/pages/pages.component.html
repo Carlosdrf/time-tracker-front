@@ -1,11 +1,3 @@
 <app-navigation></app-navigation>
 <router-outlet></router-outlet>
-<div
-  id="alert"
-  class="alert-container z-2"
-  [ngClass]="{ 'alert-active': onAlert == true }"
->
-  <div class="alert alert-success rounded d-flex align-items-center">
-    <span class="text-white">{{ message }}</span>
-  </div>
-</div>
+<app-notification-modal></app-notification-modal>

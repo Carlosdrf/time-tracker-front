@@ -1,9 +1,9 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { EntriesService } from '../../services/entries.service';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
-import { PagesComponent } from '../pages.component';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { Entries } from 'src/app/models/Entries';
+import { NotificationStore } from 'src/app/stores/notification.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,6 +11,7 @@ import { Entries } from 'src/app/models/Entries';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class EmployeeDashboardComponent implements OnInit {
+  store = inject(NotificationStore);
   @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
   entriesAlert: string = '';
   name: any;
@@ -70,8 +71,7 @@ export class EmployeeDashboardComponent implements OnInit {
   constructor(
     private socketService: WebSocketService,
     private entriesService: EntriesService,
-    public customDate: CustomDatePipe,
-    private page: PagesComponent
+    public customDate: CustomDatePipe
   ) {}
 
   ngOnInit() {
@@ -125,7 +125,7 @@ export class EmployeeDashboardComponent implements OnInit {
       this.start_time = new Date();
       this.entryCheck = true;
       this.message = 'Entry Started Successfully';
-      this.page.setAlert(this.message);
+      this.store.addNotifications(this.message);
       this.socketService.socket.emit('client:start_timer', startedEntry);
       this.socketService.socket.emit('client:loadEntries', this.entries);
     });
@@ -135,7 +135,7 @@ export class EmployeeDashboardComponent implements OnInit {
     this.entriesService.closeCurrentEntry(currentEntry).subscribe((v) => {
       this.getEntries();
       this.message = 'Entry Ended Successfully';
-      this.page.setAlert(this.message);
+      this.store.addNotifications(this.message);
       this.socketService.socket.emit('client:end_entry', 'mensaje');
     });
   }
@@ -149,6 +149,5 @@ export class EmployeeDashboardComponent implements OnInit {
         return '';
         break;
     }
-
   }
 }

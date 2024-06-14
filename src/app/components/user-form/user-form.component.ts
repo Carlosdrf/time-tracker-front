@@ -1,11 +1,13 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
 import {
@@ -13,10 +15,9 @@ import {
   FormControl,
   Validators,
   FormBuilder,
-  FormArray,
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
-import { Company, Employee, User } from 'src/app/models/User.model';
+import { Company, Employee, Schedule, User } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
@@ -28,19 +29,27 @@ import { TimezoneService } from 'src/app/services/timezone.service';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { SharedModule } from '../shared.module';
 import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
+import { NotificationStore } from 'src/app/stores/notification.store';
+import { MoreVertComponent, options } from '../more-vert/more-vert.component';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, MoreVertComponent],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
 })
 export class UserFormComponent implements OnInit, OnChanges {
+  notificationStore = inject(NotificationStore);
   @Input() selectedUser: any;
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onMobileCloseForm: EventEmitter<any> = new EventEmitter<any>();
+  scheduleOptions: options[] = [
+    { name: 'Edit', action: 'edit', icon: 'fa-regular fa-pen-to-square' },
+    { name: 'Remove', action: 'delete', icon: 'fa-solid fa-trash' },
+  ];
+
   img: any;
   newUser: User = {
     id: '-1',
@@ -57,7 +66,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   roleList!: Roles[];
   title: string = 'New User';
   userForm!: FormGroup;
-  message: string | null = null;
+  message: string = '';
   companies: any;
   positions: Positions[] = [];
   ADMIN_ROLE = '1';
@@ -168,6 +177,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     this.userForm.reset({ password: '', cpassword: '' });
     this.userForm.get('role')?.setValue('');
   }
+
   handlePasswordValidity() {
     const password = this.userForm.get('password');
 
@@ -179,6 +189,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
     password?.updateValueAndValidity();
   }
+
   handleRole() {
     this.userForm.get('role')!.valueChanges.subscribe((role: string) => {
       const companyGroup = this.userForm.get('company') as FormGroup;
@@ -313,20 +324,30 @@ export class UserFormComponent implements OnInit, OnChanges {
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
             this.loader = new Loader(true, true, false);
+            const message =
+              this.newUser.id == '-1'
+                ? 'User Added Successfully'
+                : 'User Updated Successfully';
+            this.notificationStore.addNotifications(message, 'success');
           },
           error: (err) => {
             this.loader = new Loader(true, false, true);
-            this.message = err.error.message;
+            this.notificationStore.addNotifications(err.error.message, 'error');
           },
         });
       } else {
         this.loader = new Loader(true, false, true);
-        // this.resetLoader();
-        this.message = 'Confirm password error';
+        this.notificationStore.addNotifications(
+          'Confirm password error',
+          'error'
+        );
       }
     } else {
       this.loader = new Loader(true, false, true);
-      this.message = 'All fields must be filled';
+      this.notificationStore.addNotifications(
+        'All fields must be filled',
+        'error'
+      );
     }
   }
 
@@ -338,6 +359,10 @@ export class UserFormComponent implements OnInit, OnChanges {
       if (value) {
         this.userService.delete(id).subscribe({
           next: (value) => {
+            this.notificationStore.addNotifications(
+              'User Deleted Successfully',
+              'success'
+            );
             this.onDeletedUser.emit(id);
           },
         });
@@ -345,8 +370,13 @@ export class UserFormComponent implements OnInit, OnChanges {
     });
   }
 
-  createFormField(type: string) {
-    const dialog = this.dialog.open(FormDialogComponent, { data: { type } });
+  openFormModal(type: string, fieldData?: any, index?: string) {
+    console.log(fieldData);
+    let data = {
+      type,
+      fieldData,
+    };
+    const dialog = this.dialog.open(FormDialogComponent, { data });
 
     dialog.afterClosed().subscribe((result: boolean | any) => {
       if (result) {
@@ -359,25 +389,63 @@ export class UserFormComponent implements OnInit, OnChanges {
           return;
         }
 
-        if (this.userForm.get('employee')?.get('schedule')?.value != null) {
-          const daysArray: Array<{id: string; name: string}> = result[type].days;
-          console.log(daysArray)
-          const schedule = this.userForm
+        if (this.userForm.get('employee')?.get('schedule')?.value.length > 0) {
+          const daysArray: Array<{ id: string; name: string }> =
+            result[type].days;
+
+          const scheduleDays = this.userForm
             .get('employee')
             ?.get(type)
-            ?.value.map((schedule: any) => {
-              return schedule.days;
-            })
+            ?.value.map(
+              (
+                schedule: {
+                  days: Array<{ id: string; name: string }>;
+                  start_time: string;
+                  end_time: string;
+                },
+                i: number
+              ) => {
+                console.log(i, index);
+                if (i.toString() != index) {
+                  return schedule.days.map(
+                    (day: { id: string; name: string }) => {
+                      return day.name;
+                    }
+                  );
+                }
+                return [];
+              }
+            )
             .flat();
-            console.log(schedule)
-          // result[type].days = daysArray.filter(
-          //   (day: string) => schedule.indexOf(day.name) == -1
-          // );
+          console.log(scheduleDays);
+          console.log(daysArray);
+
+          result[type].days = daysArray.filter(
+            (day: { id: string; name: string }) =>
+              scheduleDays.indexOf(day.name) == -1
+          );
+          let checkDays = daysArray.find(
+            (day: { id: string; name: string }) =>
+              scheduleDays.indexOf(day.name) != -1
+          );
+
+          if (checkDays) {
+            this.notificationStore.addNotifications(
+              "Cant't add days that have already been selected"
+            );
+          }
         }
 
         if (result[type].days.length > 0) {
-          let scheduleArray = this.scheduleField.value || [];
-          scheduleArray.push(result[type]);
+          let scheduleArray =
+            this.scheduleField.value.map((schedule: any, i: number) => {
+              if (index == i.toString()) {
+                return result[type];
+              } else {
+                return schedule;
+              }
+            }) || [];
+          if (!index) scheduleArray.push(result[type]);
           this.userForm.get('employee')?.get(type)?.setValue(scheduleArray);
         }
       }
@@ -388,7 +456,6 @@ export class UserFormComponent implements OnInit, OnChanges {
     let count = 0;
 
     if (this.scheduleField && this.scheduleField.value) {
-      console.log(this.scheduleField.value);
       this.scheduleField?.value.forEach((schedule: any) => {
         count = schedule.days.length + count;
       });
@@ -408,6 +475,7 @@ export class UserFormComponent implements OnInit, OnChanges {
       .toString()
       .replaceAll(',', ', ');
   }
+
   displayScheduleTimes(timeStr: string) {
     let modifier;
     let hours, minutes;
@@ -430,6 +498,45 @@ export class UserFormComponent implements OnInit, OnChanges {
       )} ${modifier}`;
     }
   }
+
+  removeDayFromSchedule(
+    selectedDay: { id: string; name: string },
+    i: number
+  ): void {
+    const daysArray = (
+      this.scheduleField.value[i].days as Array<{ id: string; name: string }>
+    ).filter((day) => day.id != selectedDay.id);
+    if (daysArray.length < 1) {
+      let schedule = this.scheduleField.value.filter(
+        (schedule: any, index: number) => index != i
+      );
+      this.scheduleField.setValue(schedule);
+    } else {
+      this.scheduleField.value[i].days = daysArray;
+    }
+  }
+
+  selectItem(event: { id: string; action: string }) {
+    console.log(event.id);
+    switch (event.action) {
+      case 'edit':
+        console.log('editar');
+        this.openFormModal(
+          'schedule',
+          this.scheduleField.value[event.id],
+          event.id
+        );
+        break;
+      case 'delete':
+      case 'remove':
+        let scheduleList = this.scheduleField.value.filter(
+          (day: any, i: string) => event.id != i
+        );
+        this.scheduleField.setValue(scheduleList);
+        break;
+    }
+  }
+
   onFileSelected(event: any) {
     const img = event.target.files[0];
     if (img) {

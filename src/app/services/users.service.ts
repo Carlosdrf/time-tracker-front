@@ -1,13 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { PossibleMember } from '../models/Client';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
   constructor(private http: HttpClient) {}
-  selectedUser: any = {id: null, name: ''};
+  selectedUser: any = { id: null, name: '' };
   private API_URI = environment.apiUrl;
 
   getUsers(body: any) {
@@ -37,6 +39,16 @@ export class UsersService {
     return this.http.get(`${this.API_URI}/roles`);
   }
 
+  createPossible(body: PossibleMember) {
+    let form = new FormData();
+    form.append('name', body.name);
+    form.append('lastname', body.lastname);
+    form.append('email', body.email);
+    form.append('phone', body.phone);
+    form.append('englishLevel', body.englishLevel);
+    form.append('resume', body.resume);
+    return this.http.post(`${this.API_URI}/users/create/possible`, form);
+  }
   setUserInformation(user: any) {
     this.selectedUser = user;
   }

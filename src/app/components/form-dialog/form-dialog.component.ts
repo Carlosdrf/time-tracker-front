@@ -16,6 +16,7 @@ import {
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { Timezone } from 'src/app/models/Timezone.model';
 import { SharedModule } from '../shared.module';
+import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
 
 @Component({
   selector: 'app-form-dialog',
@@ -27,11 +28,13 @@ import { SharedModule } from '../shared.module';
 export class FormDialogComponent implements OnInit {
   dialogForm: FormGroup;
   endTimeError: string = '';
+  scheduleDisplayed: any = [];
 
   constructor(
     private timezoneService: TimezoneService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: { type: string }
+    private customDate: CustomDatePipe,
+    @Inject(MAT_DIALOG_DATA) public data: { type: string; fieldData: any }
   ) {
     this.dialogForm = this.fb.group({
       company: this.fb.group({
@@ -46,7 +49,7 @@ export class FormDialogComponent implements OnInit {
       }),
     });
   }
-  public companyFields: any = [];
+  public formFields: any = [];
   timezones: any = [];
   timezoneList = [];
   validForm: boolean = false;
@@ -61,6 +64,7 @@ export class FormDialogComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.patchValuesIfAny();
     this.getTimezones();
 
     this.dialogForm.valueChanges.subscribe({
@@ -104,7 +108,7 @@ export class FormDialogComponent implements OnInit {
     });
 
     if (this.data.type == 'company') {
-      this.companyFields = [
+      this.formFields = [
         {
           control: 'name',
           label: 'Company Name',
@@ -126,7 +130,7 @@ export class FormDialogComponent implements OnInit {
         },
       ];
     } else {
-      this.companyFields = [
+      this.formFields = [
         {
           control: 'days',
           label: 'Select days',
@@ -196,5 +200,42 @@ export class FormDialogComponent implements OnInit {
     }
     const date = new Date().setHours(hours, minutes, 0, 0);
     return date;
+  }
+
+  patchValuesIfAny(): void {
+    if (!this.data.fieldData) return;
+
+    switch (this.data.type) {
+      case 'schedule':
+        let formatData = {
+          days: this.data.fieldData.days,
+          start_time: this.convertIntoReadableString(
+            this.data.fieldData.start_time
+          ),
+          end_time: this.convertIntoReadableString(
+            this.data.fieldData.end_time
+          ),
+        };
+        this.scheduleDisplayed = this.data.fieldData.days
+          .map((day: any) => day.id)
+          .flat();
+        this.dialogForm.get(this.data.type)?.setValue(formatData);
+        break;
+    }
+  }
+
+  convertIntoReadableString(timeValue: string): string {
+    if (timeValue.includes(' ')) return timeValue;
+    let [hours, minutes] = timeValue.split(':').map(Number);
+    let modifier = 'PM';
+    if (hours > 12) {
+      hours -= 12;
+    } else if (hours < 12) modifier = 'AM';
+    if (hours == 0) {
+      hours = 12;
+    }
+    return `${this.customDate.padzero(hours)}:${this.customDate.padzero(
+      minutes
+    )} ${modifier}`;
   }
 }

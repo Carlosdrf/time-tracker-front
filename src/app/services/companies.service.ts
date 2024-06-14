@@ -29,8 +29,7 @@ export class CompaniesService {
     return this.http.get(`${this.API_URI}/${company_id}/employees`);
   }
 
-  public createPosibleCompany(body: PossibleClient) {
-    console.log(body)
+  public createPossible(body: PossibleClient) {
     return this.http.post(`${this.API_URI}/create/possible`, body);
   }
 }

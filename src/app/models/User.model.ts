@@ -30,6 +30,6 @@ export class Employee {
 
 export interface Schedule {
   days: string[];
-  startTime: string;
-  endTime: string;
+  start_time: string;
+  end_time: string;
 }

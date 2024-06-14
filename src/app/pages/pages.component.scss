@@ -8,7 +8,7 @@
   color: $primary-color;
 }
 .accent-color {
-  color: $secondary-color;
+  color: $accent-color;
 }
 .mat-mdc-progress-spinner {
   --mdc-circular-progress-active-indicator-color: #92b46c;
@@ -31,7 +31,7 @@ a {
   transition: all 0.5s ease-in-out;
 }
 .alert-success {
-  background-color: $accent;
+  background-color: $accent-color;
 }
 .mat-primary {
   color: white !important;
@@ -93,7 +93,7 @@ ul {
   width: 8px;
 }
 .i-flow::-webkit-scrollbar-thumb {
-  background: $accent;
+  background: $accent-color;
   border-radius: 8px;
 }
 

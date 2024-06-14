@@ -1,0 +1,39 @@
+.notificationContainer {
+  position: fixed;
+  right: 0;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 1000;
+}
+
+.notificationModal {
+  transition: all 0.3s ease-out;
+}
+
+.slideIn {
+  animation: slideIn 0.5s;
+}
+.slideOut {
+  opacity: 0;
+  animation: slideOut 0.4s;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+  }
+}

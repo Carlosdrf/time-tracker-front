@@ -80,7 +80,12 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'register',
+    path: 'register/tm',
+    component: RegisterComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'register/client',
     component: RegisterComponent,
     pathMatch: 'full',
   },

@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <div class="d-flex flex-column" [formGroup]="dialogForm">
     <ng-container
-      *ngFor="let form of companyFields"
+      *ngFor="let form of formFields"
       formGroupName="{{ data.type }}"
     >
       <mat-form-field *ngIf="form.type == 'text'">
@@ -31,6 +31,7 @@
         <mat-label>{{ form.label }}</mat-label>
         <mat-select
           multiple
+          [value]="scheduleDisplayed"
           (selectionChange)="onDayChange($event.source.value, form.control)"
         >
           <mat-option *ngFor="let day of daysOfWeekOptions" [value]="day.id">
