@@ -161,7 +161,7 @@ export class RegisterComponent implements OnInit {
           control: 'englishLevel',
           options: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
         },
-        { label: 'Add your Resume', type: 'file', control: 'resume' },
+        { label: 'Add Resume', type: 'file', control: 'resume' },
       ];
   }
 }

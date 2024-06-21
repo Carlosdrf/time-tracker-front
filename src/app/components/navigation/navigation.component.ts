@@ -1,5 +1,6 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-navigation',
@@ -7,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
+  userService = inject(UsersService);
   authenticated: boolean = false;
   isAdmin: boolean = false;
   userType: any;
@@ -36,5 +38,9 @@ export class NavigationComponent implements OnInit {
     if (!this.element.nativeElement.contains(event.target)) {
       this.isActive = false;
     }
+  }
+
+  clearSelectedUser() {
+    this.userService.resetUser();
   }
 }

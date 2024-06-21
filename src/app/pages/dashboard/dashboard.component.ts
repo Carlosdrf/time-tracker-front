@@ -4,11 +4,15 @@ import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { Entries } from 'src/app/models/Entries';
 import { NotificationStore } from 'src/app/stores/notification.store';
+import { DashboardItems, DashboardLibComponent } from 'src/app/components/dashboard-lib/dashboard-lib.component';
+import { SharedModule } from 'src/app/components/shared.module';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  standalone: true,
+  imports: [SharedModule, DashboardLibComponent]
 })
 export class EmployeeDashboardComponent implements OnInit {
   store = inject(NotificationStore);
@@ -28,7 +32,7 @@ export class EmployeeDashboardComponent implements OnInit {
     start_time: new Date(),
     end_time: new Date(),
   };
-  public components: Array<any> = [
+  public components: DashboardItems[] = [
     {
       href: null,
       path: '/entries',
@@ -58,7 +62,6 @@ export class EmployeeDashboardComponent implements OnInit {
       options: [],
     },
     {
-      component: '',
       path: null,
       href: 'https://i-nimble.com/blog/',
       resource: 'blog-section.png',

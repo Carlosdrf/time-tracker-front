@@ -43,9 +43,11 @@
     <mat-label>Filter By</mat-label>
     <mat-select multiple>
       @for (filter of filters; track filter) {
-      <mat-option [disabled]="filter.disabled" [value]="filter.value" (click)="setFilterBy(filter)">{{
-        filter.display
-      }}</mat-option>
+      <mat-option
+        [value]="filter.value"
+        (click)="setFilterBy(filter)"
+        >{{ filter.display }}</mat-option
+      >
       }
     </mat-select>
   </mat-form-field>

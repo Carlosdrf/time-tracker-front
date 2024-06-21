@@ -1,9 +1,7 @@
-@import "../pages.component.scss";
-@import "/src/theme/variables.scss";
-.maintenance {
-  font-size: 70px;
-  color: rgba($primary-color, 0.5);
-}
+// .maintenance {
+//   font-size: 70px;
+//   color: rgba($primary-color, 0.5);
+// }
 #menu-off-hours:not(.off-hours) {
   transform: scaleY(0);
   transition: all 0.2s ease-in-out;
@@ -17,23 +15,4 @@
   right: 0;
   opacity: 1;
   display: block;
-}
-
-.min-height {
-  min-height: 300px;
-}
-
-.user-ico {
-  font-size: 35px;
-}
-
-.bg-container {
-  background-image: url(../../../assets/images/resources/customer-service-section.png);
-}
-
-.bg-container-2 {
-  background-image: url(../../../assets/images/resources/blog-section.png);
-  background-position: center center;
-  background-size: contain;
-  background-repeat: no-repeat;
 }

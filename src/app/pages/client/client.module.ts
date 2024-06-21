@@ -25,7 +25,7 @@ export const routes: Routes = [
 ];
 @NgModule({
   declarations: [
-    ClientDashboardComponent,
+    // ClientDashboardComponent,
     PaymentsComponent,
     ClientBalanceComponent,
     ClientCustomerServiceComponent,

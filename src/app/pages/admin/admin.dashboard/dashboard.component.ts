@@ -5,11 +5,21 @@ import { TimerComponent } from 'src/app/components/timer/timer.component';
 import { SearchComponent } from 'src/app/components/search/search.component';
 import { AdminTeamsComponent } from '../admin.teams/admin.teams.component';
 import { ReportsComponent } from '../../reports/reports.component';
+import {
+  DashboardItems,
+  DashboardLibComponent,
+} from 'src/app/components/dashboard-lib/dashboard-lib.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [UserListComponent, SharedModule, TimerComponent, SearchComponent],
+  imports: [
+    DashboardLibComponent,
+    UserListComponent,
+    SharedModule,
+    TimerComponent,
+    SearchComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -17,7 +27,7 @@ export class AdminClientDashboardComponent implements OnInit {
   name: string = '';
   public loaded: boolean = false;
 
-  public components: Array<any> = [
+  public components: DashboardItems[] = [
     {
       href: null,
       path: '/admin/teams',
@@ -32,6 +42,7 @@ export class AdminClientDashboardComponent implements OnInit {
           path: '/admin/users',
         },
         { title: 'Tracker', icon: 'fa-regular fa-clock', path: '/admin/teams' },
+        { title: 'reports', icon: 'fa-solid fa-chart-column', path: '/reports' },
       ],
     },
     {
@@ -39,12 +50,22 @@ export class AdminClientDashboardComponent implements OnInit {
       href: null,
       resource: 'maintenance-resource.png',
       title: 'Management section',
-      description: 'Here you can create/edit positions, companies and projects associations',
+      description:
+        'Here you can create/edit positions, companies and projects associations',
       header: 'Go to Management',
       options: [
-        {title: 'Form Fields', icon: 'fa-solid fa-sliders', path: '/admin/management', label:'Add/modify options used in /users'},
-        {title: 'Notifications (coming soon..)', icon: 'fa-regular fa-comment-dots', path: '/admin/notifications'},
-      ]
+        {
+          title: 'Form Fields',
+          icon: 'fa-solid fa-sliders',
+          path: '/admin/management',
+          label: 'Add/modify options used in /users',
+        },
+        {
+          title: 'Notifications (coming soon..)',
+          icon: 'fa-regular fa-comment-dots',
+          path: '/admin/notifications',
+        },
+      ],
     },
     {
       path: '/client/customer-service',
@@ -56,12 +77,12 @@ export class AdminClientDashboardComponent implements OnInit {
       options: [],
     },
     {
-      component: '',
       path: null,
       href: 'https://i-nimble.com/blog/',
       resource: 'blog-section.png',
       title: 'Content Section',
-      description: 'Go to I-nimble blog or manage the content will be displayed for users',
+      description:
+        'Go to I-nimble blog or manage the content will be displayed for users',
       header: 'See News',
       options: [
         {

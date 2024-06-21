@@ -1,9 +1,7 @@
 import {
   Component,
   Inject,
-  OnChanges,
   OnInit,
-  SimpleChanges,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import {
@@ -11,17 +9,30 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { Timezone } from 'src/app/models/Timezone.model';
-import { SharedModule } from '../shared.module';
 import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @Component({
   selector: 'app-form-dialog',
   standalone: true,
-  imports: [SharedModule],
+  imports: [
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    NgxMaterialTimepickerModule,
+  ],
   templateUrl: './form-dialog.component.html',
   styleUrl: './form-dialog.component.scss',
 })

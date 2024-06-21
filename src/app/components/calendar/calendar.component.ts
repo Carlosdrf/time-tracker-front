@@ -39,17 +39,14 @@ export class CalendarComponent {
       new Date().getFullYear()
     );
   }
+  
   ngOnChanges(change: SimpleChanges) {}
 
   changeMonth(n: number) {
-    // if (n > 0) {
     const nextMonth = this.dateSelect.clone().add(n, 'month');
     this.getDaysfromDate(nextMonth.format('MM'), nextMonth.format('YYYY'));
-    // } else {
-    // const nextMonth = this.dateSelect.clone().subtract(1, 'month');
-    // this.getDaysfromDate(nextMonth.format('MM'), nextMonth.format('YYYY'));
-    // }
   }
+
   getDaysfromDate(month: number, year: number) {
     const startDay = moment.utc(`${year}/${month}/01`, 'YYYYMMHH');
     const endDay = startDay.clone().endOf('month');
@@ -88,9 +85,11 @@ export class CalendarComponent {
       ...afterMonthDates,
     ];
   }
+
   private getMonthReference(i: number, reference: moment.Moment) {
     return moment(reference).clone().add(i, 'month').format('MM');
   }
+
   private getFirstDaysOfNextMonth(
     firstDays: number,
     year: number,
@@ -104,6 +103,7 @@ export class CalendarComponent {
     });
     return remainDays;
   }
+
   private getLastDaysOfPreviousMonth(
     lastDays: number,
     year: number,
@@ -165,6 +165,7 @@ export class CalendarComponent {
 
     this.getEntries.emit();
   }
+
   getTime(date: any, selection: any) {
     const firtsDate = new Date(date).getTime();
     const select = new Date(selection).getTime();

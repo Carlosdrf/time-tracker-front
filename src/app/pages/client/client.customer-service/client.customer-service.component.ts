@@ -10,7 +10,6 @@ export class ClientCustomerServiceComponent {
   url!: string;
 
   ngOnInit() {
-    console.log(this.role);
     if (this.role == '2')
       this.url = 'https://forms.office.com/r/efpQc3zkbg?origin=lprLink';
     else this.url = 'https://forms.office.com/r/4jCN9nLgYM';

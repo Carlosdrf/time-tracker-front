@@ -15,13 +15,14 @@ import {
   ReportFilter,
   ReportsFilterComponent,
 } from 'src/app/components/reports-filter/reports-filter.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
   standalone: true,
-  imports: [UserOptionsComponent, SharedModule, ReportsFilterComponent],
+  imports: [UserOptionsComponent, SharedModule, ReportsFilterComponent, NgIf],
 })
 export class ReportsComponent implements OnInit {
   selectedUser: any;
@@ -37,7 +38,13 @@ export class ReportsComponent implements OnInit {
   params!: string;
   user: any = { id: null, name: null, company: null };
   projectId: string = '';
-  filters!: ReportFilter;
+  filters: ReportFilter = {
+    user: 'all',
+    company: 'all',
+    project: 'all',
+    byClient: false,
+    useTimezone: false,
+  };
 
   // chart init
   single: any;
@@ -57,6 +64,7 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.defaultWeek();
+
     this.user = this.userService.selectedUser
       ? this.userService.selectedUser
       : null;
@@ -136,6 +144,14 @@ export class ReportsComponent implements OnInit {
         },
       });
     }
+    // this.getEntries();
+  }
+
+  displayNameIfAny(): string {
+    if (typeof this.filters.user != 'string') {
+      return `${this.filters.user.name} ${this.filters.user.last_name}`;
+    }
+    return '';
   }
 
   filterByUser(user: any) {

@@ -56,11 +56,9 @@ export class UserFormComponent implements OnInit, OnChanges {
     name: '',
     last_name: '',
     email: '',
-    profile: undefined,
     password: '',
     role: 0,
-    company: new Company(),
-    employee: new Employee(),
+    active: 1,
   };
   loader: Loader = new Loader(false, false, false);
   roleList!: Roles[];
@@ -145,20 +143,20 @@ export class UserFormComponent implements OnInit, OnChanges {
     this.getRoles();
     this.getCompanies();
     this.getPositions();
-    this.userForm
-      .get('email')!
-      .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((email) => {
-        const userId = this.selectedUser ? this.selectedUser.id : -1;
-        this.userService.verifyUsername(email, userId).subscribe({
-          next: (v: any) => {
-            console.log(v);
-          },
-          error: (err: any) => {
-            console.error(err);
-          },
-        });
-      });
+    // this.userForm
+    //   .get('email')!
+    //   .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+    //   .subscribe((email) => {
+    //     const userId = this.selectedUser ? this.selectedUser.id : -1;
+    //     this.userService.verifyUsername(email, userId).subscribe({
+    //       next: (v: any) => {
+    //         console.log(v);
+    //       },
+    //       error: (err: any) => {
+    //         console.error(err);
+    //       },
+    //     });
+    //   });
     this.handleRole();
     this.timezoneService.fetchTimezonesApi().subscribe((data: any) => {
       if (data.status === 'OK' && Array.isArray(data.zones)) {
@@ -222,7 +220,7 @@ export class UserFormComponent implements OnInit, OnChanges {
           );
         }
         employeeGroup.addControl('id', this.fb.control(''));
-        employeeGroup.addControl('schedule', this.fb.control(null));
+        employeeGroup.addControl('schedule', this.fb.control([]));
 
         if (!this.selectedUser) {
           this.userForm.get('employee')?.get('id')?.setValue('');
@@ -274,15 +272,15 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   public submitUserForm() {
     this.loader = new Loader(true, false, false);
+    console.log(this.newUser);
     console.log(this.userForm.value);
     if (
       this.userForm.valid &&
       this.userForm.value.role !== 'Select a role' &&
       this.userForm.value.company.id !== 'Select a company'
     ) {
-      if (this.selectedUser) {
-        this.newUser.id = this.selectedUser.id;
-      } else this.newUser.id = '-1';
+      if (this.selectedUser) this.newUser.id = this.selectedUser.id;
+      else this.newUser.id = '-1';
       if (this.userForm.value.password === this.userForm.value.cpassword) {
         this.message = '';
         this.newUser.name = this.userForm.value.name;
@@ -293,13 +291,14 @@ export class UserFormComponent implements OnInit, OnChanges {
         this.newUser.profile = this.userForm.value.profile;
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
-            this.newUser.company = new Company();
-            this.newUser.company.id = this.userForm.value.company.id;
-            this.newUser.company.name = this.userForm.value.company.name;
-            this.newUser.company.timezone =
+            // this.newUser.company = new Company();
+            console.log(this.userForm.value.company.name);
+            this.newUser.company = { id: this.userForm.value.company.id };
+            this.newUser.company!.name = this.userForm.value.company.name;
+            this.newUser.company!.timezone =
               this.userForm.value.company.timezone;
             if (this.userForm.value.company.description != null) {
-              this.newUser.company.description =
+              this.newUser.company!.description =
                 this.userForm.value.company.description;
             }
           }
@@ -308,16 +307,17 @@ export class UserFormComponent implements OnInit, OnChanges {
           this.userForm.value.employee &&
           this.EMPLOYEE_ROLE == this.userForm.value.role
         ) {
-          this.newUser.employee = new Employee();
-          this.newUser.employee.id = this.userForm.value.employee.id
-            ? this.userForm.value.employee.id
-            : '';
-          this.newUser.employee.position =
+          this.newUser.employee = { id: this.userForm.value.employee.id };
+          // this.newUser.employee!.id = this.userForm.value.employee.id
+          //   ? this.userForm.value.employee.id
+          //   : '';
+          this.newUser.employee!.position =
             this.userForm.value.employee.position;
-          this.newUser.employee.hourly_rate =
+          this.newUser.employee!.hourly_rate =
             this.userForm.value.employee.hourly_rate;
-          this.newUser.employee.schedule =
-            this.userForm.value.employee.schedule;
+          if (this.userForm.value.employee.schedule)
+            this.newUser.employee!.schedule =
+              this.userForm.value.employee.schedule;
         }
         console.log(this.newUser);
         this.userService.createUser(this.newUser).subscribe({
@@ -517,7 +517,6 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   selectItem(event: { id: string; action: string }) {
-    console.log(event.id);
     switch (event.action) {
       case 'edit':
         console.log('editar');

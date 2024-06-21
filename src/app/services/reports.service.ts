@@ -13,40 +13,31 @@ export class ReportsService {
 
   private API_URI: string = `${environment.apiUrl}/reports`;
 
-  getReport(data: any, user: any = null, project: any = null) {
+  getRange(dates: any, user: any = null, filters: ReportFilter) {
+    this.userService.selectedUser = user;
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    const info = this.toBeSent(data, user, project);
-    console.log('info: ', info);
+    const info = this.toBeSent(dates, user, filters);
+    // console.log(info);
+    return this.http.post(`${this.API_URI}/entries`, info, { headers });
+  }
+
+  getReport(dates: any, user: any = null, project: any = null) {
+    const headers = new HttpHeaders({ 'content-type': 'application/json' });
+    const info = this.toBeSent(dates, user, project);
+    // console.log('info: ', info);
     return this.http.post(`${this.API_URI}`, info, {
       headers,
       responseType: 'blob',
     });
   }
 
-  getRange(data: any, user: any = null, filters: ReportFilter) {
-    this.userService.selectedUser = user;
-    const headers = new HttpHeaders({ 'content-type': 'application/json' });
-    const info = this.toBeSent(data, user, filters);
-    console.log(info);
-    return this.http.post(`${this.API_URI}/entries`, info, { headers });
-  }
-  toBeSent(data: any, user: any, filters: ReportFilter, project: any = null) {
-    let info = {};
-    if (!user.id) {
-      info = {
-        firstSelect: data.firstSelect,
-        lastSelect: data.lastSelect,
-        timezone: new Date().getTimezoneOffset(),
-        ...filters,
-      };
-    } else {
-      info = {
-        firstSelect: data.firstSelect,
-        lastSelect: data.lastSelect,
-        timezone: new Date().getTimezoneOffset(),
-        ...filters,
-      };
-    }
+  toBeSent(dates: any, user: any, filters: ReportFilter, project: any = null) {
+    let info = {
+      firstSelect: dates.firstSelect,
+      lastSelect: dates.lastSelect,
+      timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
+      ...filters,
+    };
     return info;
   }
 }

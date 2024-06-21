@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -15,11 +15,12 @@ import { Company, User } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { UsersService } from 'src/app/services/users.service';
+import { SharedModule } from '../shared.module';
 
 export interface ReportFilter {
   user: User | string;
   company: Company | string;
-  project: Project;
+  project: Project | string;
   byClient: boolean;
   useTimezone: boolean;
 }
@@ -38,7 +39,7 @@ export interface ReportFilter {
   templateUrl: './reports-filter.component.html',
   styleUrl: './reports-filter.component.scss',
 })
-export class ReportsFilterComponent {
+export class ReportsFilterComponent implements OnInit {
   userService = inject(UsersService);
   companiesService = inject(CompaniesService);
   projectService = inject(ProjectsService);
@@ -46,7 +47,7 @@ export class ReportsFilterComponent {
 
   @Output() onSelectedFilters: EventEmitter<any> = new EventEmitter<any>();
   role = localStorage.getItem('role') ?? '';
-
+  userId: string = 'all';
   usersList!: User[];
   projectsList!: Project[];
 
@@ -62,9 +63,9 @@ export class ReportsFilterComponent {
     },
     {
       value: 'timezone',
-      display: 'Use Company Timezone (disabled)',
+      display: 'Use Company Timezone',
       checked: false,
-      disabled: true,
+      disabled: false,
       control: 'useTimezone',
     },
   ];
@@ -88,18 +89,13 @@ export class ReportsFilterComponent {
     if (this.role == '3') {
       this.getEmployees();
     }
+
     this.getProjects();
-    this.onSelectedFilters.emit(this.filterForm.value);
-    this.filterForm.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((values) => {
-        this.onSelectedFilters.emit(values);
-      });
+    this.filterForm.valueChanges.subscribe((values) => {
+      this.onSelectedFilters.emit(values);
+    });
     this.filterForm.get('user')?.valueChanges.subscribe((control) => {
-      if (control != 'all')
-        this.projects = this.projectsList.filter((project: Project) =>
-          project.users?.some((user) => user.id == control.id)
-        );
+      if (control != 'all') this.getProjects(control.id);
       else this.getProjects();
     });
     this.filterForm.get('byClient')?.valueChanges.subscribe(() => {
@@ -116,6 +112,9 @@ export class ReportsFilterComponent {
         );
       else this.getProjects();
     });
+    if (this.userService.selectedUser.id)
+      this.filterForm.get('user')?.setValue(this.userService.selectedUser);
+    else this.onSelectedFilters.emit(this.filterForm.value);
   }
 
   getUsers() {

@@ -56,6 +56,6 @@ export class UsersService {
     return this.selectedUser;
   }
   resetUser() {
-    // this.selectedUser = null;
+    this.selectedUser = { id: null, name: null };
   }
 }

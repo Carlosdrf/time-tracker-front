@@ -28,7 +28,7 @@ export class RegisterFormComponent implements OnInit {
 
   @Input() loader: Loader = new Loader(false, false, false);
   @Input() formStatus: any = { isInvalid: false, message: '' };
-
+  fileName: string = '';
   ngOnInit(): void {}
 
   handleSubmit() {
@@ -56,6 +56,7 @@ export class RegisterFormComponent implements OnInit {
 
   onFileChange(event: Event) {
     const file = (event.target as HTMLInputElement).files![0];
+    this.fileName = file.name
     this.registerForm.get('resume')?.patchValue(file);
   }
 }
