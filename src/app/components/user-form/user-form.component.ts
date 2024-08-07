@@ -272,8 +272,6 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   public submitUserForm() {
     this.loader = new Loader(true, false, false);
-    console.log(this.newUser);
-    console.log(this.userForm.value);
     if (
       this.userForm.valid &&
       this.userForm.value.role !== 'Select a role' &&
@@ -292,7 +290,6 @@ export class UserFormComponent implements OnInit, OnChanges {
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
             // this.newUser.company = new Company();
-            console.log(this.userForm.value.company.name);
             this.newUser.company = { id: this.userForm.value.company.id };
             this.newUser.company!.name = this.userForm.value.company.name;
             this.newUser.company!.timezone =
@@ -319,7 +316,7 @@ export class UserFormComponent implements OnInit, OnChanges {
             this.newUser.employee!.schedule =
               this.userForm.value.employee.schedule;
         }
-        console.log(this.newUser);
+
         this.userService.createUser(this.newUser).subscribe({
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
@@ -371,7 +368,6 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   openFormModal(type: string, fieldData?: any, index?: string) {
-    console.log(fieldData);
     let data = {
       type,
       fieldData,
@@ -405,7 +401,6 @@ export class UserFormComponent implements OnInit, OnChanges {
                 },
                 i: number
               ) => {
-                console.log(i, index);
                 if (i.toString() != index) {
                   return schedule.days.map(
                     (day: { id: string; name: string }) => {
@@ -417,8 +412,6 @@ export class UserFormComponent implements OnInit, OnChanges {
               }
             )
             .flat();
-          console.log(scheduleDays);
-          console.log(daysArray);
 
           result[type].days = daysArray.filter(
             (day: { id: string; name: string }) =>
@@ -519,7 +512,6 @@ export class UserFormComponent implements OnInit, OnChanges {
   selectItem(event: { id: string; action: string }) {
     switch (event.action) {
       case 'edit':
-        console.log('editar');
         this.openFormModal(
           'schedule',
           this.scheduleField.value[event.id],

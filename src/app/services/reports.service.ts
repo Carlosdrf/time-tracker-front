@@ -17,14 +17,12 @@ export class ReportsService {
     this.userService.selectedUser = user;
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
     const info = this.toBeSent(dates, user, filters);
-    // console.log(info);
     return this.http.post(`${this.API_URI}/entries`, info, { headers });
   }
 
   getReport(dates: any, user: any = null, project: any = null) {
     const headers = new HttpHeaders({ 'content-type': 'application/json' });
     const info = this.toBeSent(dates, user, project);
-    // console.log('info: ', info);
     return this.http.post(`${this.API_URI}`, info, {
       headers,
       responseType: 'blob',

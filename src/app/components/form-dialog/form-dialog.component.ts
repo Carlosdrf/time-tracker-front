@@ -1,8 +1,4 @@
-import {
-  Component,
-  Inject,
-  OnInit,
-} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import {
   FormArray,
@@ -20,18 +16,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-form-dialog',
   standalone: true,
   imports: [
     MatFormFieldModule,
+    MatInputModule,
     MatAutocompleteModule,
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
     NgxMaterialTimepickerModule,
+    NgForOf,
+    NgIf,
   ],
   templateUrl: './form-dialog.component.html',
   styleUrl: './form-dialog.component.scss',

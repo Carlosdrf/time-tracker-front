@@ -29,7 +29,6 @@ export class PaymentHistoryComponent {
 
   viewMore(payment: any) {
     this.selectedPayment = payment; 
-    console.log(this.selectedPayment)
   }
 
   getUserName(){

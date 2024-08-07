@@ -5,6 +5,10 @@ import { UserOptionsComponent } from '../user-options/user-options.component';
 import { UsersService } from 'src/app/services/users.service';
 import { EntriesService } from 'src/app/services/entries.service';
 
+export interface Link {
+  url: string;
+  title: string;
+}
 @Component({
   selector: 'app-user-list',
   standalone: true,
@@ -17,7 +21,7 @@ export class UserListComponent {
   @Input() users!: any;
   @Input() timer: boolean = false;
   @Input() loaded!: boolean;
-  @Input() links: any;
+  @Input() links: Link[] = [];
   @Output() onSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onToggleStatus: EventEmitter<any> = new EventEmitter<any>();
 

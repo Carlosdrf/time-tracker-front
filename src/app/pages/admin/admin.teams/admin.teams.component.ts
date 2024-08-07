@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomDatePipe } from '../../../services/custom-date.pipe';
-import { FormControl, FormGroup } from '@angular/forms';
-import { UserListComponent } from 'src/app/components/user-list/user-list.component';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  Link,
+  UserListComponent,
+} from 'src/app/components/user-list/user-list.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { TimerComponent } from 'src/app/components/timer/timer.component';
 import { SearchComponent } from 'src/app/components/search/search.component';
@@ -17,20 +20,26 @@ import { userRoles } from 'src/app/app.models';
 })
 export class AdminTeamsComponent implements OnInit {
   public loaded: boolean = false;
-  public searchForm: FormGroup = new FormGroup({
-    searchField: new FormControl(''),
-    filter: new FormControl(userRoles.user),
-  });
+  public searchForm: FormGroup;
   public users: any = [];
-  public links: any = [
+  public links: Link[] = [
     { url: '/admin/entries', title: 'Entries' },
     { url: '/reports', title: 'Reports' },
   ];
 
   constructor(
     private userService: UsersService,
-    public customDate: CustomDatePipe
-  ) {}
+    public customDate: CustomDatePipe,
+    private fb: FormBuilder
+  ) {
+    this.searchForm = this.fb.group({
+      searchField: [''],
+      filter: this.fb.group({
+        status: [true],
+        role: [2],
+      }),
+    });
+  }
 
   ngOnInit() {
     this.loaded = false;
