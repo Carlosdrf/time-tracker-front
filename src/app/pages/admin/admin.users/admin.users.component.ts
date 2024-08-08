@@ -12,6 +12,7 @@ import {
 } from 'src/app/components/user-list/user-list.component';
 import { UsersService } from 'src/app/services/users.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin.users',
@@ -22,6 +23,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     UserFormComponent,
     SharedModule,
     MatSlideToggleModule,
+    RouterModule,
   ],
   templateUrl: './admin.users.component.html',
   styleUrl: './admin.users.component.scss',
@@ -29,6 +31,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 export class AdminUsersComponent {
   @ViewChild('appUser', { static: true }) appUser!: ElementRef;
   private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private activeRoute = inject(ActivatedRoute);
   private userService = inject(UsersService);
   public loaded: boolean = false;
   public searchForm: FormGroup;
@@ -71,10 +75,13 @@ export class AdminUsersComponent {
   userToggle() {
     if (this.selectedUser) {
       this.selectedUser = null;
+      this.isSlideIn = true;
       return;
     }
+
     this.isSlideIn = !this.isSlideIn;
   }
+
   setSelectedUser(user: any) {
     if (this.selectedUser && this.selectedUser.id === user.id) {
       this.isSlideIn = !this.isSlideIn;
@@ -97,34 +104,41 @@ export class AdminUsersComponent {
     }
     this.selectedUser = user;
   }
+
   handleDeletedUser(user_id: string) {
     this.users = this.users.filter((user: any) => user.id !== user_id);
     this.selectedUser = null;
   }
+
   toggleUserStatus(user: any) {
     user.active = !user.active;
     this.userService.update(user).subscribe({
       next: (value: any) => {
-        if (!user.active) {
-          this.users = this.users.filter((user: any) => user.id !== value.id);
-        }
+        this.users = this.users.filter((user: any) => user.id !== value.id);
       },
     });
   }
+
   isMobile() {
+    console.log('exec')
     if (window.innerWidth <= 576) {
       return true;
     }
     return false;
   }
+
   closeFormMobile(show: any) {
     this.isSlideIn = show;
     this.selectedUser = null;
   }
 
   loadUsersByType() {
-    this.loaded = false;
-    this.filterForm.get('status')?.setValue(this.showDisable);
-    this.getUsers();
+    if (this.showDisable !== this.filterForm.get('status')?.value) {
+      this.isSlideIn = false;
+      this.loaded = false;
+      this.filterForm.get('status')?.setValue(this.showDisable);
+      this.getUsers();
+      this.selectedUser = null;
+    }
   }
 }

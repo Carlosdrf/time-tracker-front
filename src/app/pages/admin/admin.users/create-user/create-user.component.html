@@ -1,0 +1,9 @@
+<app-side-panel title="Create new user" (closePanel)="closePanel()">
+  <p>it works</p>
+  <app-user
+    [selectedUser]="selectedUser"
+    (onSaveSelectedUser)="handleSavedUser($event)"
+    (onDeletedUser)="handleDeletedUser($event)"
+    (onMobileCloseForm)="closeFormMobile($event)"
+  ></app-user>
+</app-side-panel>

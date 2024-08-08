@@ -1,33 +1,33 @@
-@import '../../../styles.scss';
+@import "../../../styles.scss";
 
-.nav-link:hover{
-    color: $primary-color
+.nav-link:hover {
+  color: $primary-color;
 }
 
-.nav-link{
-    position: relative;
+.nav-link {
+  position: relative;
 }
-@media screen and (min-width: 991px){
-    .nav-link:hover::after{
-        height: 3px;
-        background-color: $primary-color;
-        position: absolute;
-        bottom: -8px;
-        left: 15px;
-        content: '';
-        width: calc(100% - 30px);
-        opacity: 1;
-        transition: all 0.3s ease;
-    }
-    .nav-link:after{
-        width: 30%;
-        height: 3px;
-        background-color: $primary-color;
-        position: absolute;
-        bottom: -15px;
-        left: 30%;
-        content: '';
-        opacity: 0;
-        transition: all 0.3s ease-out;
-    }
+@media screen and (min-width: 991px) {
+  .nav-link:hover::after {
+    height: 3px;
+    background-color: $primary-color;
+    position: absolute;
+    bottom: -8px;
+    left: 15px;
+    content: "";
+    width: calc(100% - 30px);
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+  .nav-link:after {
+    width: 30%;
+    height: 3px;
+    background-color: $primary-color;
+    position: absolute;
+    bottom: -15px;
+    left: 30%;
+    content: "";
+    opacity: 0;
+    transition: all 0.3s ease-out;
+  }
 }

@@ -17,14 +17,25 @@ export interface User {
   id: string;
   name: string;
   last_name: string;
-  profile?: any;
   email: string;
   password: string;
   role: number;
   active: number;
+  profile?: any;
+  review?: Review[];
   company?: Company;
   schedule?: Schedule;
-  employee?: Employee | undefined;
+  employee?: Employee;
+}
+
+export interface Review {
+  id: number;
+  end_time: Date;
+  start_time: Date;
+  date: string;
+  project_id?: number | null;
+  status: number;
+  task_id: number;
 }
 
 export interface Company {
@@ -43,7 +54,12 @@ export interface Employee {
 }
 
 export interface Schedule {
-  days: string[];
+  days: Day[];
   start_time: string;
   end_time: string;
+}
+
+export interface Day {
+  id: number;
+  name: string;
 }

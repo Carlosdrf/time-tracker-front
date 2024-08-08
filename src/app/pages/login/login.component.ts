@@ -6,6 +6,7 @@ import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { NotificationStore } from 'src/app/stores/notification.store';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -53,7 +54,7 @@ export class LoginComponent implements OnInit {
   }
 
   authLogin() {
-    if (this.login.email == '' && this.login.password == '') {
+    if (this.login.email == '' || this.login.password == '') {
       this.passerror = true;
       this.message = "Fields can't be empty";
       this.notificationStore.addNotifications(this.message);
@@ -73,18 +74,9 @@ export class LoginComponent implements OnInit {
           this.authService.setUserType(role);
           this.authService.userTypeRouting(role);
         },
-        error: (err) => {
-          if (err.status === 401) {
-            this.passerror = true;
-            this.message = 'Incorrect Pasword';
-            this.notificationStore.addNotifications(this.message, 'error');
-            this.authError();
-          } else if (err.status === 400) {
-            this.emailerror = true;
-            this.message = 'Wrong email';
-            this.notificationStore.addNotifications(this.message, 'error');
-            this.authError();
-          }
+        error: (err: HttpErrorResponse) => {
+          const { error } = err;
+          this.notificationStore.addNotifications(error.message);
         },
       });
     }

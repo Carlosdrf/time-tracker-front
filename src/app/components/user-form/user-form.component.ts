@@ -289,7 +289,6 @@ export class UserFormComponent implements OnInit, OnChanges {
         this.newUser.profile = this.userForm.value.profile;
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
-            // this.newUser.company = new Company();
             this.newUser.company = { id: this.userForm.value.company.id };
             this.newUser.company!.name = this.userForm.value.company.name;
             this.newUser.company!.timezone =
@@ -385,7 +384,10 @@ export class UserFormComponent implements OnInit, OnChanges {
           return;
         }
 
-        if (this.userForm.get('employee')?.get('schedule')?.value.length > 0) {
+        if (
+          this.userForm.get('employee')?.get('schedule')?.value &&
+          this.userForm.get('employee')?.get('schedule')?.value.length > 0
+        ) {
           const daysArray: Array<{ id: string; name: string }> =
             result[type].days;
 
