@@ -1,11 +1,13 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { Roles } from 'src/app/models/Roles';
 import {
@@ -13,10 +15,9 @@ import {
   FormControl,
   Validators,
   FormBuilder,
-  FormArray,
 } from '@angular/forms';
 import { Loader } from 'src/app/app.models';
-import { Company, Employee, User } from 'src/app/models/User.model';
+import { Company, Employee, Schedule, User } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { UsersService } from 'src/app/services/users.service';
@@ -26,49 +27,51 @@ import { PositionsService } from 'src/app/services/positions.service';
 import { Positions } from 'src/app/models/Position.model';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { SharedModule } from '../shared.module';
+import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
+import { NotificationStore } from 'src/app/stores/notification.store';
+import { MoreVertComponent, options } from '../more-vert/more-vert.component';
 
 @Component({
   selector: 'app-user',
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss'],
+  standalone: true,
+  imports: [SharedModule, MoreVertComponent],
+  templateUrl: './user-form.component.html',
+  styleUrls: ['./user-form.component.scss'],
 })
-export class UserComponent implements OnInit, OnChanges {
+export class UserFormComponent implements OnInit, OnChanges {
+  notificationStore = inject(NotificationStore);
   @Input() selectedUser: any;
   @Output() onSaveSelectedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeletedUser: EventEmitter<any> = new EventEmitter<any>();
   @Output() onMobileCloseForm: EventEmitter<any> = new EventEmitter<any>();
+  scheduleOptions: options[] = [
+    { name: 'Edit', action: 'edit', icon: 'fa-regular fa-pen-to-square' },
+    { name: 'Remove', action: 'delete', icon: 'fa-solid fa-trash' },
+  ];
+
   img: any;
   newUser: User = {
     id: '-1',
     name: '',
     last_name: '',
     email: '',
-    profile: undefined,
     password: '',
     role: 0,
-    company: new Company(),
-    employee: new Employee(),
+    active: 1,
   };
   loader: Loader = new Loader(false, false, false);
   roleList!: Roles[];
   title: string = 'New User';
   userForm!: FormGroup;
-  message: string | null = null;
+  message: string = '';
   companies: any;
   positions: Positions[] = [];
   ADMIN_ROLE = '1';
   EMPLOYEE_ROLE = '2';
   EMPLOYER_ROLE = '3';
   timezones!: any;
-  daysOfWeekOptions: string[] = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
+
   selectedDaysOfWeek: string[] = [];
   public show: boolean = false;
 
@@ -78,6 +81,7 @@ export class UserComponent implements OnInit, OnChanges {
     private companiesService: CompaniesService,
     private positionsService: PositionsService,
     private timezoneService: TimezoneService,
+    private customDate: CustomDatePipe,
     private dialog: MatDialog
   ) {
     this.userForm = this.fb.group({
@@ -90,24 +94,14 @@ export class UserComponent implements OnInit, OnChanges {
       cpassword: [''],
       company: this.fb.group({
         id: ['', [Validators.required]],
-        // name: [null, [Validators.required]],
-        // timezone: [''],
       }),
       employee: this.fb.group({
         id: [''],
         position: ['', [Validators.required]],
         hourly_rate: [''],
-        // daysOfWeek: this.fb.array([]),
-        // startTime: [null, [Validators.required]],
-        // endTime: [null, [Validators.required]],
+        schedule: [[]],
       }),
     });
-    // const daysOfWeekFormArray = this.userForm.get(
-    //   'employee.daysOfWeek'
-    // ) as FormArray;
-    // this.daysOfWeekOptions.forEach(() => {
-    //   daysOfWeekFormArray.push(new FormControl(false));
-    // });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -149,20 +143,20 @@ export class UserComponent implements OnInit, OnChanges {
     this.getRoles();
     this.getCompanies();
     this.getPositions();
-    this.userForm
-      .get('email')!
-      .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((email) => {
-        const userId = this.selectedUser ? this.selectedUser.id : -1;
-        this.userService.verifyUsername(email, userId).subscribe({
-          next: (v: any) => {
-            console.log(v);
-          },
-          error: (err: any) => {
-            console.error(err);
-          },
-        });
-      });
+    // this.userForm
+    //   .get('email')!
+    //   .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+    //   .subscribe((email) => {
+    //     const userId = this.selectedUser ? this.selectedUser.id : -1;
+    //     this.userService.verifyUsername(email, userId).subscribe({
+    //       next: (v: any) => {
+    //         console.log(v);
+    //       },
+    //       error: (err: any) => {
+    //         console.error(err);
+    //       },
+    //     });
+    //   });
     this.handleRole();
     this.timezoneService.fetchTimezonesApi().subscribe((data: any) => {
       if (data.status === 'OK' && Array.isArray(data.zones)) {
@@ -181,6 +175,7 @@ export class UserComponent implements OnInit, OnChanges {
     this.userForm.reset({ password: '', cpassword: '' });
     this.userForm.get('role')?.setValue('');
   }
+
   handlePasswordValidity() {
     const password = this.userForm.get('password');
 
@@ -192,6 +187,7 @@ export class UserComponent implements OnInit, OnChanges {
 
     password?.updateValueAndValidity();
   }
+
   handleRole() {
     this.userForm.get('role')!.valueChanges.subscribe((role: string) => {
       const companyGroup = this.userForm.get('company') as FormGroup;
@@ -223,17 +219,9 @@ export class UserComponent implements OnInit, OnChanges {
             this.fb.control(null, Validators.required)
           );
         }
-        if (!employeeGroup.get('daysOfWeek')) {
-          employeeGroup.addControl('daysOfWeek', this.fb.array([]));
-        }
-        this.addDaysOfWeekOptions();
-        if (!employeeGroup.get('startTime')) {
-          employeeGroup.addControl('startTime', this.fb.control(null));
-        }
-        if (!employeeGroup.get('endTime')) {
-          employeeGroup.addControl('endTime', this.fb.control(null));
-        }
         employeeGroup.addControl('id', this.fb.control(''));
+        employeeGroup.addControl('schedule', this.fb.control([]));
+
         if (!this.selectedUser) {
           this.userForm.get('employee')?.get('id')?.setValue('');
           this.userForm.get('employee')?.get('position')?.setValue('');
@@ -243,44 +231,13 @@ export class UserComponent implements OnInit, OnChanges {
           employeeGroup.removeControl(controlId);
         }
         companyGroup.addControl('id', this.fb.control(''));
-        // companyGroup.addControl('name', this.fb.control(''));
-        // companyGroup.addControl('description', this.fb.control(''));
-        // companyGroup.addControl('timezone', this.fb.control(''));
         if (!this.selectedUser) {
           companyGroup.get('id')?.setValue('');
         }
       }
     });
   }
-  public addDaysOfWeekOptions() {
-    const daysOfWeekArray = this.userForm.get(
-      'employee.daysOfWeek'
-    ) as FormArray;
-    const daysOfWeekOptions = [
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-      'sunday',
-    ];
 
-    daysOfWeekOptions.forEach((day) => {
-      const control = new FormControl(false);
-      daysOfWeekArray.push(control);
-    });
-
-    daysOfWeekArray.valueChanges.subscribe((selectedValues) => {
-      const selectedDaysOfWeek: string[] = [];
-      selectedValues.forEach((value: any, index: any) => {
-        if (value) {
-          selectedDaysOfWeek.push(daysOfWeekOptions[index]);
-        }
-      });
-      this.selectedDaysOfWeek = selectedDaysOfWeek;
-    });
-  }
   public getRoles() {
     this.userService.getRoles().subscribe({
       next: (roles: any) => {
@@ -320,9 +277,8 @@ export class UserComponent implements OnInit, OnChanges {
       this.userForm.value.role !== 'Select a role' &&
       this.userForm.value.company.id !== 'Select a company'
     ) {
-      if (this.selectedUser) {
-        this.newUser.id = this.selectedUser.id;
-      } else this.newUser.id = '-1';
+      if (this.selectedUser) this.newUser.id = this.selectedUser.id;
+      else this.newUser.id = '-1';
       if (this.userForm.value.password === this.userForm.value.cpassword) {
         this.message = '';
         this.newUser.name = this.userForm.value.name;
@@ -333,13 +289,12 @@ export class UserComponent implements OnInit, OnChanges {
         this.newUser.profile = this.userForm.value.profile;
         if (this.userForm.value.role == this.EMPLOYER_ROLE) {
           if (this.userForm.value.company != null) {
-            this.newUser.company = new Company();
-            this.newUser.company.id = this.userForm.value.company.id;
-            this.newUser.company.name = this.userForm.value.company.name;
-            this.newUser.company.timezone =
+            this.newUser.company = { id: this.userForm.value.company.id };
+            this.newUser.company!.name = this.userForm.value.company.name;
+            this.newUser.company!.timezone =
               this.userForm.value.company.timezone;
             if (this.userForm.value.company.description != null) {
-              this.newUser.company.description =
+              this.newUser.company!.description =
                 this.userForm.value.company.description;
             }
           }
@@ -348,37 +303,47 @@ export class UserComponent implements OnInit, OnChanges {
           this.userForm.value.employee &&
           this.EMPLOYEE_ROLE == this.userForm.value.role
         ) {
-          this.newUser.employee = new Employee();
-          this.newUser.employee.id = this.userForm.value.employee.id
-            ? this.userForm.value.employee.id
-            : '';
-          this.newUser.employee.position =
+          this.newUser.employee = { id: this.userForm.value.employee.id };
+          // this.newUser.employee!.id = this.userForm.value.employee.id
+          //   ? this.userForm.value.employee.id
+          //   : '';
+          this.newUser.employee!.position =
             this.userForm.value.employee.position;
-          this.newUser.employee.hourly_rate =
+          this.newUser.employee!.hourly_rate =
             this.userForm.value.employee.hourly_rate;
-          this.newUser.employee.daysOfWeek = this.selectedDaysOfWeek;
-          this.newUser.employee.startTime =
-            this.userForm.value.employee.startTime;
-          this.newUser.employee.endTime = this.userForm.value.employee.endTime;
+          if (this.userForm.value.employee.schedule)
+            this.newUser.employee!.schedule =
+              this.userForm.value.employee.schedule;
         }
+
         this.userService.createUser(this.newUser).subscribe({
           next: (user) => {
             this.onSaveSelectedUser.emit(user);
             this.loader = new Loader(true, true, false);
+            const message =
+              this.newUser.id == '-1'
+                ? 'User Added Successfully'
+                : 'User Updated Successfully';
+            this.notificationStore.addNotifications(message, 'success');
           },
           error: (err) => {
             this.loader = new Loader(true, false, true);
-            this.message = err.error.message;
+            this.notificationStore.addNotifications(err.error.message, 'error');
           },
         });
       } else {
         this.loader = new Loader(true, false, true);
-        // this.resetLoader();
-        this.message = 'Confirm password error';
+        this.notificationStore.addNotifications(
+          'Confirm password error',
+          'error'
+        );
       }
     } else {
       this.loader = new Loader(true, false, true);
-      this.message = 'All fields must be filled';
+      this.notificationStore.addNotifications(
+        'All fields must be filled',
+        'error'
+      );
     }
   }
 
@@ -390,6 +355,10 @@ export class UserComponent implements OnInit, OnChanges {
       if (value) {
         this.userService.delete(id).subscribe({
           next: (value) => {
+            this.notificationStore.addNotifications(
+              'User Deleted Successfully',
+              'success'
+            );
             this.onDeletedUser.emit(id);
           },
         });
@@ -397,18 +366,168 @@ export class UserComponent implements OnInit, OnChanges {
     });
   }
 
-  createFormField() {
-    const dialog = this.dialog.open(FormDialogComponent);
+  openFormModal(type: string, fieldData?: any, index?: string) {
+    let data = {
+      type,
+      fieldData,
+    };
+    const dialog = this.dialog.open(FormDialogComponent, { data });
 
-    dialog.afterClosed().subscribe((company: any) => {
-      if (company) {
-        this.companiesService.submit(company).subscribe({
-          next: (response: any) => {
-            this.companies.push(response);
-          },
-        });
+    dialog.afterClosed().subscribe((result: boolean | any) => {
+      if (result) {
+        if (type == 'company') {
+          this.companiesService.submit(result).subscribe({
+            next: (response: any) => {
+              this.companies.push(response);
+            },
+          });
+          return;
+        }
+
+        if (
+          this.userForm.get('employee')?.get('schedule')?.value &&
+          this.userForm.get('employee')?.get('schedule')?.value.length > 0
+        ) {
+          const daysArray: Array<{ id: string; name: string }> =
+            result[type].days;
+
+          const scheduleDays = this.userForm
+            .get('employee')
+            ?.get(type)
+            ?.value.map(
+              (
+                schedule: {
+                  days: Array<{ id: string; name: string }>;
+                  start_time: string;
+                  end_time: string;
+                },
+                i: number
+              ) => {
+                if (i.toString() != index) {
+                  return schedule.days.map(
+                    (day: { id: string; name: string }) => {
+                      return day.name;
+                    }
+                  );
+                }
+                return [];
+              }
+            )
+            .flat();
+
+          result[type].days = daysArray.filter(
+            (day: { id: string; name: string }) =>
+              scheduleDays.indexOf(day.name) == -1
+          );
+          let checkDays = daysArray.find(
+            (day: { id: string; name: string }) =>
+              scheduleDays.indexOf(day.name) != -1
+          );
+
+          if (checkDays) {
+            this.notificationStore.addNotifications(
+              "Cant't add days that have already been selected"
+            );
+          }
+        }
+
+        if (result[type].days.length > 0) {
+          let scheduleArray =
+            this.scheduleField.value.map((schedule: any, i: number) => {
+              if (index == i.toString()) {
+                return result[type];
+              } else {
+                return schedule;
+              }
+            }) || [];
+          if (!index) scheduleArray.push(result[type]);
+          this.userForm.get('employee')?.get(type)?.setValue(scheduleArray);
+        }
       }
     });
+  }
+
+  checkSelectedDays(): boolean {
+    let count = 0;
+
+    if (this.scheduleField && this.scheduleField.value) {
+      this.scheduleField?.value.forEach((schedule: any) => {
+        count = schedule.days.length + count;
+      });
+      if (count < 7) return false;
+      return true;
+    }
+    return false;
+  }
+
+  private get scheduleField() {
+    return this.userForm.get('employee')?.get('schedule') as FormControl;
+  }
+
+  displaySchedulesDays(days: any): String {
+    return days
+      .map((day: any) => day.name || day.day)
+      .toString()
+      .replaceAll(',', ', ');
+  }
+
+  displayScheduleTimes(timeStr: string) {
+    let modifier;
+    let hours, minutes;
+
+    if (timeStr.includes(' ')) {
+      return timeStr;
+    } else {
+      [hours, minutes] = timeStr.split(':', 2).map(Number);
+      if (hours >= 12) {
+        hours = hours == 12 ? hours : hours - 12;
+        modifier = 'PM';
+      } else if (hours == 0) {
+        hours = 12;
+        modifier = 'AM';
+      } else if (hours < 12 && hours > 0) {
+        modifier = 'AM';
+      }
+      return `${this.customDate.padzero(hours)}:${this.customDate.padzero(
+        minutes
+      )} ${modifier}`;
+    }
+  }
+
+  removeDayFromSchedule(
+    selectedDay: { id: string; name: string },
+    i: number
+  ): void {
+    const daysArray = (
+      this.scheduleField.value[i].days as Array<{ id: string; name: string }>
+    ).filter((day) => day.id != selectedDay.id);
+    if (daysArray.length < 1) {
+      let schedule = this.scheduleField.value.filter(
+        (schedule: any, index: number) => index != i
+      );
+      this.scheduleField.setValue(schedule);
+    } else {
+      this.scheduleField.value[i].days = daysArray;
+    }
+  }
+
+  selectItem(event: { id: string; action: string }) {
+    switch (event.action) {
+      case 'edit':
+        this.openFormModal(
+          'schedule',
+          this.scheduleField.value[event.id],
+          event.id
+        );
+        break;
+      case 'delete':
+      case 'remove':
+        let scheduleList = this.scheduleField.value.filter(
+          (day: any, i: string) => event.id != i
+        );
+        this.scheduleField.setValue(scheduleList);
+        break;
+    }
   }
 
   onFileSelected(event: any) {

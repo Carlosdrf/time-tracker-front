@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { UsersService } from 'src/app/services/users.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
@@ -10,6 +10,7 @@ import { EntriesService } from 'src/app/services/entries.service';
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
+  userService = inject(UsersService);
   authenticated: boolean = false;
   isAdmin: boolean = false;
   userType: any;
@@ -18,7 +19,6 @@ export class NavigationComponent implements OnInit {
   recentNotifications: any[] = [];
   reviewEntries: any = [];
   constructor(
-    private userService: UsersService,
     private authService: AuthService,
     private element: ElementRef,
     private notificationsService: NotificationsService,
@@ -71,9 +71,13 @@ export class NavigationComponent implements OnInit {
   toggleMenu() {
     this.isActive = !this.isActive;
   }
-  hideNav(event: any) {
+  hideNav(event: Event): void {
     if (!this.element.nativeElement.contains(event.target)) {
       this.isActive = false;
     }
+  }
+
+  clearSelectedUser() {
+    this.userService.resetUser();
   }
 }

@@ -24,7 +24,7 @@ const jwtOptions = {
 };
 
 @NgModule({
-  declarations: [AppComponent, PagesComponent],
+  declarations: [AppComponent],
   exports: [
     // CustomDatePipe,
   ],

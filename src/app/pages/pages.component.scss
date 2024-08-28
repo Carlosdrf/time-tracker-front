@@ -8,7 +8,7 @@
   color: $primary-color;
 }
 .accent-color {
-  color: $secondary-color;
+  color: $accent-color;
 }
 .mat-mdc-progress-spinner {
   --mdc-circular-progress-active-indicator-color: #92b46c;
@@ -31,7 +31,7 @@ a {
   transition: all 0.5s ease-in-out;
 }
 .alert-success {
-  background-color: $accent;
+  background-color: $accent-color;
 }
 .mat-primary {
   color: white !important;
@@ -81,7 +81,7 @@ ul {
 .scrollbar-hidden {
   scrollbar-width: none;
 }
-.scrollbar-thin{
+.scrollbar-thin {
   scrollbar-width: thin;
 }
 /** scroll bar in form*/
@@ -93,7 +93,7 @@ ul {
   width: 8px;
 }
 .i-flow::-webkit-scrollbar-thumb {
-  background: $accent;
+  background: $accent-color;
   border-radius: 8px;
 }
 
@@ -101,9 +101,9 @@ ul {
   background-color: transparent;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
-.i-flow::webkit-scrollbar-button { 
-  display:none;
- }
+.i-flow::webkit-scrollbar-button {
+  display: none;
+}
 
 .bg-container {
   background-position: center center;
@@ -129,4 +129,13 @@ ul {
 .cursor-pointer {
   cursor: pointer !important;
   cursor: hand;
+}
+
+.user-ico {
+  font-size: 35px;
+}
+
+.timepicker-overlay,
+.timepicker-backdrop-overlay {
+  z-index: 10000 !important;
 }

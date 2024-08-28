@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { userRoles } from 'src/app/app.models';
@@ -10,9 +10,9 @@ import { CustomDatePipe } from 'src/app/services/custom-date.pipe';
 import { EntriesService } from 'src/app/services/entries.service';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
 import { UsersService } from 'src/app/services/users.service';
-import { PagesComponent } from '../../pages.component';
 import { EntriesComponent } from 'src/app/components/entries/entries.component';
 import { Entries } from 'src/app/models/Entries';
+import { NotificationStore } from 'src/app/stores/notification.store';
 
 @Component({
   selector: 'app-entries-employees',
@@ -28,6 +28,7 @@ import { Entries } from 'src/app/models/Entries';
   styleUrls: ['./entries.employees.component.scss'],
 })
 export class EntriesEmployeesComponent implements OnInit {
+  store = inject(NotificationStore);
   @Output() getAlert: EventEmitter<any> = new EventEmitter<any>();
   name: any;
   entries: any = [];
@@ -47,8 +48,7 @@ export class EntriesEmployeesComponent implements OnInit {
   constructor(
     private socketService: WebSocketService,
     private entriesService: EntriesService,
-    public customDate: CustomDatePipe,
-    private page: PagesComponent
+    public customDate: CustomDatePipe
   ) {}
 
   ngOnInit() {
@@ -91,7 +91,7 @@ export class EntriesEmployeesComponent implements OnInit {
       this.loaded = true;
     });
   }
-  
+
   addEntry(data: any) {
     this.entriesService.createEntry(data).subscribe((startedEntry: any) => {
       this.currentEntryId = startedEntry.id;
@@ -99,7 +99,7 @@ export class EntriesEmployeesComponent implements OnInit {
       this.start_time = new Date();
       this.entryCheck = true;
       this.message = 'Entry Started Successfully';
-      this.page.setAlert(this.message);
+      this.store.addNotifications(this.message);
       this.socketService.socket.emit('client:start_timer', startedEntry);
       this.socketService.socket.emit('client:loadEntries', this.entries);
     });
@@ -109,7 +109,7 @@ export class EntriesEmployeesComponent implements OnInit {
     this.entriesService.closeCurrentEntry(currentEntry).subscribe((v) => {
       this.getEntries();
       this.message = 'Entry Ended Successfully';
-      this.page.setAlert(this.message);
+      this.store.addNotifications(this.message);
       this.socketService.socket.emit('client:end_entry', 'mensaje');
     });
   }
@@ -118,7 +118,7 @@ export class EntriesEmployeesComponent implements OnInit {
     this.entriesService.deleteEntry(id).subscribe((v) => {
       this.getEntries();
       this.message = 'Entry deleted!';
-      this.page.setAlert(this.message);
+      this.store.addNotifications(this.message);
     });
   }
 }

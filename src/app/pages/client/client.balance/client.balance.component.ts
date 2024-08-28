@@ -18,7 +18,7 @@ export class ClientBalanceComponent implements OnInit {
 
   ngOnInit() {
     this.getPayments();
-    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }
   getPending() {
     if (this.pending && this.pending.length > 0) return true;

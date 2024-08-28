@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,12 +18,12 @@ import { ModalComponent } from 'src/app/components/confirmation-modal/modal.comp
 import { SharedModule } from 'src/app/components/shared.module';
 import { Company } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
-import { PagesComponent } from '../../pages.component';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UsersService } from 'src/app/services/users.service';
 import { MatSelect } from '@angular/material/select';
+import { NotificationStore } from 'src/app/stores/notification.store';
 
 @Component({
   selector: 'app-client.projects',
@@ -27,9 +33,10 @@ import { MatSelect } from '@angular/material/select';
   styleUrl: './client.projects.component.scss',
 })
 export class ClientProjectsComponent implements OnInit {
+  store = inject(NotificationStore);
+  @ViewChild(MatSelect) matSelect!: MatSelect;
   selectedEmployees: any[] = [];
   selectedOptions = new FormControl();
-  @ViewChild(MatSelect) matSelect!: MatSelect;
   managementForm: FormGroup = this.fb.group({
     project: this.fb.group({
       name: ['', [Validators.required]],
@@ -71,8 +78,7 @@ export class ClientProjectsComponent implements OnInit {
     private companiesService: CompaniesService,
     private projectService: ProjectsService,
     private userService: UsersService,
-    private dialog: MatDialog,
-    private page: PagesComponent
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -213,7 +219,7 @@ export class ClientProjectsComponent implements OnInit {
           next: (response: any) => {
             if (!this.selectedForm) {
               option.elements.push(response);
-              this.page.setAlert('Project Created Successfully');
+              this.store.addNotifications('Project Created Successfully');
               this.resetForm();
               return;
             }
@@ -227,11 +233,11 @@ export class ClientProjectsComponent implements OnInit {
           },
           error: (err: ErrorEvent) => {
             const { error } = err;
-            this.page.setAlert(error.message);
+            this.store.addNotifications(error.message);
           },
         });
     } else {
-      this.page.setAlert('Fill the required fields');
+      this.store.addNotifications('Fill the required fields');
     }
   }
 

@@ -1,15 +1,22 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Login, SignUp } from '../../models/Auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WebSocketService } from 'src/app/services/socket/web-socket.service';
+import { NotificationStore } from 'src/app/stores/notification.store';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [FormsModule, NgIf],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  notificationStore = inject(NotificationStore);
   @HostBinding('class') classes = 'row';
   isSignUp: boolean = false;
   login: Login = {
@@ -35,6 +42,7 @@ export class LoginComponent {
   ngOnInit() {
     this.isSignUp = this.route.snapshot.queryParams['isSignUp'] === 'true';
   }
+
   signIntoUp() {
     this.isSignUp = !this.isSignUp;
     const path = this.isSignUp ? 'signup' : 'login';
@@ -44,10 +52,12 @@ export class LoginComponent {
       this.router.navigate([path], { queryParams: { isSignUp: true } });
     }
   }
+
   authLogin() {
-    if (this.login.email == '' && this.login.password == '') {
+    if (this.login.email == '' || this.login.password == '') {
       this.passerror = true;
       this.message = "Fields can't be empty";
+      this.notificationStore.addNotifications(this.message);
       this.authError();
     } else {
       this.authService.login(this.login.email, this.login.password).subscribe({
@@ -64,20 +74,14 @@ export class LoginComponent {
           this.authService.setUserType(role);
           this.authService.userTypeRouting(role);
         },
-        error: (err) => {
-          if (err.status === 401) {
-            this.passerror = true;
-            this.message = 'Incorrect Pasword';
-            this.authError();
-          } else if (err.status === 400) {
-            this.emailerror = true;
-            this.message = 'Wrong email';
-            this.authError();
-          }
+        error: (err: HttpErrorResponse) => {
+          const { error } = err;
+          this.notificationStore.addNotifications(error.message);
         },
       });
     }
   }
+
   authError() {
     setTimeout(() => {
       this.emailerror = false;
@@ -85,6 +89,7 @@ export class LoginComponent {
       this.passerror = false;
     }, 3000);
   }
+
   authSignup() {
     if (
       this.signUp.password === this.signUp.confirmPass &&

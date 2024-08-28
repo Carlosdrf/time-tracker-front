@@ -9,9 +9,9 @@ export const router = [
 ]
 
 @NgModule({
-    declarations: [
-        LoginComponent
-    ],
+    // declarations: [
+    //     LoginComponent
+    // ],
     imports: [
         SharedModule,
         CommonModule,

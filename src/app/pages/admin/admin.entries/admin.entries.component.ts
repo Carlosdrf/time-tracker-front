@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { EntriesService } from '../../../services/entries.service';
 import { Entries } from '../../../models/Entries';
 import { Router } from '@angular/router';
 import { CustomDatePipe } from '../../../services/custom-date.pipe';
-import { PagesComponent } from '../../pages.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { EntriesComponent } from 'src/app/components/entries/entries.component';
 import { UsersService } from 'src/app/services/users.service';
 import { Location } from '@angular/common';
+import { NotificationStore } from 'src/app/stores/notification.store';
 
 @Component({
   selector: 'app-reports',
@@ -17,6 +17,7 @@ import { Location } from '@angular/common';
   imports: [SharedModule, EntriesComponent],
 })
 export class AdminEntriesComponent implements OnInit {
+  store = inject(NotificationStore);
   currentEntryId: string = '';
   regex = /^\d+$/;
   entry: Entries = {
@@ -28,7 +29,7 @@ export class AdminEntriesComponent implements OnInit {
   };
   reviewEntries: any = [];
   entries: any;
-  user: any = { id: null, name: null};
+  user: any = { id: null, name: null };
   entryCheck: any;
   updateDate: Date = new Date();
   loaded!: boolean;
@@ -42,12 +43,11 @@ export class AdminEntriesComponent implements OnInit {
     private userService: UsersService,
     private entriesService: EntriesService,
     private router: Router,
-    private page: PagesComponent,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.user = this.userService.selectedUser
+    this.user = this.userService.selectedUser;
     if (this.user.id) {
       this.getEntries();
     } else {
@@ -109,15 +109,16 @@ export class AdminEntriesComponent implements OnInit {
   public deleteEntry(id: number) {
     this.entriesService.deleteEntry(id).subscribe((v) => {
       this.message = 'Entry deleted!';
-      this.page.setAlert(this.message);
+      this.store.addNotifications(this.message);
       this.getEntries();
     });
   }
+
   public authorizeEntry(entry: any) {
     this.entriesService.updateEntry(entry.id, entry).subscribe({
       next: () => {
         this.message = 'Entry confirmed!';
-        this.page.setAlert(this.message);
+        this.store.addNotifications(this.message);
         this.getEntries();
       },
     });

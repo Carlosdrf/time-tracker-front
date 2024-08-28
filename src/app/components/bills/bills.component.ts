@@ -64,7 +64,7 @@ export class BillsComponent implements OnInit {
     const paymentParams: NavigationExtras = {
       queryParams: data,
     };
-    console.log(paymentParams);
+    // console.log(paymentParams);
     this.router.navigate(['/client/payments'], paymentParams);
   }
 }

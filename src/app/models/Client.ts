@@ -7,3 +7,12 @@ export interface PossibleClient {
   positions: string;
   tasks_description: string;
 }
+
+export interface PossibleMember {
+  name: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  englishLevel: string;
+  resume: File
+}

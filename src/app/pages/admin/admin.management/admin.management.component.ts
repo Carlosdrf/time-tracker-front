@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
@@ -7,10 +7,10 @@ import { SharedModule } from 'src/app/components/shared.module';
 import { Company } from 'src/app/models/User.model';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { PositionsService } from 'src/app/services/positions.service';
-import { PagesComponent } from '../../pages.component';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { TimezoneService } from 'src/app/services/timezone.service';
 import { Project } from 'src/app/models/Project.model';
+import { NotificationStore } from 'src/app/stores/notification.store';
 
 @Component({
   selector: 'app-admin.management',
@@ -20,6 +20,7 @@ import { Project } from 'src/app/models/Project.model';
   styleUrl: './admin.management.component.scss',
 })
 export class AdminManagementComponent implements OnInit {
+  store = inject(NotificationStore);
   managementForm: FormGroup = this.fb.group({
     position: this.fb.group({
       title: ['', [Validators.required]],
@@ -113,8 +114,7 @@ export class AdminManagementComponent implements OnInit {
     private positionService: PositionsService,
     private projectService: ProjectsService,
     private timezoneService: TimezoneService,
-    private dialog: MatDialog,
-    private page: PagesComponent
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -335,7 +335,7 @@ export class AdminManagementComponent implements OnInit {
         )
         .subscribe({
           next: (response: any) => {
-            this.page.setAlert('Saved Successfully!');
+            this.store.addNotifications('Saved Successfully!', 'success');
             if (!this.selectedForm) {
               option.elements.push(response);
 
@@ -352,11 +352,11 @@ export class AdminManagementComponent implements OnInit {
           },
           error: (err: ErrorEvent) => {
             const { error } = err;
-            this.page.setAlert(error.message);
+            this.store.addNotifications(error.message, 'error');
           },
         });
     } else {
-      this.page.setAlert('Fill the required fields');
+      this.store.addNotifications('Fill the required fields');
     }
   }
   deleteOption(id: number, option: any) {
@@ -371,10 +371,11 @@ export class AdminManagementComponent implements OnInit {
             option.elements = option.elements.filter(
               (option: any) => option.id != id
             );
+            this.store.addNotifications('Success Operation');
           },
           error: (err: ErrorEvent) => {
             const { error } = err;
-            this.page.setAlert(error.message);
+            this.store.addNotifications(error.message, 'error');
           },
         });
       }

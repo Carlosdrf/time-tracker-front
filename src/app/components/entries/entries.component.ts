@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { CustomDatePipe } from '../../services/custom-date.pipe';
 import { EntriesService } from '../../services/entries.service';
 import { Entries } from '../../models/Entries';
@@ -7,6 +14,7 @@ import { ModalComponent } from '../confirmation-modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EntryComponent } from '../entry/entry.component';
 import { SharedModule } from '../shared.module';
+import { NotificationStore } from 'src/app/stores/notification.store';
 
 @Component({
   selector: 'app-entries',
@@ -16,6 +24,7 @@ import { SharedModule } from '../shared.module';
   imports: [EntryComponent, SharedModule],
 })
 export class EntriesComponent implements OnInit {
+  store = inject(NotificationStore);
   @Output() getEntries: EventEmitter<any> = new EventEmitter<any>();
   @Output() onDeleteEntry: EventEmitter<any> = new EventEmitter<any>();
   @Output() onAuthorizeEntry: EventEmitter<any> = new EventEmitter<any>();
@@ -40,7 +49,6 @@ export class EntriesComponent implements OnInit {
   constructor(
     private entriesService: EntriesService,
     private customDate: CustomDatePipe,
-    private page: PagesComponent,
     private dialog: MatDialog
   ) {}
 
@@ -74,7 +82,7 @@ export class EntriesComponent implements OnInit {
       .updateEntryTask(entry.task_id, entry)
       .subscribe((res) => {
         this.message = res.message;
-        this.page.setAlert(this.message);
+        this.store.addNotifications(this.message);
         this.getEntries.emit();
       });
   }
@@ -95,11 +103,11 @@ export class EntriesComponent implements OnInit {
         next: () => {
           this.getEntries.emit();
           this.message = 'Start time updated successfully!';
-          this.page.setAlert(this.message);
+          this.store.addNotifications(this.message);
         },
         error: (e) => {
           this.message = e.error.message;
-          this.page.setAlert(this.message);
+          this.store.addNotifications(this.message);
           this.getEntries.emit();
         },
       });
@@ -123,11 +131,11 @@ export class EntriesComponent implements OnInit {
         next: (v) => {
           this.getEntries.emit();
           this.message = 'End time updated successfully!';
-          this.page.setAlert(this.message);
+          this.store.addNotifications(this.message);
         },
         error: (e) => {
           this.message = e.error.message;
-          this.page.setAlert(this.message);
+          this.store.addNotifications(this.message);
           this.getEntries.emit();
         },
       });

@@ -1,0 +1,76 @@
+<form
+  [formGroup]="registerForm"
+  class="border rounded-5 shadow p-4 text-center mt-2"
+  (submit)="handleSubmit()"
+>
+  <div *ngFor="let field of fields; let i = index" class="mb-4 d-flex gap-2">
+    <div class="px-3 d-flex align-items-center rounded-circle bg-dark">
+      <span class="rounded-circle text-white fs-3 montserrat-custom-font">{{
+        i + 1
+      }}</span>
+    </div>
+    <input
+      *ngIf="field.type == 'text'"
+      type="text"
+      class="w-100 form-control border rounded-5"
+      placeholder="{{ field.label }}"
+      formControlName="{{ field.control }}"
+    />
+    <select
+      *ngIf="field.type == 'select'"
+      name="{{ field.label }}"
+      id=""
+      class="form-select border rounded-5"
+      [ngClass]="{ 'text-muted': registerForm.get(field.control)?.value == '' }"
+      formControlName="{{ field.control }}"
+    >
+      <option value="" disabled>{{ field.label }}</option>
+      <option *ngFor="let option of field.options" [value]="option">
+        {{ option }}
+      </option>
+    </select>
+    <div
+      *ngIf="field.type == 'file'"
+      class="cursor-pointer form-control rounded-5 border d-flex align-items-center gap-2 overflow-hidden"
+      (click)="resumeInput.click()"
+    >
+      <span class="text-start text-muted text-nowrap col-auto">{{
+        field.label
+      }}</span>
+      <div class="vr"></div>
+      <span
+        class="file-name fs-6 text-start"
+        [ngClass]="{ 'text-muted': !fileName }"
+        >{{ fileName || "No file selected yet" }}</span
+      >
+      <input
+        #resumeInput
+        hidden
+        accept="application/pdf"
+        type="file"
+        (change)="onFileChange($event)"
+        class="form-control rounded-5 border"
+      />
+    </div>
+  </div>
+  <div class="position-relative mb-2 mt-5">
+    <button
+      mat-raised-button
+      color="primary"
+      class="rounded-5 p-2 px-5 fw-bold fs-4"
+    >
+      Send
+    </button>
+    <app-loader
+      class="position-absolute start-0 bottom-0 top-0"
+      [loader]="loader"
+      [diameter]="48"
+    ></app-loader>
+  </div>
+  <p
+    [ngClass]="{ 'text-danger': formStatus.isInvalid }"
+    *ngIf="formStatus.isInvalid || formStatus.message"
+  >
+    {{ formStatus.message }}
+  </p>
+</form>

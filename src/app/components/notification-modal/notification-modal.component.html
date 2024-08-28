@@ -1,0 +1,16 @@
+<div class="notificationContainer">
+  <ng-container *ngFor="let notification of notificationStore.notifications()">
+    <div
+      class="p-3 rounded-start border notificationModal"
+      [ngClass]="{
+        slideOut: notification.show == false,
+        slideIn: notification.show,
+        'bg-success': notification.type == 'success',
+        'bg-accent': notification.type == 'normal',
+        'bg-danger': notification.type == 'error'
+      }"
+    >
+      <p class="mb-0 text-white">{{ notification.message }}</p>
+    </div></ng-container
+  >
+</div>

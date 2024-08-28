@@ -3,6 +3,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { SharedModule } from '../shared.module';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
+export interface SearchForm {
+  searchField: string;
+  filter: FilterData;
+}
+export interface FilterData {
+  role: string;
+  status: false;
+}
 @Component({
   selector: 'app-search',
   standalone: true,

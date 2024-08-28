@@ -11,13 +11,18 @@ import { CalendarComponent } from 'src/app/components/calendar/calendar.componen
 import { UserOptionsComponent } from 'src/app/components/user-options/user-options.component';
 import { SharedModule } from 'src/app/components/shared.module';
 import { UsersService } from 'src/app/services/users.service';
+import {
+  ReportFilter,
+  ReportsFilterComponent,
+} from 'src/app/components/reports-filter/reports-filter.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
   standalone: true,
-  imports: [UserOptionsComponent, SharedModule],
+  imports: [UserOptionsComponent, SharedModule, ReportsFilterComponent, NgIf],
 })
 export class ReportsComponent implements OnInit {
   selectedUser: any;
@@ -33,6 +38,14 @@ export class ReportsComponent implements OnInit {
   params!: string;
   user: any = { id: null, name: null, company: null };
   projectId: string = '';
+  filters: ReportFilter = {
+    user: 'all',
+    company: 'all',
+    project: 'all',
+    byClient: false,
+    useTimezone: false,
+  };
+
   // chart init
   single: any;
   chart: any;
@@ -43,24 +56,21 @@ export class ReportsComponent implements OnInit {
 
   // chart bottom
   constructor(
-    private EntriesService: EntriesService,
     private userService: UsersService,
     public customDate: CustomDatePipe,
     private reportsService: ReportsService,
     private elementRef: ElementRef
   ) {}
 
-  ngOnChanges(change: SimpleChanges) {
-    // console.log(this.calendarHead);
-  }
   ngOnInit(): void {
     this.defaultWeek();
+
     this.user = this.userService.selectedUser
       ? this.userService.selectedUser
       : null;
 
     this.filteredEntries = [];
-    this.getEntries();
+    // this.getEntries();
 
     document.addEventListener('click', this.onClick.bind(this));
     this.canvas = document.getElementById('myChart') as HTMLCanvasElement;
@@ -134,6 +144,14 @@ export class ReportsComponent implements OnInit {
         },
       });
     }
+    // this.getEntries();
+  }
+
+  displayNameIfAny(): string {
+    if (typeof this.filters.user != 'string') {
+      return `${this.filters.user.name} ${this.filters.user.last_name}`;
+    }
+    return '';
   }
 
   filterByUser(user: any) {
@@ -159,30 +177,24 @@ export class ReportsComponent implements OnInit {
     }
   }
 
+  handleSelection(filters: ReportFilter) {
+    this.filters = filters;
+    this.getEntries();
+  }
+
   getEntries() {
     this.reportsService
-      .getRange(this.datesRange, this.user)
+      .getRange(this.datesRange, this.user, this.filters)
       .subscribe((v) => {
         this.entries = v;
-        let filteredEntries = this.entries;
-        if (
-          this.selectedProject &&
-          this.selectedProject.id !== '0' &&
-          this.selectedProject.id !== null
-        ) {
-          filteredEntries = filteredEntries.filter(
-            (entry: any) => entry.project_id === this.selectedProject.id
-          );
-        }
-
-        this.arrangeEntries(filteredEntries);
+        this.arrangeEntries(v);
       });
   }
 
   downloadReport() {
     if (this.user.id) {
       this.reportsService
-        .getReport(this.datesRange, this.user, this.selectedProject)
+        .getReport(this.datesRange, this.user, this.filters)
         .subscribe((v) => {
           let filename;
           let display_name;
@@ -198,15 +210,17 @@ export class ReportsComponent implements OnInit {
           filesaver.saveAs(v, filename);
         });
     } else {
-      this.reportsService.getReport(this.datesRange, this.user, this.selectedProject).subscribe((v) => {
-        let filename;
-        filename = `I-nimble_${moment(
-          new Date(this.datesRange.firstSelect)
-        ).format('DD-MM-YYYY')}_${moment(
-          new Date(this.datesRange.lastSelect)
-        ).format('DD-MM-YYYY')}.xlsx`;
-        filesaver.saveAs(v, filename);
-      });
+      this.reportsService
+        .getReport(this.datesRange, this.user, this.filters)
+        .subscribe((v) => {
+          let filename;
+          filename = `I-nimble_${moment(
+            new Date(this.datesRange.firstSelect)
+          ).format('DD-MM-YYYY')}_${moment(
+            new Date(this.datesRange.lastSelect)
+          ).format('DD-MM-YYYY')}.xlsx`;
+          filesaver.saveAs(v, filename);
+        });
     }
   }
 

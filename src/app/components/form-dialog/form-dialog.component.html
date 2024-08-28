@@ -1,18 +1,22 @@
-<h2 mat-dialog-title>Create a Company Express!</h2>
+<h2 mat-dialog-title>Create a {{ data.type }} Express!</h2>
 <mat-dialog-content>
-  <div class="d-flex flex-column" [formGroup]="companyForm">
-    <ng-container *ngFor="let form of companyFields">
+  <div class="d-flex flex-column" [formGroup]="dialogForm">
+    <ng-container
+      *ngFor="let form of formFields"
+      formGroupName="{{ data.type }}"
+    >
       <mat-form-field *ngIf="form.type == 'text'">
         <mat-label>{{ form.label }}</mat-label>
         <input matInput formControlName="{{ form.control }}" />
       </mat-form-field>
-      <mat-form-field *ngIf="form.type == 'select'">
+
+      <mat-form-field *ngIf="form.type == 'autocomplete'">
         <mat-label>{{ form.label }}</mat-label>
         <input
           matInput
           formControlName="{{ form.control }}"
           [matAutocomplete]="auto"
-          (keyup)="search(companyForm.get(form.control)?.value)"
+          (keyup)="search(dialogForm.get(data.type)?.get(form.control)?.value)"
         />
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option
@@ -22,21 +26,46 @@
           >
         </mat-autocomplete>
       </mat-form-field>
+
+      <mat-form-field class="flex" *ngIf="form.type == 'select'">
+        <mat-label>{{ form.label }}</mat-label>
+        <mat-select
+          multiple
+          [value]="scheduleDisplayed"
+          (selectionChange)="onDayChange($event.source.value, form.control)"
+        >
+          <mat-option *ngFor="let day of daysOfWeekOptions" [value]="day.id">
+            {{ day.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="form.type == 'time'">
+        <mat-label>{{ form.label }}</mat-label>
+        <input
+          [ngxTimepicker]="picker"
+          formControlName="{{ form.control }}"
+          matInput />
+
+        <ngx-material-timepicker #picker></ngx-material-timepicker
+      ></mat-form-field>
     </ng-container>
+    @if ( endTimeError){
+    <mat-error>{{ endTimeError }}</mat-error>
+    }
   </div>
 </mat-dialog-content>
 <mat-dialog-actions class="d-flex flex-end">
   <button
-    mat-button
     class="ms-2 rounded shadow px-4 py-1 btn btn-primary"
-    [mat-dialog-close]="companyForm.value"
+    [mat-dialog-close]="dialogForm.value"
     [disabled]="!validForm"
   >
     Yes
   </button>
   <button
-    mat-button
     class="ms-2 rounded shadow px-4 py-1 btn btn-danger"
+    color="danger"
     [mat-dialog-close]="false"
   >
     Cancel
