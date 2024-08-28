@@ -53,8 +53,17 @@
       />
     </div>
   </div>
+
+  <div class="mb-4 d-flex gap-2 justify-center">
+    <re-captcha
+      (resolved)="checkCaptcha($event)"
+      [siteKey]="siteKey">
+    </re-captcha>
+  </div>
+
   <div class="position-relative mb-2 mt-5">
     <button
+      [disabled]="!captchaResolved"
       mat-raised-button
       color="primary"
       class="rounded-5 p-2 px-5 fw-bold fs-4"
