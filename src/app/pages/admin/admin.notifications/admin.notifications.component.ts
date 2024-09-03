@@ -58,7 +58,7 @@ export class AdminNotificationsComponent implements OnInit {
   constructor(
     private userService: UsersService,
     private notificationService : NotificationsService,
-    private entriesService: EntriesService,
+    public entriesService: EntriesService,
     private page: PagesComponent,
     private fb: FormBuilder,
     private dialog: MatDialog

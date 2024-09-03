@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Entries } from '../models/Entries';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UsersService } from 'src/app/services/users.service';
 import { JwtInterceptor } from './jwt.interceptor';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EntriesService {
+  userService = inject(UsersService);
   API_URI = environment.apiUrl;
+  reviewEntries: any = [];
 
   constructor(private http: HttpClient) {}
   getEntries() {
@@ -47,6 +50,23 @@ export class EntriesService {
       updatedEntry,
       { headers }
     );
+  }
+
+  loadEntriesNav() {
+    let body = {};
+    this.userService.getUsers(body).subscribe({
+      next: (users) => {
+        this.reviewEntries = users.filter((user: any) => user.review);
+        this.reviewEntries = this.reviewEntries.map((user: any) => {
+          return {
+            message: `Entries For Review: ${user.name} ${user.last_name}`,
+            id: user.id,
+            name: user.name
+          };
+        })
+        .slice(0, 4); 
+      }
+    });
   }
 
 }

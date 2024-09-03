@@ -15,14 +15,12 @@ export class NavigationComponent implements OnInit {
   isAdmin: boolean = false;
   userType: any;
   isActive: boolean = false;
-  notifications: any[] = [];
-  recentNotifications: any[] = [];
-  reviewEntries: any = [];
+  notificationsExpanded: boolean = false;
   constructor(
     private authService: AuthService,
     private element: ElementRef,
-    private notificationsService: NotificationsService,
-    private entriesService: EntriesService,
+    public notificationsService: NotificationsService,
+    public entriesService: EntriesService,
   ) {
     this.authService.isLoggedIn().subscribe((isLogged) => {
       this.authenticated = isLogged;
@@ -30,36 +28,16 @@ export class NavigationComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.notificationsService.loadNotifications()
     document.addEventListener('click', this.hideNav.bind(this));
     this.authService.getUserType().subscribe((role) => {
       this.userType = role;
     });
     const role = localStorage.getItem('role');
     if (role != '1') {
-    this.notificationsService.get().subscribe(notifications => {
-      this.notifications = notifications.filter((notification:any) => {
-        return notification.active == 1;
-      }).slice(0, 4); 
-      
-      this.notifications.sort((a, b) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-      });
+      this.notificationsService.loadNotificationsNav()
     } else {
-      let body = {};
-      this.userService.getUsers(body).subscribe({
-        next: (users) => {
-          this.reviewEntries = users.filter((user: any) => user.review);
-          this.reviewEntries = this.reviewEntries.map((user: any) => {
-            return {
-              message: `Entries For Review: ${user.name} ${user.last_name}`,
-              id: user.id,
-              name: user.name
-            };
-          })
-          .slice(0, 4); 
-        }
-      });
+      this.entriesService.loadEntriesNav()
     }
   }
   public get currentType() {
@@ -70,6 +48,14 @@ export class NavigationComponent implements OnInit {
   }
   toggleMenu() {
     this.isActive = !this.isActive;
+  }
+  toggleNotifications() {
+    this.notificationsExpanded = !this.notificationsExpanded;
+    if(!this.notificationsExpanded) {
+      if(this.userType !== '1') {
+        this.notificationsService.update(this.notificationsService.recentNotifications, 2)
+      }
+    }
   }
   hideNav(event: Event): void {
     if (!this.element.nativeElement.contains(event.target)) {

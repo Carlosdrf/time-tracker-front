@@ -82,7 +82,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
     BalanceComponent,
     GoBackComponent,
     CommonModule,
-    UserComponent,
+    // UserComponent,
     NotificationsComponent,
     RouterModule,
     MatDialogModule,

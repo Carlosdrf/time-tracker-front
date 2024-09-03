@@ -1,67 +1,3 @@
-<nav class="navbar navbar-expand-lg p-1 px-2 border shadow bg-light fixed-top bg-body-tertiary">
-    <div class="container-fluid px-3">
-        <a class="navbar-brand" routerLink="/">
-            <img src="assets/images/inimble.png" width="150" alt="">
-        </a>
-        <button class="navbar-toggler rounded" type="button" data-bs-toggle="collapse" (click)="toggleMenu();" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" [ngClass]="{'show': isActive}" id="navbarNavAltMarkup">
-            <div class="navbar-nav align-items-center">
-                <!-- admin dashboard -->
-                <a class="nav-link" routerLink="admin/" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
-                <a class="nav-link" routerLink="admin/users" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false" routerLinkActive="active">Users</a>
-                <a class="nav-link" routerLink="admin/teams" *ngIf="authenticated == true && userType =='1'" (click)="isActive = false" routerLinkActive="active">Teams</a>
-                <!-- user dashboard -->
-                <a class="nav-link" routerLink="dashboard" *ngIf="authenticated == true && userType == '2'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
-                <!-- client dashboard -->
-                <a class="nav-link" routerLink="client" *ngIf="authenticated == true && userType == '3'" (click)="isActive = false" routerLinkActive="active">Dashboard</a>
-                <a class="nav-link" routerLink="reports" *ngIf="authenticated" (click)="isActive = false" routerLinkActive="active">Reports</a>
-                  <!-- admin notifications -->
-                <div class="dropdown" *ngIf="authenticated == true">
-                    <a class="nav-link dropdown-toggle d-none d-lg-block" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none!important;">
-                    <i class="fa-regular fa-bell"></i>
-                    </a>
-                    <a *ngIf="userType == '1'" class="nav-link d-lg-none ml-2" style="text-decoration: none!important;" routerLink="admin/notifications" (click)="isActive = false" routerLinkActive="active">
-                    NOTIFICATIONS
-                    </a>
-                    <a *ngIf="userType !== '1'" class="nav-link d-lg-none ml-2" style="text-decoration: none!important;" routerLink="/notifications" (click)="isActive = false" routerLinkActive="active">
-                    NOTIFICATIONS
-                    </a>
-                    <ul class="dropdown-menu shadow py-0">
-                    <li *ngFor="let notification of recentNotifications">
-                        <div class="dropdown-item d-flex gap-3">
-                        <span>
-                            <i class="fa-regular fa-envelope"></i>
-                        </span> 
-                        <span>
-                            {{ notification.message }}
-                        </span>
-                        </div>
-                    </li>
-                    <li class="dropdown-item" *ngFor="let recentNotification of reviewEntries; let i = index">
-                        <div>
-                          {{ recentNotification.message }}
-                        </div>
-                      </li>
-                      <li class="dropdown-item fw-bold" *ngIf="userType === '1'" routerLink="admin/notifications">
-                        See All Notifications
-                    </li>
-                    <li class="dropdown-item" *ngFor="let recentNotification of notifications; let i = index">
-                        <div>
-                          {{ recentNotification.message }}
-                        </div>
-                      </li>
-                      <li class="dropdown-item fw-bold" *ngIf="userType !== '1'" routerLink="/notifications">
-                        See All Notifications
-                      </li>
-                    </ul>
-                </div>
-                <a class="nav-link" routerLink="login" *ngIf="!authenticated" routerLinkActive="active" (click)="isActive = false">Login</a>
-                <a class="nav-link" routerLink="logout" *ngIf="authenticated" (click)="closeSession()" (click)="isActive = false" routerLinkActive="active">Log Out</a>
-            </div>
-        </div>
-    </div>
 <nav
   class="navbar navbar-expand-lg p-1 px-2 border shadow bg-light fixed-top bg-body-tertiary"
 >
@@ -154,22 +90,45 @@
           routerLinkActive="active"
           >Projects</a
         >
-        <a
-          class="nav-link"
-          routerLink="login"
-          *ngIf="!authenticated"
-          (click)="isActive = false"
-          routerLinkActive="active"
-          >Login</a
-        >
-        <a
-          class="nav-link"
-          routerLink="logout"
-          *ngIf="authenticated"
-          (click)="isActive = false; closeSession()"
-          routerLinkActive="active"
-          >Log Out</a
-        >
+        <!-- notifications -->
+        <div class="dropdown" *ngIf="authenticated == true">
+            <a class="nav-link dropdown-toggle d-none d-lg-block" role="button" data-bs-toggle="dropdown" [(attr.aria-expanded)]="notificationsExpanded" style="text-decoration: none!important;" (click)="userType !== 1 && toggleNotifications()">
+              <i class="fa-regular fa-bell"></i>
+              <span *ngIf="userType !== '1' && notificationsService.recentNotifications.length > 0" class="badge badge-pill badge-success">{{ notificationsService.recentNotifications.length }}</span>
+              <span *ngIf="userType === '1' && entriesService.reviewEntries.length > 0" class="badge badge-pill badge-success">{{ entriesService.reviewEntries.length }}</span>
+            </a>
+            <a *ngIf="userType == '1'" class="nav-link d-lg-none ml-2" style="text-decoration: none!important;" routerLink="admin/notifications" (click)="isActive = false" routerLinkActive="active">
+            NOTIFICATIONS
+            </a>
+            <a *ngIf="userType !== '1'" class="nav-link d-lg-none ml-2" style="text-decoration: none!important;" routerLink="/notifications" (click)="isActive = false" routerLinkActive="active">
+            NOTIFICATIONS
+            </a>
+            <ul class="dropdown-menu shadow py-0">
+              <li *ngFor="let notification of notificationsService.recentNotifications.concat(notificationsService.earlierNotifications).splice(0,4)">
+                <div class="dropdown-item d-flex gap-3">
+                  <span *ngIf="notificationsService.recentNotifications.includes(notification)">
+                      <i class="fa-regular fa-envelope"></i>
+                  </span> 
+                  <span>
+                      {{ notification.message }}
+                  </span>
+                </div>
+              </li>
+              <li class="dropdown-item fw-bold" *ngIf="userType !== '1'" routerLink="/notifications">
+                See All Notifications
+              </li>
+              <li class="dropdown-item" *ngFor="let recentNotification of entriesService.reviewEntries; let i = index">
+                <div>
+                  {{ recentNotification.message }}
+                </div>
+              </li>
+              <li class="dropdown-item fw-bold" *ngIf="userType === '1'" routerLink="admin/notifications">
+                See All Notifications
+              </li>
+            </ul>
+        </div>
+        <a class="nav-link" routerLink="login" *ngIf="!authenticated" routerLinkActive="active" (click)="isActive = false">Login</a>
+        <a class="nav-link" routerLink="logout" *ngIf="authenticated" (click)="closeSession()" (click)="isActive = false" routerLinkActive="active">Log Out</a>
       </div>
     </div>
   </div>

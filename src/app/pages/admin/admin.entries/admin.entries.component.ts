@@ -70,13 +70,13 @@ export class AdminEntriesComponent implements OnInit {
 
     this.entriesService
       .getAllEntries(user)
-      .subscribe(({ entries, suspicious }) => {
-        this.reviewEntries = suspicious;
-        this.entries = entries.filter((item: any) => item.status !== 0);
-        if (entries.length == 0 && this.datesRange.firstSelect) {
-          this.message = 'No logs in the dates selected';
-        }
-        this.loaded = true;
+        .subscribe(({ entries, suspicious }) => {
+          this.reviewEntries = suspicious;
+          this.entries = entries.filter((item: any) => item.status !== 0);
+          if (entries.length == 0 && this.datesRange.firstSelect) {
+            this.message = 'No logs in the dates selected';
+          }
+          this.loaded = true;
       });
   }
 
@@ -111,15 +111,17 @@ export class AdminEntriesComponent implements OnInit {
       this.message = 'Entry deleted!';
       this.store.addNotifications(this.message);
       this.getEntries();
+      this.entriesService.loadEntriesNav()
     });
   }
-
+  
   public authorizeEntry(entry: any) {
     this.entriesService.updateEntry(entry.id, entry).subscribe({
       next: () => {
         this.message = 'Entry confirmed!';
         this.store.addNotifications(this.message);
         this.getEntries();
+        this.entriesService.loadEntriesNav()
       },
     });
   }

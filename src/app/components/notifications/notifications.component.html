@@ -1,10 +1,10 @@
 <div class="section">
     <div class="p-1 mb-4">
-     <div *ngIf="recentNotifications.length != 0">
+     <div *ngIf="notificationsService.recentNotifications.length != 0">
       <h4>Most Recent</h4>
       <ul>
         <li class="card card-hover mb-1 rounded shadow d-flex flex-wrap justify-content-between align-items-center p-2 flex-row"
-            *ngFor="let notification of recentNotifications; let i = index">
+            *ngFor="let notification of notificationsService.recentNotifications; let i = index">
           <div class="d-flex flex-grow-1">
             <span class="p-2">
               <i class="fa-regular fa-envelope"></i>
@@ -17,11 +17,11 @@
         </li>
       </ul>
      </div>
-    <div class="p-1" *ngIf="earlierNotifications.length != 0">
+    <div class="p-1" *ngIf="notificationsService.earlierNotifications.length != 0">
       <h4>Earlier</h4>
       <ul>
         <li class="card card-hover mb-1 rounded shadow d-flex flex-wrap justify-content-between align-items-center p-2 flex-row"
-            *ngFor="let notification of earlierNotifications; let i = index">
+            *ngFor="let notification of notificationsService.earlierNotifications; let i = index">
           <div class="d-flex flex-grow-1">
             <span class="p-2">
               <i class="fa-regular fa-envelope"></i>
@@ -34,7 +34,7 @@
         </li>
       </ul>
     </div>
-    <div *ngIf="notifications.length === 0 && loaded == true">
+    <div *ngIf="notificationsService.notifications.length === 0 && loaded == true">
         <span>There are not notifications yet</span>
     </div>
     <div *ngIf="!loaded" class="d-flex justify-content-center">
