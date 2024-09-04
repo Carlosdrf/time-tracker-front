@@ -1,3 +1,5 @@
+@import "../../../../../src/styles.scss";
+
 .min-height {
   min-height: 300px;
 }
@@ -12,4 +14,24 @@
   background-position: center center;
   background-size: contain;
   background-repeat: no-repeat;
+}
+.mat-drawer-container {
+  background-color: white!important;
+}
+mat-sidenav {
+  position: fixed;
+  width: 200px;
+  height: 100%;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  padding: 60px 0;
+}
+mat-sidenav a.nav-link {
+  padding: .5rem 1rem;
+  border-bottom: .3px solid lightgray;
+}
+mat-sidenav a.nav-link:hover {
+  background: $primary-color;
+  color: white;
 }

@@ -1,34 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   DashboardItems,
   DashboardLibComponent,
 } from 'src/app/components/dashboard-lib/dashboard-lib.component';
 import { SharedModule } from 'src/app/components/shared.module';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { UsersService } from 'src/app/services/users.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [SharedModule, DashboardLibComponent],
+  imports: [SharedModule, DashboardLibComponent, MatSidenavModule],
 })
 export class ClientDashboardComponent implements OnInit {
+  userService = inject(UsersService);
+  authenticated: boolean = false;
+  userType: any;
   name?: any;
   components: DashboardItems[] = [
-    {
-      title: 'Payment Section',
-      path: 'balance',
-      description:
-        'Here you can pay and see your current balance and status with I-nimble.',
-      header: 'see payments',
-      options: [
-        {
-          title: 'see payments',
-          icon: 'fa-regular fa-credit-card',
-          path: 'balance',
-        },
-      ],
-    },
+    // {
+    //   title: 'Payment Section',
+    //   path: 'balance',
+    //   description:
+    //     'Here you can pay and see your current balance and status with I-nimble.',
+    //   header: 'see payments',
+    //   options: [
+    //     {
+    //       title: 'see payments',
+    //       icon: 'fa-regular fa-credit-card',
+    //       path: 'balance',
+    //     },
+    //   ],
+    // },
     {
       title: 'Team Members',
       path: '/employees',
@@ -56,10 +62,18 @@ export class ClientDashboardComponent implements OnInit {
       header: 'see our news',
     },
   ];
-  constructor() {}
+
+  constructor(private authService: AuthService) {
+    this.authService.isLoggedIn().subscribe((isLogged:any) => {
+      this.authenticated = isLogged;
+    });
+  }
 
   ngOnInit(): void {
     this.name = this.getUserName();
+    this.authService.getUserType().subscribe((role) => {
+      this.userType = role;
+    });
   }
   getUserName() {
     const name = localStorage.getItem('name');

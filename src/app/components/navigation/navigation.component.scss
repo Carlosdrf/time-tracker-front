@@ -1,5 +1,8 @@
 @import "../../../styles.scss";
 
+nav.navbar {
+  height: 60px;
+}
 .nav-link:hover {
   color: $primary-color;
 }
