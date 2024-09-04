@@ -1,50 +1,95 @@
-<div class="container col-12 mx-3">
-  <app-go-back></app-go-back>
+<app-go-back></app-go-back>
+<app-balance-info [payments]="payments$ | async" [pending]="pending$ | async"></app-balance-info>
+<h4 class="mb-0 table-heading">Transaction History:</h4>
+<div class="table-container mt-2 shadow">
+  <table mat-table [dataSource]="dataSource">
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <th class="table-header" mat-header-cell *matHeaderCellDef>Date</th>
+      <td mat-cell *matCellDef="let payments"> {{ payments.created_at | date: 'shortDate' }} </td>
+    </ng-container>
+
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <th class="table-header" mat-header-cell *matHeaderCellDef>Description</th>
+      <td mat-cell *matCellDef="let payments"> {{ payments.description }} </td>
+    </ng-container>
+
+    <!-- Amount Column -->
+    <ng-container matColumnDef="amount">
+      <th class="table-header" mat-header-cell *matHeaderCellDef>Amount</th>
+      <td mat-cell *matCellDef="let payments"> {{ payments.amount | currency: 'USD' }} </td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th class="table-header" mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let payments"> 
+        <p class="status-indicator {{payments.status.name === 'Pending' ? 'pending' : 'active' }}">
+          {{ payments.status.name === 'Pending' ? payments.status.name : 'Confirmed' }} 
+        </p>
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th class="table-header" mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let payments">
+        @if (payments.status.name == 'Pending') {
+          <a mat-raised-button 
+            (click)="setPaymentParams(payments)" 
+            routerLink="payments" 
+            class="pay-btn"
+          >
+            <mat-icon>payment</mat-icon>
+            Pay Bill
+          </a>
+        } 
+        @else if (payments.status.name == 'Active') {
+          <a mat-raised-button 
+          (click)="viewMore(payments)"
+          class="details-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#invoice">
+            <mat-icon>remove_red_eye</mat-icon>
+            See details
+          </a>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]"
+                 showFirstLastButtons
+                 aria-label="Select page of payments">
+  </mat-paginator>
 </div>
-<main class="container position-relative">
-  <section class="position-absolute top-0 start-0 end-0 bottom-0">
-    <div class="col-12 p-4 h-100 d-flex align-items-center justify-content-end">
-      <div class="p-4 col-6 d-sm-none d-md-block h-100">
-        <div class="bg-mask col-10"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="invoice" tabindex="-1" aria-labelledby="modalInvoice" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalInvoice">Payment details</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="fw-bold mb-0">Client:</p>
+        <p>{{ name }}</p>
+        <p class="fw-bold mb-0">Date:</p>
+        <p>{{ selectedPayment?.updated_at | date : "EEEE, dd/MM/YYYY" }}</p>
+        <p class="fw-bold mb-0">Description:</p>
+        <p>{{ selectedPayment?.description }}</p>
+        <p class="fw-bold mb-0">Amount:</p>
+        <p>${{ selectedPayment?.amount }} {{ selectedPayment?.currency.name }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
       </div>
     </div>
-  </section>
-  <section class="row align-items-stretch mb-2">
-    <div class="col-12 col-md-6 col-lg-5">
-      <!-- payment balance -->
-      <div class="container mb-2">
-        <app-balance [payments]="pending"></app-balance>
-      </div>
-      <!-- current payment section  -->
-      <div class="container mb-2">
-        <div class="card rounded shadow">
-          <div class="card-header">
-            <h4 class="mb-0">Payment Status: Pending:</h4>
-          </div>
-          <div class="card-body">
-            <div *ngIf="getPending()">
-              <div *ngFor="let payment of pending" class="card p-2 mb-2">
-                <div class="row align-items-center">
-                  <div class="col-8">
-                    <h4>${{ payment.currency.name }} {{ payment.amount }}</h4>
-                    <span>status: {{ payment.status.name }} </span>
-                  </div>
-                  <div class="col-4">
-                    <a (click)="setPaymentParams(payment)" routerLink="payments"
-                      >Pay Bill</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p *ngIf="!getPending()">No current pending payments...</p>
-          </div>
-        </div>
-      </div>
-      <!-- payment history section -->
-      <section>
-        <app-payment-history [payments]="payments"></app-payment-history>
-      </section>
-    </div>
-  </section>
-</main>
+  </div>
+</div>

@@ -25,11 +25,9 @@ export const routes: Routes = [
 ];
 @NgModule({
   declarations: [
-    // ClientDashboardComponent,
     PaymentsComponent,
-    ClientBalanceComponent,
     ClientCustomerServiceComponent,
   ],
-  imports: [RouterModule.forChild(routes), CommonModule, SharedModule],
+  imports: [RouterModule.forChild(routes), CommonModule, SharedModule, ClientBalanceComponent],
 })
 export class ClientModule {}
