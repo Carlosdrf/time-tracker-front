@@ -1,0 +1,16 @@
+.table-header {
+    height: fit-content;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.03)!important;
+}
+
+.table-container {
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: calc(0.375rem - 1px);
+}
+
+.calendar {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+}

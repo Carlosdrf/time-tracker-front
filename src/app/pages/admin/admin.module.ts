@@ -9,6 +9,7 @@ import { AdminUsersComponent } from './admin.users/admin.users.component';
 import { AdminTeamsComponent } from './admin.teams/admin.teams.component';
 import { AdminManagementComponent } from './admin.management/admin.management.component';
 import { CreateUserComponent } from './admin.users/create-user/create-user.component';
+import { AdminPaymentsEmployeesComponent } from './admin.payments-employees/admin.payments-employees.component';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,11 @@ export const routes: Routes = [
     component: AdminPaymentsComponent,
     pathMatch: 'full',
   },
+  // {
+  //   path: 'payments-employees',
+  //   component: AdminPaymentsEmployeesComponent,
+  //   pathMatch: 'full',
+  // },
   {
     path: 'users',
     component: AdminUsersComponent,

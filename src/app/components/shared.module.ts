@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { EntriesPanelComponent } from './entries-panel/entries-panel.component';
 import { BillsComponent } from './bills/bills.component';
@@ -84,6 +85,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
     MatAutocompleteModule,
     AsyncPipe,
     NgxMaterialTimepickerModule,
+    MatGridListModule
   ],
   providers: [CustomDatePipe, CalendarComponent, CompaniesService],
 })
