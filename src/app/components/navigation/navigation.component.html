@@ -92,6 +92,14 @@
         >
         <a
           class="nav-link"
+          routerLink="client/balance"
+          *ngIf="authenticated == true && userType == '3'"
+          (click)="isActive = false"
+          routerLinkActive="active"
+          >Invoices</a
+        >
+        <a
+          class="nav-link"
           routerLink="login"
           *ngIf="!authenticated"
           (click)="isActive = false"

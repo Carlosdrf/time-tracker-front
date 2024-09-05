@@ -21,20 +21,6 @@ export class ClientDashboardComponent implements OnInit {
   userType: any;
   name?: any;
   components: DashboardItems[] = [
-    // {
-    //   title: 'Payment Section',
-    //   path: 'balance',
-    //   description:
-    //     'Here you can pay and see your current balance and status with I-nimble.',
-    //   header: 'see payments',
-    //   options: [
-    //     {
-    //       title: 'see payments',
-    //       icon: 'fa-regular fa-credit-card',
-    //       path: 'balance',
-    //     },
-    //   ],
-    // },
     {
       title: 'Team Members',
       path: '/employees',

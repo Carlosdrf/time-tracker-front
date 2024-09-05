@@ -1,24 +1,7 @@
-<mat-sidenav-container class="example-container">
-  <mat-sidenav mode="side" opened>
-    <!-- Sidenav content -->
-    <a
-      class="nav-link"
-      routerLink="balance"
-      *ngIf="authenticated == true && userType == '3'"
-      >
-        <i class="fa-regular fa-credit-card"></i>
-        Payments
-      </a
-    >
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <!-- Main content -->
-    <div class="section">
-      <div class="d-flex align-items-center p-1">
-        <i class="fa-regular fa-circle-user fs-1" style="color: #9a9a9a"></i>
-        <h2 class="p-2 mb-0">Welcome, {{ name }}</h2>
-      </div>
-      <app-dashboard-lib [components]="components"></app-dashboard-lib>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<div class="section">
+  <div class="d-flex align-items-center p-1">
+    <i class="fa-regular fa-circle-user fs-1" style="color: #9a9a9a"></i>
+    <h2 class="p-2 mb-0">Welcome, {{ name }}</h2>
+  </div>
+  <app-dashboard-lib [components]="components"></app-dashboard-lib>
+</div>
