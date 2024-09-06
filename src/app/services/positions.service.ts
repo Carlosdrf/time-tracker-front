@@ -15,6 +15,10 @@ export class PositionsService {
     return this.http.get<Positions[]>(`${this.API_URI}`);
   }
 
+  getCompanyPositions(){
+    return this.http.get<any[]>(`${this.API_URI}/company/`);
+  }
+
   public submit(data: any, id: any = null) {
     if (id) return this.http.put(`${this.API_URI}/${id}`, data);
     return this.http.post(`${this.API_URI}`, data);
